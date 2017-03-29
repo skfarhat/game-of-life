@@ -7,9 +7,6 @@
 .idea/workspace.xml
 .idea/libraries
 
-# gradlew
-gradle/
-gradlew.bat
 
 .DS_Store
 /build
