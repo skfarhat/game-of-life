@@ -4,5 +4,5 @@
 public interface Reproduces {
 
     /** @brief called when */
-    public LifeAgent reproduce();
+    public LifeAgent reproduce() throws AgentIsDeadException;
 }

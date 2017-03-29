@@ -3,9 +3,13 @@
  */
 
 /**
- * Any agent in the system must have its own unique ID
+ * @class Agent
+ *
+ * Every agent in the system MUST have its own unique ID
+ * Every agent in the system can reproduce
+ *
  */
-public class Agent {
+public abstract class Agent implements Reproduces {
 
     /** @brief agent's unique identifier string */
     private final String id;
@@ -21,4 +25,5 @@ public class Agent {
     public String getId() {
         return id;
     }
+
 }

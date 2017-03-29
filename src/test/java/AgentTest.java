@@ -9,7 +9,11 @@ public class AgentTest {
 
     @Test
     public void testAgentHasId() {
-        Agent agent = new Agent();
+        Agent agent = new Agent() {
+            public LifeAgent reproduce() throws AgentIsDeadException {
+                return null;
+            }
+        };
         assertNotNull(agent.getId());
     }
 }

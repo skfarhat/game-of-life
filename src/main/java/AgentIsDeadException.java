@@ -3,7 +3,7 @@
  */
 public class AgentIsDeadException extends Exception {
 
-    public AgentIsDeadException() {super(); }
+    public AgentIsDeadException() { super(); }
 
     public AgentIsDeadException(String message) { super(message); }
 

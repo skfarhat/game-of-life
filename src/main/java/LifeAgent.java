@@ -9,6 +9,9 @@ public class LifeAgent extends Agent {
     /** @brief default value for the initial energy of a LifeAgent */
     private static final int DEFAULT_INITIAL_ENERGY = 10;
 
+    /** @brief the energy with which this instance was created. This same value is used later when reproducing. */
+    private final Integer MY_INITIAL_ENERGY;
+
     /** @brief the energy of the LifeAgent */
     private Integer energy = 0;
 
@@ -22,10 +25,10 @@ public class LifeAgent extends Agent {
         this(DEFAULT_INITIAL_ENERGY);
     }
 
-    /** @brief constructor with initial energy */
+    /** @brief constructor with initial energy - records the instance's initial energy */
     public LifeAgent(int initialEnergy) throws AgentIsDeadException {
         try {
-            setEnergy(initialEnergy);
+            setEnergy(MY_INITIAL_ENERGY = initialEnergy);
         } catch (AgentIsDeadException e) {
             throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
         }
@@ -64,6 +67,10 @@ public class LifeAgent extends Agent {
     public void decreaseEnergy() throws AgentIsDeadException { setEnergy(getEnergy()-ENERGY_DECREMENT_VAL); }
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
-    final public boolean isAlive() { return !died; }
+    public boolean isAlive() { return !died; }
 
+    /** @brief return new LifeAgent with the same energy as the one I(this) was created with */
+    public LifeAgent reproduce() throws AgentIsDeadException {
+        return new LifeAgent(MY_INITIAL_ENERGY);
+    }
 }

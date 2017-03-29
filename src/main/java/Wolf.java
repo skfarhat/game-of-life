@@ -5,7 +5,7 @@
 /**
  *
  */
-public class Wolf extends LifeAgent implements Ages, Reproduces {
+public class Wolf extends LifeAgent implements Ages {
 
     /** @brief energy gained by the wolf when it consumes a deer */
     private static final int E_WOLF = 1;
@@ -15,13 +15,8 @@ public class Wolf extends LifeAgent implements Ages, Reproduces {
         super();
     }
 
-    public LifeAgent reproduce() {
-        Wolf babyWolf = null;
-        try {
-            babyWolf = new Wolf();
-        } catch (AgentIsDeadException e) {
-            e.printStackTrace();
-        }
+    public LifeAgent reproduce() throws AgentIsDeadException {
+        Wolf babyWolf = new Wolf();
         return babyWolf;
     }
 
