@@ -16,6 +16,9 @@ public class Wolf extends LifeAgent implements Ages, Consumes {
     public Wolf() throws AgentIsDeadException {
         super();
     }
+    public Wolf(int initialEnergy) throws AgentIsDeadException {
+        super(initialEnergy);
+    }
 
     public LifeAgent reproduce() throws AgentIsDeadException {
         Wolf babyWolf = new Wolf();
