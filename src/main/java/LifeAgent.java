@@ -1,16 +1,25 @@
 /**
  * Created by Sami on 28/03/2017.
  */
-public class LifeAgent extends Agent {
+
+/**
+ * @class LifeAgent
+ *
+ * Every LifeAgent is an Agent
+ * Every LifeAgent has energy
+ *
+ * Not every LifeAgent ages (think of Grass)
+ */
+public abstract class LifeAgent extends Agent implements Reproduces {
 
     /** @brief value by which we decrement the energy when decreaseEnergy is called */
-    private static final int ENERGY_DECREMENT_VAL = 1;
+    public static final int ENERGY_DECREMENT_VAL = 1;
 
     /** @brief default value for the initial energy of a LifeAgent */
     private static final int DEFAULT_INITIAL_ENERGY = 10;
 
     /** @brief the energy with which this instance was created. This same value is used later when reproducing. */
-    private final Integer MY_INITIAL_ENERGY;
+    protected final Integer MY_INITIAL_ENERGY;
 
     /** @brief the energy of the LifeAgent */
     private Integer energy = 0;
@@ -27,11 +36,9 @@ public class LifeAgent extends Agent {
 
     /** @brief constructor with initial energy - records the instance's initial energy */
     public LifeAgent(int initialEnergy) throws AgentIsDeadException {
-        try {
-            setEnergy(MY_INITIAL_ENERGY = initialEnergy);
-        } catch (AgentIsDeadException e) {
+        if (initialEnergy <= 0)
             throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
-        }
+        setEnergy(MY_INITIAL_ENERGY = initialEnergy);
     }
 
     /** @return the energy of the LifeAgent */
@@ -64,13 +71,9 @@ public class LifeAgent extends Agent {
      * @brief is a convenience method to decrease the energy by ENERGY_DECREMENT_VAL,
      * and is not to be confused with the age() method in Age interface which might choose to call decreaseEnergy() or not
      * */
-    public void decreaseEnergy() throws AgentIsDeadException { setEnergy(getEnergy()-ENERGY_DECREMENT_VAL); }
+    public void decreaseEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() - val); }
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
     public boolean isAlive() { return !died; }
 
-    /** @brief return new LifeAgent with the same energy as the one I(this) was created with */
-    public LifeAgent reproduce() throws AgentIsDeadException {
-        return new LifeAgent(MY_INITIAL_ENERGY);
-    }
 }

@@ -9,7 +9,7 @@
  * Every agent in the system can reproduce
  *
  */
-public abstract class Agent implements Reproduces {
+public abstract class Agent {
 
     /** @brief agent's unique identifier string */
     private final String id;
