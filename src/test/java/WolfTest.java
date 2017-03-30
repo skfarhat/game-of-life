@@ -12,6 +12,11 @@ public class WolfTest {
         assertTrue(wolf.isAlive());
     }
 
-
+    @Test
+    public void testWolfReproductionCreatesNewWolf() throws AgentIsDeadException {
+        Wolf wolf = new Wolf();
+        LifeAgent agent = wolf.reproduce();
+        assertTrue(agent instanceof Wolf);
+    }
 
 }

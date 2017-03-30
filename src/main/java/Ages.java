@@ -7,5 +7,5 @@ public interface Ages {
      * @brief age method designed to decrease the energy of an Alive
      * @throws AgentIsDeadException when the agent is already dead and we're still trying to age the poor thing
      */
-    public void age() throws AgentIsDeadException;
+    public void ageBy(int val) throws AgentIsDeadException;
 }
