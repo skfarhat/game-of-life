@@ -31,7 +31,7 @@ public class IdPool {
     public String newId() {
         String generated = null;
         do {
-            generated = new BigInteger(130, random).toString(32);
+            generated = Utils.randomString();
         } while (idExists(generated));
 
         ids.put(generated, true);
