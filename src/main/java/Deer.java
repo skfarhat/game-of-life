@@ -3,7 +3,7 @@ import java.util.List;
 /**
  * Created by Sami on 30/03/2017.
  */
-public class Deer extends LifeAgent implements Ages, Consumes, Moveable {
+public class Deer extends LifeAgent implements Ages, Consumes {
 
     /** @brief default constructor, calls LifeAgent's constructor */
     public Deer() throws AgentIsDeadException {
@@ -42,8 +42,4 @@ public class Deer extends LifeAgent implements Ages, Consumes, Moveable {
         return new Deer(this.MY_INITIAL_ENERGY);
     }
 
-    /** @brief change the position of Wolf */
-    public void moveTo(Point2D pos) {
-        pos.set(pos);
-    }
 }

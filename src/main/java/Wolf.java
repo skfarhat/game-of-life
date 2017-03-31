@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  */
-public class Wolf extends LifeAgent implements Ages, Consumes, Moveable {
+public class Wolf extends LifeAgent implements Ages, Consumes {
 
     /** @brief energy gained by the wolf when it consumes a deer */
     private static final int E_WOLF = 1;
@@ -38,10 +38,5 @@ public class Wolf extends LifeAgent implements Ages, Consumes, Moveable {
     public void consumeAll(List<LifeAgent> agents) throws AgentIsDeadException {
         for (LifeAgent a : agents)
             consume(a);
-    }
-
-    /** @brief change the position of Wolf */
-    public void moveTo(Point2D pos) {
-        this.getPos().set(pos);
     }
 }

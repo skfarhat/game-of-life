@@ -8,7 +8,7 @@
  * Every agent in the system MUST have its own unique ID
  * Every agent in the system can reproduce
  */
-public abstract class Agent {
+public abstract class Agent implements Positionable {
 
     /** @brief agent's unique identifier string */
     private final String id;
@@ -40,4 +40,10 @@ public abstract class Agent {
     public Point2D getPos() {
         return pos;
     }
+
+    /** @brief getter for position */
+    public void setPos(Point2D pos) {
+        getPos().set(pos);
+    }
+
 }
