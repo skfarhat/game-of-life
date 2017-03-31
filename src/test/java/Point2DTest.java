@@ -73,4 +73,20 @@ public class Point2DTest {
         assertTrue(p1.equals(p1));
     }
 
+    @Test
+    public void testSetWorks() {
+        Random rand = new Random(System.currentTimeMillis());
+        final int x = rand.nextInt();
+        final int y = rand.nextInt();
+
+        final int x2 = rand.nextInt();
+        final int y2 = rand.nextInt();
+
+        Point2D p1 = new Point2D(x, y);
+        Point2D p2 = new Point2D(x2, y2);
+        p1.set(p2);
+
+        assertEquals(x2, p1.getX());
+        assertEquals(y2, p1.getY());
+    }
 }

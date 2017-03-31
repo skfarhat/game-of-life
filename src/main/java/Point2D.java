@@ -2,6 +2,8 @@
  * Created by Sami on 30/03/2017.
  */
 
+import java.util.Random;
+
 /**
  * @class Point2D class
  *
@@ -10,6 +12,17 @@
 public class Point2D {
     private int x;
     private int y;
+
+    /** @brief
+     * @param n bound used in Random for generating x,y positions
+     * @return a Point2D instance with random x,y in bounds [0,n]
+     */
+    public static Point2D randomPoint(int n) {
+        Random rand = new Random(System.currentTimeMillis());
+        int x = rand.nextInt(n);
+        int y = rand.nextInt(n);
+        return new Point2D(x, y);
+    }
 
     /** @brief default constructor
      * @param x coordinate
@@ -32,6 +45,22 @@ public class Point2D {
      */
     public int getY() {
         return y;
+    }
+
+    /** @brief copies the field values from the passed Point2D into this one (x,y) */
+    public void set(Point2D pos) {
+        this.x = pos.getX();
+        this.y = pos.getY();
+    }
+
+    /** @brief setter for x */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /** @brief setter for y */
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override

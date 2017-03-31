@@ -41,4 +41,13 @@ public class DeerTest {
         assertEquals(initialEnergy-ageBy, deer.getEnergy().intValue());
     }
 
+    @Test
+    public void testDeerMovesCorrectly() throws AgentIsDeadException {
+        Deer deer = new Deer();
+        Point2D p = Point2D.randomPoint(100);
+        deer.moveTo(p);
+        assertEquals(p.getX(), deer.getPos().getX());
+        assertEquals(p.getY(), deer.getPos().getY());
+    }
+
 }

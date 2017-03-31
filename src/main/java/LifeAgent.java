@@ -7,6 +7,7 @@
  *
  * Every LifeAgent is an Agent
  * Every LifeAgent has energy
+ * Every LifeAgent has a position
  *
  * Not every LifeAgent ages (think of Grass)
  */
@@ -36,6 +37,7 @@ public abstract class LifeAgent extends Agent implements Reproduces {
 
     /** @brief constructor with initial energy - records the instance's initial energy */
     public LifeAgent(int initialEnergy) throws AgentIsDeadException {
+        super();
         if (initialEnergy <= 0)
             throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
         setEnergy(MY_INITIAL_ENERGY = initialEnergy);
