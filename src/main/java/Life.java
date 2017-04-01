@@ -2,7 +2,9 @@
  * Created by Sami on 29/03/2017.
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +19,9 @@ public class Life {
     // ===========================================================================================
     // List of keys in the params map
     // ===========================================================================================
+
+    /** @brief GRID_N key in params */
+    public static final String KEY_GRID_N = "GRID_N";
 
     /** @brief E_GRASS_INITIAL key in params */
     public static final String KEY_E_GRASS_INITIAL = "E_GRASS_INITIAL";
@@ -55,11 +60,16 @@ public class Life {
     public static final String KEY_I_WOLF = "I_WOLF";
 
     // ===========================================================================================
+    // Defaults
+    // ===========================================================================================
+
+    /** @brief default energy gained by wolf and deer when they consume other agents */
+    public static final int DEFAULT_GRID_N = 10;
 
     /** @brief default energy gained by wolf and deer when they consume other agents */
     public static final int E_DEFAULT_GAIN = 2;
 
-    /** @brief default energy decrease for Agents at each step */
+    /** @brief default energy decrease for Agents when they age */
     public static final int E_DEFAULT_DECREASE = 1;
 
     /** @brief default initial agent energy */
@@ -70,6 +80,13 @@ public class Life {
 
     /** @brief default initial number of instance of an agent type */
     public static final int I_DEFAULT = 1;
+
+    // ===========================================================================================
+    // Params
+    // ===========================================================================================
+
+    /** @brief the grid's size */
+    public final int GRID_N;
 
     /** @brief grass' initial energy */
     public final int E_GRASS_INITIAL;
@@ -107,15 +124,29 @@ public class Life {
     /** @brief initial number of wolves */
     public final int I_WOLF;
 
+    /** @brief the grid containing all cells on which the agents will be placed */
+    public final Grid<Cell> grid;
+
+    /** @brief map determining which typ of LifeAgent can consume which type,
+     * e.g.  Wolf.class -->  [Deer.class, Sheep.class...]
+      */
+    private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
+
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
-    Life() throws IllegalArgumentException { this(null);}
+    Life() throws GridCreationException { this(null);}
 
     /** @brief constructor taking in a params map specifying the input parameters */
-    Life(Map<String, Number> params) throws IllegalArgumentException {
+    Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException {
+
+        // Consume Rules: dictate who is allowed to consume whom
+        CONSUME_RULES.put(Wolf.class, new ArrayList<Class>(){{add(Deer.class );}}); // Wolf eats Deer
+        CONSUME_RULES.put(Deer.class, new ArrayList<Class>(){{add(Grass.class);}}); // Deer eats Grass
+
         // if the params map passed is null, we assume the user has no input parameters, we create an empty map
         // and the below code will run and set all fields to their defaults
         if (params == null) params= new HashMap<String, Number>();
 
+        GRID_N = params.containsKey(KEY_GRID_N)? params.get(KEY_GRID_N).intValue() : DEFAULT_GRID_N;
         E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : E_DEFAULT_INITIAL;
         E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : E_DEFAULT_INITIAL;
         E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : E_DEFAULT_INITIAL;
@@ -126,14 +157,23 @@ public class Life {
         I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : I_DEFAULT;
         I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : I_DEFAULT;
 
-        // the doubles must be in range 0-1
-        checkInRange(R_GRASS = params.containsKey(KEY_R_GRASS)? params.get(KEY_R_GRASS).doubleValue() : R_DEFAULT);
-        checkInRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : R_DEFAULT);
-        checkInRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : R_DEFAULT);
+        // the doubles must be in range 0-1 - we use checkDoublesInRange
+        checkDoublesInRange(R_GRASS = params.containsKey(KEY_R_GRASS)? params.get(KEY_R_GRASS).doubleValue() : R_DEFAULT);
+        checkDoublesInRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : R_DEFAULT);
+        checkDoublesInRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : R_DEFAULT);
+
+
+        // Create Life in 7 days
+        // ---------------------
+
+        grid = GridCellFactory.createGridCell(GRID_N, GRID_N); // create a square Grid
+
+        // create agents
+
     }
 
     /** @brief checks that the passed double is in the range 0-1 */
-    private void checkInRange(double val) throws IllegalArgumentException {
+    private void checkDoublesInRange(double val) throws IllegalArgumentException {
         if (val < 0 || val > 1)
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
     }
@@ -141,10 +181,35 @@ public class Life {
     /** @brief run this intolerable thing that is called life */
     public void run() {
 
+        ArrayList<LifeAgent> agents = new ArrayList<LifeAgent>();
+
+        for (LifeAgent a : agents) {
+            // a.getPos().x() , a.getPos().y()
+            // Pos nextPos = select adjacent position
+            // a.move(nextPos);
+
+            // tell a about other LifeAgents on the same position
+            // ArrayList<LifeAgent> others = findOthers(nexPos)
+            // filter others to suit what 'a' can consume?
+            // a.consume(others);
+
+            // with probability R_a
+            // LifeAgent baby = a.reproduce()
+            // agents.add(baby)
+
+            // a.ageBy()
+
+        }
     }
 
-    public static void main(String []args) {
+    public int getGridSize() {
+        return GRID_N;
+    }
+
+    public static void main(String []args) throws GridCreationException {
         Life life = new Life();
         life.run();
     }
+
+
 }

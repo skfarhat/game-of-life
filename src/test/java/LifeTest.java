@@ -24,19 +24,21 @@ public class LifeTest {
         assertEquals(life.E_DEFAULT_GAIN, life.E_DEER_GAIN);
         assertEquals(life.E_DEFAULT_GAIN, life.E_WOLF_GAIN);
         assertEquals(life.E_DEFAULT_DECREASE, life.E_STEP_DECREASE);
+        assertEquals(life.DEFAULT_GRID_N, life.getGridSize());
+        assertEquals(life.R_DEFAULT, life.R_WOLF, DELTA);
         assertEquals(life.I_DEFAULT, life.I_GRASS);
         assertEquals(life.I_DEFAULT, life.I_DEER);
         assertEquals(life.I_DEFAULT, life.I_WOLF);
         assertEquals(life.R_DEFAULT, life.R_GRASS, DELTA);
         assertEquals(life.R_DEFAULT, life.R_DEER, DELTA);
-        assertEquals(life.R_DEFAULT, life.R_WOLF, DELTA);
     }
 
     @Test
     public void testLifeWithOverriddenValues() throws GridCreationException {
         Map<String, Number> params = new HashMap<String, Number>();
         Random rand = Utils.getRand();
-        params.put(Life.KEY_R_DEER, rand.nextInt());
+
+        params.put(Life.KEY_GRID_N, rand.nextInt(50));
         params.put(Life.KEY_E_GRASS_INITIAL, rand.nextInt());
         params.put(Life.KEY_E_DEER_INITIAL, rand.nextInt());
         params.put(Life.KEY_E_WOLF_INITIAL, rand.nextInt());
@@ -51,7 +53,7 @@ public class LifeTest {
         params.put(Life.KEY_R_WOLF, rand.nextDouble());
 
         Life life = new Life(params);
-
+        assertEquals(params.get(Life.KEY_GRID_N), life.getGridSize());
         assertEquals(params.get(Life.KEY_E_GRASS_INITIAL), life.E_GRASS_INITIAL);
         assertEquals(params.get(Life.KEY_E_DEER_INITIAL), life.E_DEER_INITIAL);
         assertEquals(params.get(Life.KEY_E_WOLF_INITIAL), life.E_WOLF_INITIAL);
