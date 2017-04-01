@@ -47,7 +47,12 @@ public final class Utils {
 
     /** @return random positive integer - includes zero */
     public static Integer randomPositiveInteger() {
-        return new LifeRandom().randomPositiveInteger();
+        return randomPositiveInteger(Integer.MAX_VALUE);
+    }
+
+    /** @return random positive integer - includes zero */
+    public static Integer randomPositiveInteger(int bound) {
+        return new LifeRandom().randomPositiveInteger() % bound;
     }
 
     /** @return random string */
@@ -55,4 +60,16 @@ public final class Utils {
         return new LifeRandom().randomString();
     }
 
+    /**
+     * @param xBound upper x bound
+     * @param yBound upper y bound
+     * @return a Point2D instance with random x,y in bounds [0,n]
+     */
+    public static Point2D randomPoint(int xBound, int yBound) {
+        Random rand = LifeRandom.getRand();
+        int x = rand.nextInt(xBound);
+        int y = rand.nextInt(yBound);
+        return new Point2D(x, y);
+    }
 }
+

@@ -60,4 +60,33 @@ public class GridTest {
 
         grid.get(0, -1);
     }
+
+    @Test
+    public void findAdjacentPoint() throws GridCreationException, InvalidPositionException {
+        final int rows = 5 + Utils.randomPositiveInteger(46); // rows between (5,50)
+        final int cols = 5 + Utils.randomPositiveInteger(46); // rows between (5,50)
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+        System.out.println(rows + ", " + cols);
+        Point2D p = Utils.randomPoint(rows, cols);
+        
+        System.out.println(rows + ", " + cols);
+        Point2D adjacent = grid.findAdjacentPoint(p);
+
+        System.out.println("p is " + p);
+        System.out.println("adjacent is " + adjacent);
+
+        // (xdiff == 1) XOR (yDiff == 1)
+        boolean valid = 1 == Math.abs((adjacent.getX() - p.getX())) ^  1 == Math.abs((adjacent.getY() - p.getY()));
+        assertTrue(valid);
+
+        // the difference might be one and test can be done by here
+        // but let's just add an extra insurance, the below should not
+        // throw an exception
+        grid.get(adjacent);
+    }
+
 }
+
+
+
+

@@ -84,6 +84,35 @@ public class Grid<T extends Positionable> {
             throw new GridCreationException(e.getMessage());
         }
     }
+
+    /** @brief find an adjacent cell to this one, adjacent cells mean one square to the left, right, up or down.
+     * No diagonals.
+     *  @param p
+     * @return
+     * @throws InvalidPositionException if the given point is out of bounds
+     */
+    public Point2D findAdjacentPoint(Point2D p) throws InvalidPositionException {
+
+        get(p); // called to ensure the point is in bounds
+
+        boolean isX = Utils.getRand().nextBoolean();
+        boolean positive = Utils.getRand().nextBoolean();
+        int nextX = p.getX(), nextY = p.getY();
+
+        // x
+        if (isX) {
+            nextX =  nextX  + ((positive)? 1 : -1);
+            if (!xIsInBounds(nextX)) nextX = p.getX()  + ((positive)? -1 : 1); // if we are at an edge, go the other way
+        }
+        // y
+        else {
+            nextY = nextY + ((positive)? 1 : -1);
+            if (!yIsInBounds(nextY)) nextY = p.getY()  + ((positive)? -1 : 1); // if we are at an edge, go the other way
+
+        }
+        return new Point2D(nextX, nextY);
+    }
+
     /** return true if the @param x value passed is in the bounds */
     private boolean xIsInBounds(int x) { return (x > -1 &&  x < rows); }
 
