@@ -15,7 +15,7 @@ public class LifeTest {
     private static final double DELTA = 0.0000001;
 
     @Test
-    public void testLifeDefaults() {
+    public void testLifeDefaults() throws GridCreationException {
         Life life = new Life();
 
         assertEquals(life.E_DEFAULT_INITIAL, life.E_GRASS_INITIAL);
@@ -33,7 +33,7 @@ public class LifeTest {
     }
 
     @Test
-    public void testLifeWithOverriddenValues() {
+    public void testLifeWithOverriddenValues() throws GridCreationException {
         Map<String, Number> params = new HashMap<String, Number>();
         Random rand = Utils.getRand();
         params.put(Life.KEY_R_DEER, rand.nextInt());
@@ -77,7 +77,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRGrassValueThrowsException() {
+    public void testLifeWithInvalidRGrassValueThrowsException() throws GridCreationException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -87,7 +87,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRDEERValueThrowsException() {
+    public void testLifeWithInvalidRDEERValueThrowsException() throws GridCreationException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -97,7 +97,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRWolfValueThrowsException() {
+    public void testLifeWithInvalidRWolfValueThrowsException() throws GridCreationException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 

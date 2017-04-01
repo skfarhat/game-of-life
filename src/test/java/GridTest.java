@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class GridTest {
 
     @Test
-    public void testGridConstructor() throws InvalidPositionException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public void testGridConstructor() throws GridCreationException, InvalidPositionException {
 
         Random rand = Utils.getRand();
         final int bound = 50;
