@@ -116,4 +116,13 @@ public class Point2DTest {
         assertEquals(y2, p1.getY());
     }
 
+    @Test
+    public void testToString() {
+        // let's make sure the string at least contains the x and y values.
+        Point2D p = Utils.randomPoint(100, 100);
+        final String str = p.toString();
+        assertNotNull(str);
+        assert(str.indexOf(Integer.toString(p.getX())) > -1); // make sure 'x' is in the String
+        assert(str.indexOf(Integer.toString(p.getY())) > -1); // make sure 'y' is in the String
+    }
 }

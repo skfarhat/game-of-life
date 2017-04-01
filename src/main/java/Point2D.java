@@ -71,5 +71,10 @@ public class Point2D {
         Point2D p = (Point2D) obj;
         return p.getX() == getX() && p.getY() == getY();
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 }
 
