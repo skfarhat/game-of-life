@@ -27,4 +27,37 @@ public class GridTest {
         }
     }
 
+    @Test(expected = InvalidPositionException.class)
+    public void invalidExceptionThrownWhenXTooHigh() throws GridCreationException, InvalidPositionException {
+        final int rows = 5;
+        final int cols = 5;
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        grid.get(rows, 0);
+    }
+
+    @Test(expected = InvalidPositionException.class)
+    public void invalidExceptionThrownWhenYTooHigh() throws GridCreationException, InvalidPositionException {
+        final int rows = 5;
+        final int cols = 5;
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        grid.get(0, cols);
+    }
+    @Test(expected = InvalidPositionException.class)
+    public void invalidExceptionThrownWhenXTooLow() throws GridCreationException, InvalidPositionException {
+        final int rows = 5;
+        final int cols = 5;
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        grid.get(-1, 0);
+    }
+    @Test(expected = InvalidPositionException.class)
+    public void invalidExceptionThrownWhenYTooLow() throws GridCreationException, InvalidPositionException {
+        final int rows = 5;
+        final int cols = 5;
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        grid.get(0, -1);
+    }
 }
