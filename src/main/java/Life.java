@@ -2,10 +2,7 @@
  * Created by Sami on 29/03/2017.
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @class Life class created for each simulation to run. The class captures user input and configures the system parameters.
@@ -85,6 +82,13 @@ public class Life {
     // Params
     // ===========================================================================================
 
+    /**
+     * @brief map determining which typ of LifeAgent can consume which type,
+     * e.g.  Wolf.class -->  [Deer.class, Sheep.class...]
+     */
+    private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
+
+
     /** @brief the grid's size */
     public final int GRID_N;
 
@@ -125,18 +129,16 @@ public class Life {
     public final int I_WOLF;
 
     /** @brief the grid containing all cells on which the agents will be placed */
-    public final Grid<Cell> grid;
+    private final Grid<Cell> grid;
 
-    /** @brief map determining which typ of LifeAgent can consume which type,
-     * e.g.  Wolf.class -->  [Deer.class, Sheep.class...]
-      */
-    private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
+    /** @brief list of all of the agents in Life */
+    private final List<Agent> agents;
 
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
-    Life() throws GridCreationException { this(null);}
+    Life() throws GridCreationException, InvalidPositionException, AgentIsDeadException { this(null);}
 
     /** @brief constructor taking in a params map specifying the input parameters */
-    Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException {
+    Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException, AgentIsDeadException, InvalidPositionException {
 
         // Consume Rules: dictate who is allowed to consume whom
         CONSUME_RULES.put(Wolf.class, new ArrayList<Class>(){{add(Deer.class );}}); // Wolf eats Deer
@@ -146,44 +148,72 @@ public class Life {
         // and the below code will run and set all fields to their defaults
         if (params == null) params= new HashMap<String, Number>();
 
-        GRID_N = params.containsKey(KEY_GRID_N)? params.get(KEY_GRID_N).intValue() : DEFAULT_GRID_N;
-        E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : E_DEFAULT_INITIAL;
-        E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : E_DEFAULT_INITIAL;
-        E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : E_DEFAULT_INITIAL;
-        E_DEER_GAIN = params.containsKey(KEY_E_DEER_GAIN)? params.get(KEY_E_DEER_GAIN).intValue() : E_DEFAULT_GAIN;
-        E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : E_DEFAULT_GAIN;
-        E_STEP_DECREASE = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : E_DEFAULT_DECREASE;
-        I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : I_DEFAULT;
-        I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : I_DEFAULT;
-        I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : I_DEFAULT;
+        exceptionIfNegative(GRID_N = params.containsKey(KEY_GRID_N)? params.get(KEY_GRID_N).intValue() : DEFAULT_GRID_N);
+        exceptionIfNegative(E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : E_DEFAULT_INITIAL);
+        exceptionIfNegative(E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : E_DEFAULT_INITIAL);
+        exceptionIfNegative(E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : E_DEFAULT_INITIAL);
+        exceptionIfNegative(E_DEER_GAIN = params.containsKey(KEY_E_DEER_GAIN)? params.get(KEY_E_DEER_GAIN).intValue() : E_DEFAULT_GAIN);
+        exceptionIfNegative(E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : E_DEFAULT_GAIN);
+        exceptionIfNegative(E_STEP_DECREASE = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : E_DEFAULT_DECREASE);
+        exceptionIfNegative(I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : I_DEFAULT);
+        exceptionIfNegative(I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : I_DEFAULT);
+        exceptionIfNegative(I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : I_DEFAULT);
 
-        // the doubles must be in range 0-1 - we use checkDoublesInRange
-        checkDoublesInRange(R_GRASS = params.containsKey(KEY_R_GRASS)? params.get(KEY_R_GRASS).doubleValue() : R_DEFAULT);
-        checkDoublesInRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : R_DEFAULT);
-        checkDoublesInRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : R_DEFAULT);
+        // the doubles must be in range 0-1 - we use exceptionIfOutOfRange
+        exceptionIfOutOfRange(R_GRASS = params.containsKey(KEY_R_GRASS)? params.get(KEY_R_GRASS).doubleValue() : R_DEFAULT);
+        exceptionIfOutOfRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : R_DEFAULT);
+        exceptionIfOutOfRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : R_DEFAULT);
 
 
         // Create Life in 7 days
         // ---------------------
 
+        // create grid
         grid = GridCellFactory.createGridCell(GRID_N, GRID_N); // create a square Grid
 
-        // create agents
+        // create all agents and distribute
+        agents = new ArrayList<Agent>(I_DEER+I_WOLF+I_GRASS);
+        for (int i = 0; i < I_DEER; i++) agents.add(new Deer(E_DEER_INITIAL));
+        for (int i = 0; i < I_WOLF; i++) agents.add(new Wolf(E_WOLF_INITIAL));
+        for (int i = 0; i < I_GRASS; i++) agents.add(new Grass(E_GRASS_INITIAL));
+        uniformlyDistribute(agents);
 
     }
 
-    /** @brief checks that the passed double is in the range 0-1 */
-    private void checkDoublesInRange(double val) throws IllegalArgumentException {
+    /** @brief uniformly distribute the agents on the grid */
+    private void uniformlyDistribute(List<Agent> agents) throws InvalidPositionException {
+        for (Agent a : agents) {
+            Point2D p = Utils.randomPoint(this.GRID_N, this.GRID_N);
+            ((Cell) grid.get(p.getX(), p.getY())).addAgent(a);
+        }
+    }
+
+    /**
+     * @param val that must be non-negative
+     * @throws IllegalArgumentException if val is negative
+     */
+    private void exceptionIfNegative(int val) throws IllegalArgumentException {
+        if (val < 0) throw new IllegalArgumentException();
+    }
+
+    /**
+     * @param val that must be in 0-1 range
+     * @throws IllegalArgumentException if val is out of the range
+     */
+    private void exceptionIfOutOfRange(double val) throws IllegalArgumentException {
         if (val < 0 || val > 1)
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
+    }
+
+    private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
+        return grid.findAdjacentPoint(p);
     }
 
     /** @brief run this intolerable thing that is called life */
     public void run() {
 
-        ArrayList<LifeAgent> agents = new ArrayList<LifeAgent>();
+        for (Agent a : agents) {
 
-        for (LifeAgent a : agents) {
             // a.getPos().x() , a.getPos().y()
             // Pos nextPos = select adjacent position
             // a.move(nextPos);
@@ -206,7 +236,7 @@ public class Life {
         return GRID_N;
     }
 
-    public static void main(String []args) throws GridCreationException {
+    public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {
         Life life = new Life();
         life.run();
     }

@@ -15,7 +15,7 @@ public class LifeTest {
     private static final double DELTA = 0.0000001;
 
     @Test
-    public void testLifeDefaults() throws GridCreationException {
+    public void testLifeDefaults() throws GridCreationException, AgentIsDeadException, InvalidPositionException {
         Life life = new Life();
 
         assertEquals(life.E_DEFAULT_INITIAL, life.E_GRASS_INITIAL);
@@ -34,20 +34,23 @@ public class LifeTest {
     }
 
     @Test
-    public void testLifeWithOverriddenValues() throws GridCreationException {
+    public void testLifeWithOverriddenValues() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
         Map<String, Number> params = new HashMap<String, Number>();
         Random rand = Utils.getRand();
 
-        params.put(Life.KEY_GRID_N, rand.nextInt(50));
-        params.put(Life.KEY_E_GRASS_INITIAL, rand.nextInt());
-        params.put(Life.KEY_E_DEER_INITIAL, rand.nextInt());
-        params.put(Life.KEY_E_WOLF_INITIAL, rand.nextInt());
-        params.put(Life.KEY_E_DEER_GAIN, rand.nextInt());
-        params.put(Life.KEY_E_WOLF_GAIN, rand.nextInt());
-        params.put(Life.KEY_E_STEP_DECREASE, rand.nextInt());
-        params.put(Life.KEY_I_GRASS, rand.nextInt());
-        params.put(Life.KEY_I_DEER, rand.nextInt());
-        params.put(Life.KEY_I_WOLF, rand.nextInt());
+        // just an int bound used for some of the rands
+        final int bound = 60;
+
+        params.put(Life.KEY_GRID_N, rand.nextInt(bound));
+        params.put(Life.KEY_E_GRASS_INITIAL, Utils.randomPositiveInteger(bound));
+        params.put(Life.KEY_E_DEER_INITIAL, Utils.randomPositiveInteger(bound));
+        params.put(Life.KEY_E_WOLF_INITIAL, Utils.randomPositiveInteger(bound));
+        params.put(Life.KEY_E_DEER_GAIN, Utils.randomPositiveInteger(bound));
+        params.put(Life.KEY_E_WOLF_GAIN, Utils.randomPositiveInteger(bound));
+        params.put(Life.KEY_E_STEP_DECREASE, Utils.randomPositiveInteger(bound));
+        params.put(Life.KEY_I_GRASS, rand.nextInt(bound));
+        params.put(Life.KEY_I_DEER, rand.nextInt(bound));
+        params.put(Life.KEY_I_WOLF, rand.nextInt(bound));
         params.put(Life.KEY_R_GRASS, rand.nextDouble());
         params.put(Life.KEY_R_DEER, rand.nextDouble());
         params.put(Life.KEY_R_WOLF, rand.nextDouble());
@@ -79,7 +82,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRGrassValueThrowsException() throws GridCreationException {
+    public void testLifeWithInvalidRGrassValueThrowsException() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -89,7 +92,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRDEERValueThrowsException() throws GridCreationException {
+    public void testLifeWithInvalidRDEERValueThrowsException() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -99,7 +102,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRWolfValueThrowsException() throws GridCreationException {
+    public void testLifeWithInvalidRWolfValueThrowsException() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
