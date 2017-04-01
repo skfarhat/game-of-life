@@ -38,8 +38,25 @@ public class Grid<T extends Positionable> {
         }
     }
 
+    /**
+     *
+     * @param p point at which the positionable occurs
+     * @return a Positionable
+     * @throws InvalidPositionException
+     */
+    public Positionable get(Point2D p) throws InvalidPositionException {
+        return get(p.getX(), p.getY());
+    }
+
+    /**
+     *
+     * @param x coordinate of the Positionable
+     * @param y coordinate of the Positionable
+     * @return Positionable
+     * @throws InvalidPositionException if the given x and y values are out of bounds
+     */
     public Positionable get(int x, int y) throws InvalidPositionException {
-        if (x < 0 || x >= rows || y < 0 || y >= cols)
+        if (!xIsInBounds(x) || !yIsInBounds(y))
             throw new InvalidPositionException("The position (" + x + ", " + y + ") is out of bounds.");
 
         return grid[x][y];
@@ -67,4 +84,9 @@ public class Grid<T extends Positionable> {
             throw new GridCreationException(e.getMessage());
         }
     }
+    /** return true if the @param x value passed is in the bounds */
+    private boolean xIsInBounds(int x) { return (x > -1 &&  x < rows); }
+
+    /** return true if the @param y value passed is in the bounds */
+    private boolean yIsInBounds(int y) { return (y > -1 &&  y < cols); }
 }

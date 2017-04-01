@@ -13,17 +13,6 @@ public class Point2D {
     private int x;
     private int y;
 
-    /** @brief
-     * @param n bound used in Random for generating x,y positions
-     * @return a Point2D instance with random x,y in bounds [0,n]
-     */
-    public static Point2D randomPoint(int n) {
-        Random rand = new Random(System.currentTimeMillis());
-        int x = rand.nextInt(n);
-        int y = rand.nextInt(n);
-        return new Point2D(x, y);
-    }
-
     /** @brief default constructor
      * @param x coordinate
      * @param y coordinate
@@ -31,6 +20,11 @@ public class Point2D {
     public Point2D(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    /** @brief create by making a copy */
+    public Point2D(Point2D p) {
+        this(p.getX(), p.getY());
     }
 
     /**
