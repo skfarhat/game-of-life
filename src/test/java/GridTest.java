@@ -13,7 +13,7 @@ public class GridTest {
     @Test
     public void testGridConstructor() throws InvalidPositionException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        Random rand = new Random(System.currentTimeMillis());
+        Random rand = Utils.getRand();
         final int bound = 50;
         int rows = 5 + rand.nextInt(bound);
         int cols = 5 + rand.nextInt(bound);

@@ -35,7 +35,7 @@ public class LifeTest {
     @Test
     public void testLifeWithOverriddenValues() {
         Map<String, Number> params = new HashMap<String, Number>();
-        Random rand = new Random(System.currentTimeMillis());
+        Random rand = Utils.getRand();
         params.put(Life.KEY_R_DEER, rand.nextInt());
         params.put(Life.KEY_E_GRASS_INITIAL, rand.nextInt());
         params.put(Life.KEY_E_DEER_INITIAL, rand.nextInt());
@@ -67,7 +67,7 @@ public class LifeTest {
     }
 
     private double randDoubleOutOfRange() {
-        Random rand = new Random(System.currentTimeMillis());
+        Random rand = Utils.getRand();
         final int RANGE = rand.nextInt();
         double val;
         do {
