@@ -39,4 +39,9 @@ public class Wolf extends LifeAgent implements Ages, Consumes {
         for (LifeAgent a : agents)
             consume(a);
     }
+
+    @Override
+    public String toString() {
+        return "Wolf (" + getEnergy() + ")";
+    }
 }

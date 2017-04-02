@@ -24,7 +24,7 @@ public class GridCellFactoryTest {
     }
 
     @Test
-    public void testCrateGridCell() throws GridCreationException {
+    public void testCreateGridCell() throws GridCreationException {
         Random rand = new Random(System.currentTimeMillis());
         final int bound = 100;
         final int rows = rand.nextInt(bound);

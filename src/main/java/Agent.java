@@ -27,8 +27,15 @@ public abstract class Agent implements Positionable {
      * sets the id string using IdPool
      */
     public Agent() {
+        this(new Point2D(DEFAULT_X_POS, DEFAULT_Y_POS));
+    }
+
+    /**
+     * @param pos
+     */
+    public Agent(Point2D pos) {
         id = IdPool.getInstance().newId();
-        pos = new Point2D(DEFAULT_X_POS, DEFAULT_Y_POS); // default position for every new agent
+        this.pos =  pos;
     }
 
     /** @brief getter for ID */

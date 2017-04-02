@@ -42,4 +42,8 @@ public class Deer extends LifeAgent implements Ages, Consumes {
         return new Deer(this.MY_INITIAL_ENERGY);
     }
 
+    @Override
+    public String toString() {
+        return "Deer (" + getEnergy() + ")";
+    }
 }
