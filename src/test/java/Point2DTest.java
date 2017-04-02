@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -32,6 +33,40 @@ public class Point2DTest {
 
         assertTrue(p1.equals(p2));
         assertTrue(p2.equals(p1));
+    }
+
+    @Test
+    public void testConstructorByCopy() {
+        Point2D p1 = Utils.randomPoint(30, 30);
+        Point2D p2 = new Point2D(p1);
+        assertTrue(p1.getX() == p2.getX());
+        assertTrue(p1.getY() == p2.getY());
+        assertEquals(p1, p2); // this is redundant but might as well
+    }
+
+    /**
+     * ensure equals works when we are comparing a subclass with its parent as long as they have the same x and y
+     */
+    @Test
+    public void testEqualsWorksWhenSubclassOfPoint() {
+        class Point3D extends Point2D {
+
+            public Point3D(int x, int y) {
+                super(x, y);
+            }
+            public Point3D(Point2D p) {
+                super(p);
+            }
+        };
+        Point2D p1 = Utils.randomPoint(30, 30);
+        Point3D p2 = new Point3D(p1);
+        assertEquals(p1, p2);
+    }
+
+    @Test
+    public void testEqualsDoesntWorkWithDifferentClasses() {
+        // should fail because Integer is not a subclass of Point2DD
+        assertFalse(Utils.randomPoint(30, 30).equals(new Integer(30)));
     }
 
     @Test
