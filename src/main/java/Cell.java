@@ -51,7 +51,17 @@ public class Cell implements Positionable {
 
     /** @brief add agent to the agents list */
     public boolean addAgent(Agent a) {
+        a.setPos(getPos());
         return agents.add(a);
+    }
+
+    /**
+     * @brief remove agent from the agents lisst
+     * @param a agent to remove
+     * @return true if remove succeeded
+     */
+    public boolean removeAgent(Agent a) {
+        return agents.remove(a);
     }
 
     /**
@@ -61,4 +71,6 @@ public class Cell implements Positionable {
         return agents.iterator();
     }
 
+    /** @return number of agents contained in the cell */
+    public int agentsCount() { return agents.size(); }
 }

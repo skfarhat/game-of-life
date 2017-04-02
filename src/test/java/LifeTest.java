@@ -111,4 +111,9 @@ public class LifeTest {
         new Life(params);
     }
 
+    @Test
+    public void testMoveToAdjacentCell() {
+        // TODO; 
+    }
+
 }

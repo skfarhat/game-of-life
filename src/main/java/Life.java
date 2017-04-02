@@ -88,7 +88,6 @@ public class Life {
      */
     private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
 
-
     /** @brief the grid's size */
     public final int GRID_N;
 
@@ -184,8 +183,91 @@ public class Life {
     private void uniformlyDistribute(List<Agent> agents) throws InvalidPositionException {
         for (Agent a : agents) {
             Point2D p = Utils.randomPoint(this.GRID_N, this.GRID_N);
-            ((Cell) grid.get(p.getX(), p.getY())).addAgent(a);
+            grid.get(p.getX(), p.getY()).addAgent(a);
         }
+    }
+
+    private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
+        return grid.randomAdjacentPoint(p);
+    }
+
+    /**
+     *
+     * @param it Iterator of the Agents to filter from
+     * @param agent agent which consumes
+     * @return a list of all consumable Agents by Agent @param a
+     */
+    private List<LifeAgent> filterConsumablesForAgent(Iterator<Agent> it, Agent agent) {
+        // list of classes that the chosen type can consume
+        final List<Class> consumables =  CONSUME_RULES.get(agent.getClass());
+
+        // put all agents in a list, then  filter the list for the consumables
+        final List<LifeAgent> cellAgents = new ArrayList<LifeAgent>();
+        while(it.hasNext()) // add all to List
+            cellAgents.add((LifeAgent) it.next());
+
+        cellAgents.stream().filter(a -> consumables.contains(a.getClass()));
+        return cellAgents;
+    }
+
+    /** @brief move to next position */
+    public Cell moveToAdjacentCell(Agent agent) throws InvalidPositionException {
+        Point2D nextPoint = findAdjacentPointInGrid(agent.getPos());
+        Cell nextCell = grid.get(nextPoint);
+        grid.moveAgentToCell(agent, nextCell);
+        return nextCell;
+    }
+
+    /** @brief remove all dead LifeAgents from the cell */
+    private void clearDeadLifeAgents(Cell cell) {
+        for (Iterator<Agent> it = cell.getAgents(); it.hasNext(); ) {
+            LifeAgent a = (LifeAgent) it.next();
+            if (!a.isAlive()){
+                cell.removeAgent(a);
+                agents.remove(a); // remove agent from agents list
+            }
+        }
+    }
+
+    /** @brief run this intolerable thing that is called life */
+    public void run() throws InvalidPositionException, AgentIsDeadException {
+
+        // choose an agent at random
+        int randI = Utils.randomPositiveInteger(agents.size());
+        LifeAgent chosen = (LifeAgent) agents.get(randI);
+
+        // Wolves and Deers
+        if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
+
+            // move to adjacent cell
+            Cell nextCell = moveToAdjacentCell(chosen);
+
+            // put all the cell's agents in an ArrayList and pass them to the chosen
+            List<LifeAgent> consumableAgents = filterConsumablesForAgent(nextCell.getAgents(), chosen);
+
+            // consume all
+            ((Consumes) chosen).consumeAll(consumableAgents);
+
+            // reproduce at random
+            double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
+            boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
+            if (willReproduce) {
+                LifeAgent newBaby = chosen.reproduce();
+                nextCell.addAgent(newBaby);
+            }
+
+            System.out.println(chosen);
+
+            // decrease energy
+            chosen.decreaseEnergyBy(E_STEP_DECREASE);
+
+            // clear out all the dead agents
+//            clearDeadLifeAgents(cell);
+        }
+    }
+
+    public int getGridSize() {
+        return GRID_N;
     }
 
     /**
@@ -205,41 +287,13 @@ public class Life {
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
     }
 
-    private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
-        return grid.findAdjacentPoint(p);
-    }
-
-    /** @brief run this intolerable thing that is called life */
-    public void run() {
-
-        for (Agent a : agents) {
-
-            // a.getPos().x() , a.getPos().y()
-            // Pos nextPos = select adjacent position
-            // a.move(nextPos);
-
-            // tell a about other LifeAgents on the same position
-            // ArrayList<LifeAgent> others = findOthers(nexPos)
-            // filter others to suit what 'a' can consume?
-            // a.consume(others);
-
-            // with probability R_a
-            // LifeAgent baby = a.reproduce()
-            // agents.add(baby)
-
-            // a.ageBy()
-
-        }
-    }
-
-    public int getGridSize() {
-        return GRID_N;
-    }
-
     public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {
         Life life = new Life();
-        life.run();
+
+        int i = 0 ;
+        while(life.agents.size() > 0){
+            System.out.println(i++);
+            life.run();
+        }
     }
-
-
 }

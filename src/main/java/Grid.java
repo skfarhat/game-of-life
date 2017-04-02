@@ -4,8 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by Sami on 31/03/2017.
  */
-public class Grid<T extends Positionable> {
-    private Positionable[][] grid;
+public class Grid<T extends Cell> {
+
+    private Cell[][] grid;
 
     private int rows;
     private int cols;
@@ -27,24 +28,22 @@ public class Grid<T extends Positionable> {
 
         // creating an 2d array of generics is fiddly
         grid = (T[][]) Array.newInstance(c, rows, cols);
+        grid = new Cell[rows][cols];
 
         // set all the correct positions
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < cols; j++){
-                // TODO: check
-                // note: this is fiddly because we are trying to create instances of a generic type..
-                grid[i][j] = createNewPositionable(c, i, j);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                grid[i][j] = createNewCellSubclass(c, new Point2D(i, j));
             }
         }
     }
 
     /**
-     *
      * @param p point at which the positionable occurs
      * @return a Positionable
      * @throws InvalidPositionException
      */
-    public Positionable get(Point2D p) throws InvalidPositionException {
+    public Cell get(Point2D p) throws InvalidPositionException {
         return get(p.getX(), p.getY());
     }
 
@@ -55,25 +54,28 @@ public class Grid<T extends Positionable> {
      * @return Positionable
      * @throws InvalidPositionException if the given x and y values are out of bounds
      */
-    public Positionable get(int x, int y) throws InvalidPositionException {
+    public Cell get(int x, int y) throws InvalidPositionException {
         if (!xIsInBounds(x) || !yIsInBounds(y))
             throw new InvalidPositionException("The position (" + x + ", " + y + ") is out of bounds.");
 
         return grid[x][y];
     }
 
-    /** @brief creates a new cell from @param Class<T>.
+    /**
+     *
+     * @brief creates a new cell from @param Class<T>.
      * Exceptions are caught and GridCreationException is thrown with the correct message.
-     * @param c
-     * @param i Integer first param into the c Class
-     * @param j Integer second param into the c Class
+     *
+     * @param c class type to return an  instance of
+     * @param p
+     *
      * @return a class overriding the Positionable interface
      * @throws GridCreationException to replace one of the following exceptions: IllegalAccessException,
      * IllegalAccessException, InvocationTargetException, NoSuchMethodException (the exception message is passed)
      */
-    private T createNewPositionable(Class<T> c, int i, int j) throws GridCreationException {
+    private T createNewCellSubclass(Class<T> c, Point2D p) throws GridCreationException {
         try {
-            return c.getConstructor(Integer.class, Integer.class).newInstance(i,j);
+            return c.getConstructor(Point2D.class).newInstance(p);
         } catch (InstantiationException e) {
             throw new GridCreationException(e.getMessage());
         } catch (IllegalAccessException e) {
@@ -91,7 +93,7 @@ public class Grid<T extends Positionable> {
      * @return
      * @throws InvalidPositionException if the given point is out of bounds
      */
-    public Point2D findAdjacentPoint(Point2D p) throws InvalidPositionException {
+    public Point2D randomAdjacentPoint(Point2D p) throws InvalidPositionException {
 
         get(p); // called to ensure the point is in bounds
 
@@ -111,6 +113,26 @@ public class Grid<T extends Positionable> {
 
         }
         return new Point2D(nextX, nextY);
+    }
+
+    /**
+     * @brief moves an agent from its source cell to the @paramm dstCell
+     * @param agent
+     * @param dstCell
+     */
+    public boolean moveAgentToCell(Agent agent, Cell dstCell) throws InvalidPositionException {
+        Cell srcCell = get(agent.getPos());
+
+        // remove from src cell
+        boolean removeWorks = srcCell.removeAgent(agent);
+
+        // set new position
+        agent.setPos(dstCell.getPos());
+
+        // add to dst cell
+        boolean addWorks = dstCell.addAgent(agent);
+
+        return removeWorks && addWorks;
     }
 
     /** return true if the @param x value passed is in the bounds */
