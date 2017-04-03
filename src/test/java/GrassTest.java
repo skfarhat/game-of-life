@@ -25,4 +25,13 @@ public class GrassTest {
         assertTrue(agent instanceof Grass);
     }
 
+    @Test
+    public void testToString() throws AgentIsDeadException {
+        Grass grass = new Grass();
+        String str = grass.toString();
+        // make sure the to String contains the word grass
+        assertTrue(str.toLowerCase().indexOf("grass") > -1);
+    }
+
+
 }

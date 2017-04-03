@@ -21,7 +21,7 @@ public class Cell implements Positionable {
     /**
      * @brief list of agents that this cell contains
      */
-    private List<Agent> agents = new ArrayList<Agent>();
+    private List<Agent> agents = new ArrayList<>();
 
     /**
      * @param x coordinate of this cell's position
@@ -73,4 +73,5 @@ public class Cell implements Positionable {
 
     /** @return number of agents contained in the cell */
     public int agentsCount() { return agents.size(); }
+
 }

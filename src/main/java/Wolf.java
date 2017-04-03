@@ -30,14 +30,15 @@ public class Wolf extends LifeAgent implements Ages, Consumes {
         decreaseEnergyBy(val);
     }
 
-    public void consume(LifeAgent agent) {
-        // TODO: check if agent is consumable
-        // consume if so
+    @Override
+    public void consume(Consumable consumable) throws AgentIsDeadException {
+        consumable.die();
     }
 
-    public void consumeAll(List<LifeAgent> agents) throws AgentIsDeadException {
-        for (LifeAgent a : agents)
-            consume(a);
+    @Override
+    public void consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
+        for (Consumable consumable : consumables)
+            consume(consumable);
     }
 
     @Override

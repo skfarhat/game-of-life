@@ -23,19 +23,16 @@ public class Deer extends LifeAgent implements Ages, Consumes {
         decreaseEnergyBy(val);
     }
 
-    /** @brief method from interface Ages, LifeAgent loses energy equivalent to LifeAgent.ENERGY_DECREMENT_VAL */
-    public void consume(LifeAgent prey) throws AgentIsDeadException {
-        try {
-            prey.die();
-        } catch (AgentIsDeadException e) {
-            throw new AgentIsDeadException("Cannot consume an already dead prey!");
-        }
+    @Override
+    public void consume(Consumable consumable) throws AgentIsDeadException {
+        consumable.die();
     }
 
-    /** @brief method from interface Consumes, Deer will consume grass agents */
-    public void consumeAll(List<LifeAgent> agents) throws AgentIsDeadException {
-        for (LifeAgent a : agents)
-            consume(a);
+    @Override
+    public void consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
+        for (Consumable consumable: consumables) {
+            consumable.die();
+        }
     }
 
     public LifeAgent reproduce() throws AgentIsDeadException {

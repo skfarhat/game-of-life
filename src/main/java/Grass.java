@@ -20,4 +20,9 @@ public class Grass extends LifeAgent {
     public LifeAgent reproduce() throws AgentIsDeadException {
         return new Grass(this.MY_INITIAL_ENERGY);
     }
+
+    @Override
+    public String toString() {
+        return "Grass (" + getEnergy() + ")";
+    }
 }

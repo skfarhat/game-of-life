@@ -11,7 +11,7 @@
  *
  * Not every LifeAgent ages (think of Grass)
  */
-public abstract class LifeAgent extends Agent implements Reproduces {
+public abstract class LifeAgent extends Agent implements Reproduces, Consumable {
 
     /** @brief value by which we decrement the energy when decreaseEnergy is called */
     public static final int ENERGY_DECREMENT_VAL = 1;
@@ -62,6 +62,7 @@ public abstract class LifeAgent extends Agent implements Reproduces {
     }
 
     /** @brief kill the poor LifeAgent, there's no coming back after this */
+    @Override
     final public void die() throws AgentIsDeadException {
         if (!isAlive()) {
             throw new AgentIsDeadException("Can't kill a LifeAgent twice. You're mean.");

@@ -3,6 +3,7 @@
  */
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @class Life class created for each simulation to run. The class captures user input and configures the system parameters.
@@ -192,22 +193,29 @@ public class Life {
     }
 
     /**
+     * @brief remove all dead agents from the cell s
+     * @param agents list which we want to filter
+     * @return return the number of agents that were removed
+     */
+    public int recycleDeadAgentsFromCell(List<LifeAgent> agents) {
+        final int beforeSize = agents.size();
+        agents.removeIf(a -> !a.isAlive());
+        final int afterSize = agents.size();
+        return beforeSize - afterSize;
+    }
+
+    /**
      *
-     * @param it Iterator of the Agents to filter from
+     * @param list list to filter from
      * @param agent agent which consumes
      * @return a list of all consumable Agents by Agent @param a
      */
-    private List<LifeAgent> filterConsumablesForAgent(Iterator<Agent> it, Agent agent) {
+    private List<Consumable> filterConsumablesForAgent(List<Consumable> list, Agent agent) {
         // list of classes that the chosen type can consume
         final List<Class> consumables =  CONSUME_RULES.get(agent.getClass());
 
-        // put all agents in a list, then  filter the list for the consumables
-        final List<LifeAgent> cellAgents = new ArrayList<LifeAgent>();
-        while(it.hasNext()) // add all to List
-            cellAgents.add((LifeAgent) it.next());
-
-        cellAgents.stream().filter(a -> consumables.contains(a.getClass()));
-        return cellAgents;
+        list.stream().filter(a -> consumables.contains(a.getClass()));
+        return list;
     }
 
     /** @brief move to next position */
@@ -243,7 +251,7 @@ public class Life {
             Cell nextCell = moveToAdjacentCell(chosen);
 
             // put all the cell's agents in an ArrayList and pass them to the chosen
-            List<LifeAgent> consumableAgents = filterConsumablesForAgent(nextCell.getAgents(), chosen);
+            List<Consumable> consumableAgents = filterConsumablesForAgent((List<Consumable>) nextCell.getAgents(), chosen);
 
             // consume all
             ((Consumes) chosen).consumeAll(consumableAgents);
