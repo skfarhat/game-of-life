@@ -146,7 +146,7 @@ public class Life {
 
         // if the params map passed is null, we assume the user has no input parameters, we create an empty map
         // and the below code will run and set all fields to their defaults
-        if (params == null) params= new HashMap<String, Number>();
+        if (params == null) params= new HashMap<>();
 
         exceptionIfNegative(GRID_N = params.containsKey(KEY_GRID_N)? params.get(KEY_GRID_N).intValue() : DEFAULT_GRID_N);
         exceptionIfNegative(E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : E_DEFAULT_INITIAL);
@@ -213,7 +213,6 @@ public class Life {
     private List<Consumable> filterConsumablesForAgent(List<Consumable> list, Agent agent) {
         // list of classes that the chosen type can consume
         final List<Class> consumables =  CONSUME_RULES.get(agent.getClass());
-
         list.stream().filter(a -> consumables.contains(a.getClass()));
         return list;
     }
@@ -251,7 +250,11 @@ public class Life {
             Cell nextCell = moveToAdjacentCell(chosen);
 
             // put all the cell's agents in an ArrayList and pass them to the chosen
-            List<Consumable> consumableAgents = filterConsumablesForAgent((List<Consumable>) nextCell.getAgents(), chosen);
+            List<Consumable> list = new ArrayList<>();
+            for (Iterator<Agent> it = nextCell.getAgents(); it.hasNext();)
+                list.add((Consumable) it.next());
+
+            List<Consumable> consumableAgents = filterConsumablesForAgent(list, chosen);
 
             // consume all
             ((Consumes) chosen).consumeAll(consumableAgents);

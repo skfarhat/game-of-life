@@ -173,4 +173,18 @@ public class LifeTest {
 
     }
 
+    @Test
+    public void testRun() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+        Life life = new Life();
+
+        for (int i = 0; i < 30; i++) {
+            try {
+                life.run();
+            } catch (InvalidPositionException e) {
+                e.printStackTrace();
+            } catch (AgentIsDeadException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
