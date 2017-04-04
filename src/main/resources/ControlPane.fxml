@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<ScrollPane hbarPolicy="NEVER" prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControlPanelController">
+    <content>
+        <Pane focusTraversable="true" prefHeight="768.0" prefWidth="200.0">
+            <children>
+                <Button fx:id="startButton" layoutX="68.0" layoutY="13.0" mnemonicParsing="false" onAction="#startButtonPressed" prefHeight="27.0" prefWidth="108.0" text="Start">
+               <font>
+                  <Font size="12.0" />
+               </font></Button>
+                <Button fx:id="pauseButton" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" onAction="#pauseButtonPressed" prefHeight="27.0" prefWidth="56.0" text="Stop">
+               <font>
+                  <Font size="12.0" />
+               </font></Button>
+                <TextField fx:id="rowsTextField" layoutX="52.0" layoutY="58.0" prefHeight="27.0" prefWidth="60.0" promptText="rows" />
+                <TextField fx:id="colsTextField" layoutX="126.0" layoutY="58.0" prefHeight="27.0" prefWidth="58.0" promptText="cols" />
+                <Label layoutX="12.0" layoutY="63.0" text="Grid" />
+                <TextField fx:id="maxIterationsTextField" layoutX="54.0" layoutY="92.0" prefHeight="27.0" prefWidth="129.0" promptText="max iterations" />
+                <TextField fx:id="frequencyTextField" layoutX="54.0" layoutY="127.0" prefHeight="27.0" prefWidth="129.0" promptText="frequency" />
+            <TextField layoutX="65.0" layoutY="228.0" prefHeight="27.0" prefWidth="107.0" promptText="Wolf: Initial" />
+            <Label layoutX="10.0" layoutY="233.0" text="I_WOLF">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="273.0" text="I_DEER">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <TextField layoutX="65.0" layoutY="268.0" prefHeight="27.0" prefWidth="107.0" promptText="Deer: Initial" />
+            <TextField layoutX="65.0" layoutY="306.0" prefHeight="27.0" prefWidth="107.0" promptText="Grass: Initial" />
+            <Label layoutX="10.0" layoutY="311.0" text="I_GRASS">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <TextField layoutX="65.0" layoutY="423.0" prefHeight="27.0" prefWidth="107.0" />
+            <TextField layoutX="65.0" layoutY="385.0" prefHeight="27.0" prefWidth="107.0" />
+            <TextField layoutX="65.0" layoutY="345.0" prefHeight="27.0" prefWidth="107.0" />
+            <Label layoutX="10.0" layoutY="433.0" text="R_GRASS">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="395.0" text="R_DEER">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="355.0" text="R_WOLF">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="474.0" text="G_WOLF">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="514.0" text="G_DEER">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label disable="true" layoutX="10.0" layoutY="552.0" text="G_GRASS">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <TextField layoutX="65.0" layoutY="464.0" prefHeight="27.0" prefWidth="107.0" />
+            <TextField layoutX="65.0" layoutY="504.0" prefHeight="27.0" prefWidth="107.0" />
+            <TextField disable="true" layoutX="65.0" layoutY="542.0" prefHeight="27.0" prefWidth="107.0" />
+            <TextField layoutX="65.0" layoutY="189.0" prefHeight="27.0" prefWidth="107.0" promptText="Wolf: Initial" />
+            <Label layoutX="10.0" layoutY="195.0" text="AGING">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            </children>
+        </Pane>
+    </content>
+</ScrollPane>
