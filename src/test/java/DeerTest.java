@@ -1,3 +1,7 @@
+import core.AgentIsDeadException;
+import core.Consumable;
+import core.Deer;
+import core.LifeAgent;
 import org.junit.Test;
 
 import java.util.ArrayList;

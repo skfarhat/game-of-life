@@ -1,3 +1,6 @@
+import core.AgentIsDeadException;
+import core.Grass;
+import core.LifeAgent;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.Random;

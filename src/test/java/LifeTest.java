@@ -1,6 +1,10 @@
+/**
+ * Created by Sami on 29/03/2017.
+ */
+
+import core.*;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,16 +12,13 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 29/03/2017.
- */
 public class LifeTest {
 
     /** @brief used in double comparisons - check IEEE Floating Point standard for details */
     private static final double DELTA = 0.0000001;
 
     @Test
-    public void testLifeDefaults() throws GridCreationException, AgentIsDeadException, InvalidPositionException {
+    public void testLifeDefaults() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
         Life life = new Life();
 
         assertEquals(life.E_DEFAULT_INITIAL, life.E_GRASS_INITIAL);
@@ -161,7 +162,7 @@ public class LifeTest {
         assertEquals("agentsStillAlive array doesn't have the correct end size", N-killCount, agentsStillAlive.size());
 
         // call the method we are testing
-        int actuallyKilled = life.recycleDeadAgentsFromCell(originalAgents);
+        int actuallyKilled = life.recycleDeadAgents(originalAgents);
         assertEquals("the number of killed agents is not correct", killCount, actuallyKilled);
         assertEquals("the final size of the list is not correct", N-killCount, originalAgents.size());
 
@@ -179,7 +180,7 @@ public class LifeTest {
 
         for (int i = 0; i < 30; i++) {
             try {
-                life.run();
+                life.step();
             } catch (InvalidPositionException e) {
                 e.printStackTrace();
             } catch (AgentIsDeadException e) {

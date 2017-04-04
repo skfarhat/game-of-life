@@ -1,6 +1,7 @@
+import core.Point2D;
+import core.Utils;
 import org.junit.Test;
 
-import java.awt.*;
 import java.util.Random;
 
 import static org.junit.Assert.*;

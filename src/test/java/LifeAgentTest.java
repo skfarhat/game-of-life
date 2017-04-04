@@ -1,3 +1,5 @@
+import core.AgentIsDeadException;
+import core.LifeAgent;
 import org.junit.Test;
 
 import java.util.Random;
@@ -9,7 +11,7 @@ import static org.junit.Assert.*;
  */
 public class LifeAgentTest {
 
-    /** @return a subclass of LifeAgent  - reproduce method is not implemented */
+    /** @return a subclass of core.LifeAgent  - reproduce method is not implemented */
     private LifeAgent lifeAgentSubclass() throws AgentIsDeadException {
         LifeAgent agent = new LifeAgent(){
             public LifeAgent reproduce() throws AgentIsDeadException {
@@ -19,7 +21,7 @@ public class LifeAgentTest {
         return agent;
     }
 
-    /** @return a subclass of LifeAgent with energy passed - reproduce method is not implemented  */
+    /** @return a subclass of core.LifeAgent with energy passed - reproduce method is not implemented  */
     private LifeAgent lifeAgentSubclass(int energy) throws AgentIsDeadException {
         LifeAgent agent = new LifeAgent(energy){
             public LifeAgent reproduce() throws AgentIsDeadException {

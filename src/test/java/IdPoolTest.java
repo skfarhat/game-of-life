@@ -1,3 +1,4 @@
+import core.IdPool;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
