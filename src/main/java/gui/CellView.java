@@ -10,19 +10,19 @@ import javafx.scene.shape.Line;
 public class CellView extends Pane {
 
     /** @brief the width of the cell sides' width */
-    public final static int LINE_WIDTH = 1;
+    public final static double LINE_WIDTH = 1;
 
     /** @brief the default side value in px */
-    private final static int DEFAULT_SIDE_PX = 128;
+    private final static double DEFAULT_SIDE_PX = 128;
 
     /** @brief the minimum accpetable value for side */
-    private final static int MIN_SIDE_PX = 16;
+    private final static double MIN_SIDE_PX = 16;
 
     /** @brief the maximum accpetable value for side */
-    private final static int MAX_SIDE_PX = 320;
+    private final static double MAX_SIDE_PX = 320;
 
     /** @brief the value of this CellView's side */
-    private final int side;
+    private final double side;
 
     private final Line topLine;
     private final Line bottomLine;
@@ -33,7 +33,7 @@ public class CellView extends Pane {
 
     public CellView(Cell cell) { this(cell, DEFAULT_SIDE_PX); }
 
-    public CellView(Cell cell, int side) {
+    public CellView(Cell cell, double side) {
         this.cell = cell;
         this.side = side;
 

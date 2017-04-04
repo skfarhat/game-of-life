@@ -20,10 +20,13 @@ public class LifeViewController {
 
     public void setLife(Life life) { this.life = life; }
 
+    public void setRootPane(Pane rootPane) {
+        this.rootPane = rootPane;
+    }
+
     public void draw() throws InvalidPositionException {
-        // draw the grid
-        CellView cellView = new CellView(life.getGrid().get(0,0));
-        rootPane.getChildren().add(cellView);
-        rootPane.setStyle("-fx-background-color:yellow");
+        GridView gridView = new GridView(life.getGrid(), rootPane.getPrefWidth(), rootPane.getPrefHeight());
+        gridView.setStyle("-fx-background-color=cyan;");
+        rootPane.getChildren().add(gridView);
     }
 }

@@ -17,6 +17,8 @@ import java.io.IOException;
 
 public class Launcher extends Application {
 
+    public final static String TITLE = "Welcome to the Jungle";
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -27,7 +29,7 @@ public class Launcher extends Application {
         loader.setLocation(getClass().getResource("/Root.fxml"));
         Parent root = loader.load();
 
-        stage.setTitle("FXML Welcome");
+        stage.setTitle(TITLE);
         stage.setScene(new Scene(root, root.prefWidth(-1), root.prefHeight(-1)));
         stage.show();
     }

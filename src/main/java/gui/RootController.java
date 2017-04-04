@@ -1,11 +1,16 @@
 package gui;
 
+import core.AgentIsDeadException;
+import core.GridCreationException;
+import core.InvalidPositionException;
+import core.Life;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -21,7 +26,27 @@ public class RootController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(lifeViewController);
-        System.out.println(controlPaneController);
+
+//        Map<String, Number> options = controlPaneController.getOptions();
+        Life life = null;
+
+        try {
+            life = new Life();
+        } catch (GridCreationException e) {
+            e.printStackTrace();
+        } catch (AgentIsDeadException e) {
+            e.printStackTrace();
+        } catch (InvalidPositionException e) {
+            e.printStackTrace();
+        }
+        lifeViewController.setLife(life);
+        lifeViewController.setRootPane(lifeView);
+
+        try {
+            lifeViewController.draw();
+        } catch (InvalidPositionException e) {
+            e.printStackTrace();
+        }
+        ;
     }
 }
