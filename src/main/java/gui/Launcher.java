@@ -15,9 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GUI extends Application {
-
-    @FXML private ScrollPane controlPane;
+public class Launcher extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -25,9 +23,9 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/Root.fxml"));
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/Root.fxml"));
+        Parent root = loader.load();
 
         stage.setTitle("FXML Welcome");
         stage.setScene(new Scene(root, root.prefWidth(-1), root.prefHeight(-1)));
