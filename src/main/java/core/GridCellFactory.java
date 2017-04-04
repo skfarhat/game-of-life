@@ -1,6 +1,7 @@
 /**
  * Created by Sami on 01/04/2017.
  */
+package core;
 
 /**
  * @class Factory class to construct a Grid of Cells
@@ -8,7 +9,7 @@
 public class GridCellFactory {
 
     /** @brief private constructor */
-    private GridCellFactory() {};
+    private GridCellFactory() {}
 
     /**
      * @param rows

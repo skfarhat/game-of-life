@@ -1,5 +1,10 @@
+package core;
+
+import core.Cell;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+
 
 /**
  * Created by Sami on 31/03/2017.

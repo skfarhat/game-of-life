@@ -2,6 +2,8 @@
  * Created by Sami on 01/04/2017.
  */
 
+package core;
+
 /**
  * @class Exception class thrown when the creation of Grid object fails
  */

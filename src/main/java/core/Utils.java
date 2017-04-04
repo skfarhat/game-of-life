@@ -1,5 +1,8 @@
+package core;
+
 import java.math.BigInteger;
 import java.util.Random;
+
 
 /**
  * Created by Sami on 30/03/2017.

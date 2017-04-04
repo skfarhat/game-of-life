@@ -2,6 +2,8 @@
  * Created by Sami on 31/03/2017.
  */
 
+package core;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

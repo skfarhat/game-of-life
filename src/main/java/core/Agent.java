@@ -2,6 +2,8 @@
  * Created by Sami on 28/03/2017.
  */
 
+package core;
+
 /**
  * @class Agent
  *

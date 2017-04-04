@@ -1,8 +1,11 @@
-import java.util.List;
-
 /**
  * Created by Sami on 30/03/2017.
  */
+
+package core;
+
+import java.util.List;
+
 public class Deer extends LifeAgent implements Ages, Consumes {
 
     /** @brief default constructor, calls LifeAgent's constructor */

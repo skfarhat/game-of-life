@@ -1,12 +1,11 @@
 /**
  * Created by Sami on 29/03/2017.
  */
-
+package core;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
- * @class Life class created for each simulation to run. The class captures user input and configures the system parameters.
+ * @class Life class created for each simulation to step. The class captures user input and configures the system parameters.
  *
  * Initially Life was designed to be a singleton class, since intuitively only one life should exist.
  * But it was later noted that we may want to simulate multiple lives at the same time concurrently, which
@@ -135,17 +134,17 @@ public class Life {
     private final List<Agent> agents;
 
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
-    Life() throws GridCreationException, InvalidPositionException, AgentIsDeadException { this(null);}
+    public Life() throws GridCreationException, InvalidPositionException, AgentIsDeadException { this(null);}
 
     /** @brief constructor taking in a params map specifying the input parameters */
-    Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException, AgentIsDeadException, InvalidPositionException {
+    public Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException, AgentIsDeadException, InvalidPositionException {
 
         // Consume Rules: dictate who is allowed to consume whom
         CONSUME_RULES.put(Wolf.class, new ArrayList<Class>(){{add(Deer.class );}}); // Wolf eats Deer
         CONSUME_RULES.put(Deer.class, new ArrayList<Class>(){{add(Grass.class);}}); // Deer eats Grass
 
         // if the params map passed is null, we assume the user has no input parameters, we create an empty map
-        // and the below code will run and set all fields to their defaults
+        // and the below code will step and set all fields to their defaults
         if (params == null) params= new HashMap<>();
 
         exceptionIfNegative(GRID_N = params.containsKey(KEY_GRID_N)? params.get(KEY_GRID_N).intValue() : DEFAULT_GRID_N);
@@ -197,7 +196,7 @@ public class Life {
      * @param agents list which we want to filter
      * @return return the number of agents that were removed
      */
-    public int recycleDeadAgentsFromCell(List<LifeAgent> agents) {
+    public int recycleDeadAgents(List<LifeAgent> agents) {
         final int beforeSize = agents.size();
         agents.removeIf(a -> !a.isAlive());
         final int afterSize = agents.size();
@@ -225,19 +224,12 @@ public class Life {
         return nextCell;
     }
 
-    /** @brief remove all dead LifeAgents from the cell */
-    private void clearDeadLifeAgents(Cell cell) {
-        for (Iterator<Agent> it = cell.getAgents(); it.hasNext(); ) {
-            LifeAgent a = (LifeAgent) it.next();
-            if (!a.isAlive()){
-                cell.removeAgent(a);
-                agents.remove(a); // remove agent from agents list
-            }
-        }
-    }
-
-    /** @brief run this intolerable thing that is called life */
-    public void run() throws InvalidPositionException, AgentIsDeadException {
+    /**
+     * @brief chose an agent at random to act
+     * @throws InvalidPositionException
+     * @throws AgentIsDeadException
+     */
+    public void step() throws InvalidPositionException, AgentIsDeadException {
 
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
@@ -272,8 +264,8 @@ public class Life {
             // decrease energy
             chosen.decreaseEnergyBy(E_STEP_DECREASE);
 
-            // clear out all the dead agents
-//            clearDeadLifeAgents(cell);
+            // only in the dst cell can someone die
+            recycleDeadAgents((List<LifeAgent>) nextCell.getAgents());
         }
     }
 
@@ -304,7 +296,7 @@ public class Life {
         int i = 0 ;
         while(life.agents.size() > 0){
             System.out.println(i++);
-            life.run();
+            life.step();
         }
     }
 }

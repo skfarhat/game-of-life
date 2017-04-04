@@ -1,10 +1,12 @@
+/**
+ * Created by Sami on 28/03/2017.
+ */
+package core;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.HashMap;
 
-/**
- * Created by Sami on 28/03/2017.
- */
 public class IdPool {
 
     /** @brief reference to singleton IdPool, kept private of course */

@@ -2,15 +2,13 @@
  * Created by Sami on 28/03/2017.
  */
 
+package core;
 import java.util.List;
 
 /**
- *
+ * @classs Wolf
  */
 public class Wolf extends LifeAgent implements Ages, Consumes {
-
-    /** @brief energy gained by the wolf when it consumes a deer */
-    private static final int E_WOLF = 1;
 
     /** @@brief default constructor */
     public Wolf() throws AgentIsDeadException {
