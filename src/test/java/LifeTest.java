@@ -27,7 +27,8 @@ public class LifeTest {
         assertEquals(life.E_DEFAULT_GAIN, life.E_DEER_GAIN);
         assertEquals(life.E_DEFAULT_GAIN, life.E_WOLF_GAIN);
         assertEquals(life.E_DEFAULT_DECREASE, life.E_STEP_DECREASE);
-        assertEquals(life.DEFAULT_GRID_N, life.getGridSize());
+        assertEquals(life.DEFAULT_GRID_N, life.getGridCols());
+        assertEquals(life.DEFAULT_GRID_N, life.getGridRows());
         assertEquals(life.R_DEFAULT, life.R_WOLF, DELTA);
         assertEquals(life.I_DEFAULT, life.I_GRASS);
         assertEquals(life.I_DEFAULT, life.I_DEER);
@@ -44,7 +45,8 @@ public class LifeTest {
         // just an int bound used for some of the rands
         final int bound = 60;
 
-        params.put(Life.KEY_GRID_N, rand.nextInt(bound));
+        params.put(Life.KEY_GRID_COLS, rand.nextInt(bound));
+        params.put(Life.KEY_GRID_ROWS, rand.nextInt(bound));
         params.put(Life.KEY_E_GRASS_INITIAL, Utils.randomPositiveInteger(bound));
         params.put(Life.KEY_E_DEER_INITIAL, Utils.randomPositiveInteger(bound));
         params.put(Life.KEY_E_WOLF_INITIAL, Utils.randomPositiveInteger(bound));
@@ -59,7 +61,8 @@ public class LifeTest {
         params.put(Life.KEY_R_WOLF, rand.nextDouble());
 
         Life life = new Life(params);
-        assertEquals(params.get(Life.KEY_GRID_N), life.getGridSize());
+        assertEquals(params.get(Life.KEY_GRID_COLS), life.getGridCols());
+        assertEquals(params.get(Life.KEY_GRID_ROWS), life.getGridRows());
         assertEquals(params.get(Life.KEY_E_GRASS_INITIAL), life.E_GRASS_INITIAL);
         assertEquals(params.get(Life.KEY_E_DEER_INITIAL), life.E_DEER_INITIAL);
         assertEquals(params.get(Life.KEY_E_WOLF_INITIAL), life.E_WOLF_INITIAL);

@@ -2,7 +2,10 @@
  * Created by Sami on 29/03/2017.
  */
 package core;
+import java.sql.Time;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @class Life class created for each simulation to step. The class captures user input and configures the system parameters.
@@ -17,8 +20,14 @@ public class Life {
     // List of keys in the params map
     // ===========================================================================================
 
-    /** @brief GRID_N key in params */
-    public static final String KEY_GRID_N = "GRID_N";
+    /** @brief MAX_ITERATIONS key in params */
+    public static final String KEY_MAX_ITERATIONS = "MAX_ITERATIONS";
+
+    /** @brief GRID_COLS key in params */
+    public static final String KEY_GRID_COLS = "GRID_COLS";
+
+    /** @brief GRID_ROWS key in params */
+    public static final String KEY_GRID_ROWS = "GRID_ROWS";
 
     /** @brief E_GRASS_INITIAL key in params */
     public static final String KEY_E_GRASS_INITIAL = "E_GRASS_INITIAL";
@@ -60,6 +69,9 @@ public class Life {
     // Defaults
     // ===========================================================================================
 
+    /** @brief default maximum number of iterations, a negative value means run indefinitely */
+    public static final int DEFAULT_MAX_ITERATIONS = -1;
+
     /** @brief default energy gained by wolf and deer when they consume other agents */
     public static final int DEFAULT_GRID_N = 10;
 
@@ -88,8 +100,17 @@ public class Life {
      */
     private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
 
-    /** @brief the grid's size */
-    public final int GRID_N;
+    /** @brief the maximum number of iterations - max number of times step is called, a negative means run indefinitely */
+    public final int maxIterations;
+
+    /** @brief the index of the current iteration */
+    private int iteration;
+
+    /** @brief number of columns in the grid */
+    public final int GRID_COLS;
+
+    /** @brief number of rows in the grid */
+    public final int GRID_ROWS;
 
     /** @brief grass' initial energy */
     public final int E_GRASS_INITIAL;
@@ -136,6 +157,8 @@ public class Life {
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
     public Life() throws GridCreationException, InvalidPositionException, AgentIsDeadException { this(null);}
 
+    // AgentIsDeadException --> invalid initial energy
+    // InvalidPositionException --> distribution of the agents failed.
     /** @brief constructor taking in a params map specifying the input parameters */
     public Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException, AgentIsDeadException, InvalidPositionException {
 
@@ -147,7 +170,9 @@ public class Life {
         // and the below code will step and set all fields to their defaults
         if (params == null) params= new HashMap<>();
 
-        exceptionIfNegative(GRID_N = params.containsKey(KEY_GRID_N)? params.get(KEY_GRID_N).intValue() : DEFAULT_GRID_N);
+        maxIterations = params.containsKey(KEY_MAX_ITERATIONS)? params.get(KEY_MAX_ITERATIONS).intValue() : DEFAULT_MAX_ITERATIONS;
+        exceptionIfNegative(GRID_COLS = params.containsKey(KEY_GRID_COLS)? params.get(KEY_GRID_COLS).intValue() : DEFAULT_GRID_N);
+        exceptionIfNegative(GRID_ROWS = params.containsKey(KEY_GRID_ROWS)? params.get(KEY_GRID_ROWS).intValue() : DEFAULT_GRID_N);
         exceptionIfNegative(E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : E_DEFAULT_INITIAL);
         exceptionIfNegative(E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : E_DEFAULT_INITIAL);
         exceptionIfNegative(E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : E_DEFAULT_INITIAL);
@@ -168,7 +193,7 @@ public class Life {
         // ---------------------
 
         // create grid
-        grid = GridCellFactory.createGridCell(GRID_N, GRID_N); // create a square Grid
+        grid = GridCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
 
         // create all agents and distribute
         agents = new ArrayList<Agent>(I_DEER+I_WOLF+I_GRASS);
@@ -182,9 +207,13 @@ public class Life {
     /** @brief uniformly distribute the agents on the grid */
     private void uniformlyDistribute(List<Agent> agents) throws InvalidPositionException {
         for (Agent a : agents) {
-            Point2D p = Utils.randomPoint(this.GRID_N, this.GRID_N);
+            Point2D p = Utils.randomPoint(this.GRID_ROWS, this.GRID_COLS);
             grid.get(p.getX(), p.getY()).addAgent(a);
         }
+    }
+
+    public Grid<Cell> getGrid() {
+        return grid;
     }
 
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
@@ -224,12 +253,28 @@ public class Life {
         return nextCell;
     }
 
+    public void loop() throws AgentIsDeadException, InvalidPositionException {
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+        // we can use sleep
+        // with this one not much has to be changed.
+
+        // or executor service
+        // with this one, we have to cancel the service when the frequency changes,
+        //
+    }
+
     /**
      * @brief chose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentIsDeadException
+     * @return the iteration index
      */
-    public void step() throws InvalidPositionException, AgentIsDeadException {
+    public int step() throws InvalidPositionException, AgentIsDeadException {
+
+        if (iteration >= maxIterations) {
+
+        }
 
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
@@ -267,11 +312,19 @@ public class Life {
             // only in the dst cell can someone die
             recycleDeadAgents((List<LifeAgent>) nextCell.getAgents());
         }
+        return iteration++;
     }
 
-    public int getGridSize() {
-        return GRID_N;
-    }
+    /**
+     * @return number of rows in the grid
+     */
+    public int getGridRows() { return GRID_ROWS; }
+
+    /**
+     * @return number of columns in the grid
+     */
+    public int getGridCols() { return GRID_COLS; }
+
 
     /**
      * @param val that must be non-negative
@@ -288,6 +341,11 @@ public class Life {
     private void exceptionIfOutOfRange(double val) throws IllegalArgumentException {
         if (val < 0 || val > 1)
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
+    }
+
+    /** @brief get the current iteration */
+    public int getIteration() {
+        return iteration;
     }
 
     public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {
