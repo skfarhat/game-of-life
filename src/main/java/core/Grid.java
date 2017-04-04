@@ -6,9 +6,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 
 
-/**
- * Created by Sami on 31/03/2017.
- */
 public class Grid<T extends Cell> {
 
     private Cell[][] grid;
@@ -138,6 +135,14 @@ public class Grid<T extends Cell> {
         boolean addWorks = dstCell.addAgent(agent);
 
         return removeWorks && addWorks;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public int getRows() {
+        return rows;
     }
 
     /** return true if the @param x value passed is in the bounds */

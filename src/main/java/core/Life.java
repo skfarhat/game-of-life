@@ -318,12 +318,12 @@ public class Life {
     /**
      * @return number of rows in the grid
      */
-    public int getGridRows() { return GRID_ROWS; }
+    public int getGridRows() { return grid.getRows(); }
 
     /**
      * @return number of columns in the grid
      */
-    public int getGridCols() { return GRID_COLS; }
+    public int getGridCols() { return grid.getCols(); }
 
 
     /**
