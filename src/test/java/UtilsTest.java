@@ -1,3 +1,4 @@
+import core.Point2D;
 import core.Utils;
 import org.junit.Test;
 
@@ -29,6 +30,13 @@ public class UtilsTest {
         }
     }
 
+    @Test
+    public void testRandomPointsAreDifferent() {
+        int x = 32, y = 32;
+        Point2D p1 = Utils.randomPoint(x, y);
+        Point2D p2 = Utils.randomPoint(x, y);
+        assertNotEquals(p1, p2);
+    }
     @Test
     public void randomString() throws Exception {
         String randString = Utils.randomString();

@@ -14,9 +14,7 @@ public class LifeViewController {
 
     Life life;
 
-    public LifeViewController() {
-        System.out.println("LifeViewController:constructor");
-    }
+    public LifeViewController() {}
 
     public void setLife(Life life) { this.life = life; }
 

@@ -126,16 +126,19 @@ public class LifeTest {
     public void testRecycleDeadAgentsFromCell() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
         Life life = new Life();
 
+        Cell cell = new Cell(new Point2D(0, 0));
         // create a list of agents (N = [10,100])
         ArrayList<LifeAgent> originalAgents = new ArrayList<>();
         final int N = 10 + Utils.randomPositiveInteger(91);
         for (int i = 0; i < N; i++) {
-            originalAgents.add(new LifeAgent() {
+            LifeAgent agent = new LifeAgent() {
                 @Override
                 public LifeAgent reproduce() throws AgentIsDeadException {
                     return null;
                 }
-            });
+            };
+            originalAgents.add(agent);
+            cell.addAgent(agent);
          }
 
         // copy originalAgents into agentsStillAlive
@@ -165,7 +168,7 @@ public class LifeTest {
         assertEquals("agentsStillAlive array doesn't have the correct end size", N-killCount, agentsStillAlive.size());
 
         // call the method we are testing
-        int actuallyKilled = life.recycleDeadAgents(originalAgents);
+        int actuallyKilled = life.recycleDeadAgents(cell);
         assertEquals("the number of killed agents is not correct", killCount, actuallyKilled);
         assertEquals("the final size of the list is not correct", N-killCount, originalAgents.size());
 
