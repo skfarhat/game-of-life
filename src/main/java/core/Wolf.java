@@ -1,7 +1,3 @@
-/**
- * Created by Sami on 28/03/2017.
- */
-
 package core;
 import java.util.List;
 
@@ -29,14 +25,25 @@ public class Wolf extends LifeAgent implements Ages, Consumes {
     }
 
     @Override
-    public void consume(Consumable consumable) throws AgentIsDeadException {
-        consumable.die();
+    public boolean consume(Consumable consumable) throws AgentIsDeadException {
+        try {
+            consumable.die();
+            return true;
+        }
+        catch(AgentIsDeadException exc) {
+            return false;
+        }
     }
 
     @Override
-    public void consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
-        for (Consumable consumable : consumables)
-            consume(consumable);
+    public int consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
+        int count = 0;
+        for (Consumable consumable : consumables) {
+            // if consume succeeds increment count
+            if (consume(consumable))
+                count++;
+        }
+        return count;
     }
 
     @Override

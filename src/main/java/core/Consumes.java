@@ -11,8 +11,8 @@ import java.util.List;
 public interface Consumes {
 
     /** @brief LifeAgent can only consume other LifeAgents (they cannot consume an Agent with no energy) */
-    void consume(Consumable consumable) throws AgentIsDeadException;
+    boolean consume(Consumable consumable) throws AgentIsDeadException;
 
     /** @brief LifeAgent can only consume other LifeAgents (they cannot consume an Agent with no energy) */
-    void consumeAll(List<Consumable> consumables) throws AgentIsDeadException;
+    int consumeAll(List<Consumable> consumables) throws AgentIsDeadException;
 }
