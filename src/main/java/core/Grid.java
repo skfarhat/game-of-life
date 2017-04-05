@@ -4,6 +4,7 @@ import core.Cell;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 
 
 public class Grid<T extends Cell> {
@@ -118,7 +119,7 @@ public class Grid<T extends Cell> {
     }
 
     /**
-     * @brief moves an agent from its source cell to the @paramm dstCell
+     * @brief moves an agent from its source cell to the @param dstCell
      * @param agent
      * @param dstCell
      */
@@ -126,15 +127,18 @@ public class Grid<T extends Cell> {
         Cell srcCell = get(agent.getPos());
 
         // remove from src cell
-        boolean removeWorks = srcCell.removeAgent(agent);
+        Iterator<Agent> it = srcCell.getAgents();
+
+        while(it.hasNext())
+            if (agent == it.next())
+                it.remove();;
+//        boolean removeWorks = srcCell.removeAgent(agent);
 
         // set new position
         agent.setPos(dstCell.getPos());
 
         // add to dst cell
-        boolean addWorks = dstCell.addAgent(agent);
-
-        return removeWorks && addWorks;
+        return dstCell.addAgent(agent);
     }
 
     public int getCols() {

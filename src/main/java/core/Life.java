@@ -284,6 +284,7 @@ public class Life {
      */
     public int step() throws InvalidPositionException, AgentIsDeadException {
 
+        System.out.println("agents-count: " + agents.size());
         if (iteration >= maxIterations) {
 
         }
@@ -291,7 +292,6 @@ public class Life {
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
-        System.out.println(chosen);
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
@@ -309,8 +309,10 @@ public class Life {
             // consume all
             if (consumableAgents.size() > 0)
                 System.out.println(chosen + " will eat " + consumableAgents.toString());
-            ((Consumes) chosen).consumeAll(consumableAgents);
-
+            int consumedCount = ((Consumes) chosen).consumeAll(consumableAgents);
+            if (consumedCount != consumableAgents.size()) {
+                System.out.println("not all consumables were consumed, something wrong? ");
+            }
 
             // reproduce at random
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
@@ -319,6 +321,7 @@ public class Life {
                 System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
+                agents.add(newBaby);
             }
 
             // decrease energy
@@ -329,17 +332,14 @@ public class Life {
             recycleDeadAgents(nextCell);
         }
         else if (chosen instanceof Grass) {
-            // move to adjacent cell
-            Cell nextCell = moveToAdjacentCell(chosen);
-
-            // reproduce at random
-            double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
-            boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
-
-            if (willReproduce && !nextCell.hasGrass()) {
+            // find an adjacent cell but don't moves
+            Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
+            Cell nextCell = grid.get(nextPoint);
+            if (!nextCell.hasGrass()) {
                 System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
+                agents.add(newBaby);
             }
         }
         return iteration++;

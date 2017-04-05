@@ -73,10 +73,14 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
     }
 
     /**
-     * @brief is a convenience method to decrease the energy by ENERGY_DECREMENT_VAL,
-     * and is not to be confused with the age() method in Age interface which might choose to call decreaseEnergy() or not
+     * @brief is a convenience method to decrease the energy by @param val,
      * */
     public void decreaseEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() - val); }
+
+    /**
+     * @brief is a convenience method to increase the energy by @param val,
+     * */
+    public void increaseEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() + val); }
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
     public boolean isAlive() { return !died; }

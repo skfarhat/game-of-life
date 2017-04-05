@@ -125,7 +125,7 @@ public class LifeTest {
     @Test
     public void testRecycleDeadAgentsFromCell() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
         Life life = new Life();
-
+//
         Cell cell = new Cell(new Point2D(0, 0));
         // create a list of agents (N = [10,100])
         ArrayList<LifeAgent> originalAgents = new ArrayList<>();

@@ -73,17 +73,17 @@ public class Cell implements Positionable {
         return agents.add(a);
     }
 
-    /**
-     * @brief remove agent from the agents lisst
-     * @param a agent to remove
-     * @return true if remove succeeded
-     */
-    public boolean removeAgent(Agent a) {
-        if (a instanceof Grass)
-            hasGrass = false;
-
-        return agents.remove(a);
-    }
+//    /**
+//     * @brief remove agent from the agents lisst
+//     * @param a agent to remove
+//     * @return true if remove succeeded
+//     */
+//    public boolean removeAgent(Agent a) {
+//        if (a instanceof Grass)
+//            hasGrass = false;
+//
+//        return agents.remove(a);
+//    }
 
     public boolean hasGrass() {
         return hasGrass;
