@@ -264,15 +264,14 @@ public class Life {
             List<Consumable> cellAgents = new ArrayList<>();
             for (Iterator<Agent> it = nextCell.getAgents(); it.hasNext();)
                 cellAgents.add((Consumable) it.next());
-
             List<Consumable> consumableAgents = filterConsumablesForAgent(cellAgents, chosen);
 
-            // consume all
-            if (consumableAgents.size() > 0)
+            // consume only one
+            if (consumableAgents.size() > 0) {
+                int index = Utils.randomPositiveInteger(consumableAgents.size());
+                Consumable agentToConsume = consumableAgents.get(index);
+                ((Consumes)chosen).consume(agentToConsume);
                 System.out.println(chosen + " will eat " + consumableAgents.toString());
-            int consumedCount = ((Consumes) chosen).consumeAll(consumableAgents);
-            if (consumedCount != consumableAgents.size()) {
-                System.out.println("not all consumables were consumed, something wrong? ");
             }
 
             // reproduce at random
@@ -295,8 +294,6 @@ public class Life {
         else if (chosen instanceof Grass) {
             // find an adjacent cell but don't moves
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
-            Cell nextCell = grid.get(nextPoint);
-            if (!nextCell.hasGrass()) {
             LifeCell nextCell = (LifeCell) grid.get(nextPoint);
             if (!nextCell.isContainsGrass()) {
                 System.out.println(chosen + " is reproducing.");
