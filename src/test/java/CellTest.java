@@ -80,7 +80,7 @@ public class CellTest {
     }
 
     @Test
-    public void removeAgent() throws AgentIsDeadException {
+    public void testRemoveAgent() throws AgentIsDeadException {
         Cell cell = new Cell(Utils.randomPoint(30, 30));
         Agent a = new LifeAgent() {
             @Override

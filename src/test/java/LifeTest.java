@@ -41,6 +41,7 @@ public class LifeTest {
         // just an int bound used for some of the rands
         final int bound = 60;
 
+        params.put(Life.KEY_MAX_ITERATIONS, rand.nextInt(bound));
         params.put(Life.KEY_GRID_COLS, rand.nextInt(bound));
         params.put(Life.KEY_GRID_ROWS, rand.nextInt(bound));
         params.put(Life.KEY_E_GRASS_INITIAL, Utils.randomPositiveInteger(bound));

@@ -25,7 +25,6 @@ public class ControlPanelController implements Initializable {
 
     private LifeStarter lifeStarter;
 
-
     @FXML private Button startButton;
     @FXML private Button stopButton;
     @FXML private TextField frequencyTextField;

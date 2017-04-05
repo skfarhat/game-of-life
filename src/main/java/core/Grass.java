@@ -5,10 +5,7 @@
 package core;
 
 /**
- * @class Grass
- *
- * Grass is a LifeAgent, it reproduces
- * Grass
+ * @class Grass is a LifeAgent, it reproduces
  */
 public class Grass extends LifeAgent {
     public Grass() throws AgentIsDeadException {
