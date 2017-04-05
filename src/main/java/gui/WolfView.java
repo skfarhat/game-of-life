@@ -1,12 +1,17 @@
 package gui;
 
+import core.Deer;
+import core.LifeAgent;
 import core.Wolf;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 /**
  * Created by Sami on 04/04/2017.
  */
-public class WolfView extends Image {
+public class WolfView extends Pane {
 
     public static final String WOLF_IMG_64 = "/images/wolf@64x64.png";
 
@@ -16,7 +21,9 @@ public class WolfView extends Image {
     private Wolf wolf;
 
     public WolfView(Wolf wolf, double width, double height) {
-        super(Wolf.class.getResource(WOLF_IMG_64).toString(), width, height, true, true);
         this.wolf = wolf;
+        ImageView imgView = new ImageView(new Image(Deer.class.getResource(WOLF_IMG_64).toString(), width, height, true, true));
+        Label energyLabel = new Label(((LifeAgent)wolf).getEnergy().toString());
+        getChildren().addAll(imgView, energyLabel);
     }
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import core.*;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -9,16 +10,16 @@ import javafx.scene.shape.Line;
 import java.util.Iterator;
 
 /**
- * Created by Sami on 04/04/2017.
+ * @class CellView
  */
 public class CellView extends Pane {
 
+    // TODO(sami): check if really needed
     Object mutex = new Object();
 
     // TODO(sami): clean
     public final static int MINICELL_ROWS = 3;
     public final static int MINICELL_COLS = 3;
-//    private ImageView[][] miniCells = new ImageView[MINICELL_ROWS][MINICELL_COLS];
 
     /** @brief the width of the cell sides' width */
     public final static double LINE_WIDTH = 1;
@@ -63,7 +64,6 @@ public class CellView extends Pane {
         leftLine = new Line(0, 0, 0, side);
         rightLine = new Line(side, 0, side, side);
 
-
         draw();
     }
 
@@ -102,29 +102,28 @@ public class CellView extends Pane {
                 int col = (addedCount / MINICELL_COLS);
                 double x = miniCellSide * row;
                 double y = miniCellSide * col;
-
+                Pane pane = null;
                 if(agent instanceof Wolf) {
-                    img = new WolfView((Wolf) agent, miniCellSide, miniCellSide);
+                    pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
                 }
                 else if(agent instanceof Deer) {
-                    img = new DeerView((Deer) agent, miniCellSide, miniCellSide);
+                    pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
                 }
                 else if (agent instanceof Grass && grassThere == false) {
                     addGrass();
                     grassThere = true;
                 }
 
-                if (img != null && addedCount < 10) {
-                    ImageView imgView = new ImageView(img);
-                    imgView.setLayoutX(x);
-                    imgView.setLayoutY(y);
-                    getChildren().add(imgView);
+                if (pane != null && addedCount < 10) {
+                    pane.setLayoutX(x);
+                    pane.setLayoutY(y);
+                    getChildren().add(pane);
                     addedCount++;
                 }
             }
 
-            // if at the end of the loop no grass was found, then we remove it.
-            // we could have removed it before the loop (had it been there or not) and then re-added it
+            // If at the end of the loop no grass was found, then we remove it.
+            // We could have removed it before the loop (had it been there or not) and then re-added it
             // in the loop when it was encountered. However, this will likely make cells blink a lot, and
             // so it's better to just remove it when we are sure it is no longer there.
             if (!grassThere)
