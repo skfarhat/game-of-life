@@ -18,7 +18,7 @@
         <Pane focusTraversable="true" prefHeight="768.0" prefWidth="200.0">
             <children>
                 <Button fx:id="startButton" layoutX="68.0" layoutY="13.0" mnemonicParsing="false" onAction="#startButtonPressed" prefHeight="27.0" prefWidth="108.0" text="Start" />
-                <Button fx:id="stopButton" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" onAction="#stopButtonPressed" prefHeight="27.0" prefWidth="56.0" text="Stop" />
+                <Button fx:id="stopButton" disable="true" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" onAction="#stopButtonPressed" prefHeight="27.0" prefWidth="56.0" text="Stop" />
                 <TextField fx:id="rowsTextField" layoutX="52.0" layoutY="58.0" prefHeight="27.0" prefWidth="60.0" promptText="rows" text="10" />
                 <TextField fx:id="colsTextField" layoutX="126.0" layoutY="58.0" prefHeight="27.0" prefWidth="58.0" promptText="cols" text="10" />
                 <Label layoutX="12.0" layoutY="63.0" text="Grid" />
