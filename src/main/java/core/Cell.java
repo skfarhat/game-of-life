@@ -48,11 +48,27 @@ public class Cell implements Positionable {
         return pos;
     }
 
+    private boolean hasGrass = false;
+
     /** @brief set new position */
     public void setPos(Point2D pos) { getPos().set(pos);  }
 
-    /** @brief add agent to the agents list */
+    /**
+     * @brief add agent to the agents list
+     * @return true if an agent was added, false if not. If the Cell already contains a Grass Agent,
+     * not another will be added and false will be returned.
+     * */
     public boolean addAgent(Agent a) {
+        if (a instanceof Grass) {
+            if (!hasGrass) {
+                hasGrass = true;
+                a.setPos(getPos());
+                return agents.add(a);
+            }
+            else {
+                return false;
+            }
+        }
         a.setPos(getPos());
         return agents.add(a);
     }
@@ -63,7 +79,14 @@ public class Cell implements Positionable {
      * @return true if remove succeeded
      */
     public boolean removeAgent(Agent a) {
+        if (a instanceof Grass)
+            hasGrass = false;
+
         return agents.remove(a);
+    }
+
+    public boolean hasGrass() {
+        return hasGrass;
     }
 
     /**

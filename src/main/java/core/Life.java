@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * @class Life class created for each simulation to step. The class captures user input and configures the system parameters.
@@ -88,7 +89,7 @@ public class Life {
     public static final double R_DEFAULT = 0.33;
 
     /** @brief default initial number of instance of an agent type */
-    public static final int I_DEFAULT = 1;
+    public static final int I_DEFAULT = 5;
 
     // ===========================================================================================
     // Params
@@ -222,14 +223,25 @@ public class Life {
 
     /**
      * @brief remove all dead agents from the cell s
-     * @param agents list which we want to filter
+     * @param cell from which we want to filter dead agents
      * @return return the number of agents that were removed
      */
-    public int recycleDeadAgents(List<LifeAgent> agents) {
-        final int beforeSize = agents.size();
-        agents.removeIf(a -> !a.isAlive());
-        final int afterSize = agents.size();
-        return beforeSize - afterSize;
+    public int recycleDeadAgents(Cell cell) {
+        Iterator<Agent> it = cell.getAgents();
+        int count = 0;
+        for (; it.hasNext();) {
+            LifeAgent agent = (LifeAgent) it.next();
+            if (!agent.isAlive()) {
+                System.out.println("Removing " + agent);
+
+                // remove the agent from the agents ArrayList
+                agents.remove(agent);
+                // remove the agent from the cells agents
+                it.remove();
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -241,7 +253,7 @@ public class Life {
     private List<Consumable> filterConsumablesForAgent(List<Consumable> list, Agent agent) {
         // list of classes that the chosen type can consume
         final List<Class> consumables =  CONSUME_RULES.get(agent.getClass());
-        list.stream().filter(a -> consumables.contains(a.getClass()));
+        list.removeIf(a -> !consumables.contains(a.getClass()));
         return list;
     }
 
@@ -279,6 +291,7 @@ public class Life {
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
+        System.out.println(chosen);
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
@@ -287,30 +300,47 @@ public class Life {
             Cell nextCell = moveToAdjacentCell(chosen);
 
             // put all the cell's agents in an ArrayList and pass them to the chosen
-            List<Consumable> list = new ArrayList<>();
+            List<Consumable> cellAgents = new ArrayList<>();
             for (Iterator<Agent> it = nextCell.getAgents(); it.hasNext();)
-                list.add((Consumable) it.next());
+                cellAgents.add((Consumable) it.next());
 
-            List<Consumable> consumableAgents = filterConsumablesForAgent(list, chosen);
+            List<Consumable> consumableAgents = filterConsumablesForAgent(cellAgents, chosen);
 
             // consume all
+            if (consumableAgents.size() > 0)
+                System.out.println(chosen + " will eat " + consumableAgents.toString());
             ((Consumes) chosen).consumeAll(consumableAgents);
+
 
             // reproduce at random
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
+                System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
             }
 
-            System.out.println(chosen);
-
             // decrease energy
             chosen.decreaseEnergyBy(E_STEP_DECREASE);
 
-            // only in the dst cell can someone die
-            recycleDeadAgents((List<LifeAgent>) nextCell.getAgents());
+            // only in the dst cell can someone die - this will remove the agents from the cell's list and
+            // the 'agents' field list array
+            recycleDeadAgents(nextCell);
+        }
+        else if (chosen instanceof Grass) {
+            // move to adjacent cell
+            Cell nextCell = moveToAdjacentCell(chosen);
+
+            // reproduce at random
+            double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
+            boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
+
+            if (willReproduce && !nextCell.hasGrass()) {
+                System.out.println(chosen + " is reproducing.");
+                LifeAgent newBaby = chosen.reproduce();
+                nextCell.addAgent(newBaby);
+            }
         }
         return iteration++;
     }
@@ -343,6 +373,10 @@ public class Life {
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
     }
 
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
     /** @brief get the current iteration */
     public int getIteration() {
         return iteration;
@@ -351,9 +385,7 @@ public class Life {
     public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {
         Life life = new Life();
 
-        int i = 0 ;
         while(life.agents.size() > 0){
-            System.out.println(i++);
             life.step();
         }
     }

@@ -22,9 +22,6 @@ public final class Utils {
         /** @brief default constructor */
         LifeRandom() { super(); }
 
-        /** @brief seeded constructor */
-        LifeRandom(long seed)  { super(seed); }
-
         /** @return random string */
         public String randomString() {
             return new BigInteger(130, this).toString(32);
@@ -36,7 +33,7 @@ public final class Utils {
         }
 
         public static LifeRandom getRand() {
-            return new LifeRandom(System.currentTimeMillis());
+            return new LifeRandom();
         }
     }
 
