@@ -1,7 +1,6 @@
 package gui;
 
 import core.AgentIsDeadException;
-import core.GridCreationException;
 import core.InvalidPositionException;
 import core.Life;
 import javafx.animation.KeyFrame;
@@ -15,15 +14,14 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * @class RootContoller
+ * @class RootController
  */
-public class RootController implements Initializable {
+public class RootController implements Initializable, LifeStarter {
 
     @FXML private ScrollPane controlPane;
     @FXML private ControlPanelController controlPaneController;
@@ -32,39 +30,25 @@ public class RootController implements Initializable {
     @FXML private LifeViewController lifeViewController;
 
     private boolean running = false;
+
+    private Timer timer;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        controlPaneController.setLifeStarter(this);
+    }
 
-        Life life = null;
-
-        running = true;
+    public boolean start(Life life) {
+        final long period = 100;
+        running = true; // TODO(sami): remove this
+        lifeViewController.setRootPane(lifeView);
         try {
-            life = new Life();
-        } catch (GridCreationException e) {
-            e.printStackTrace();
-        } catch (AgentIsDeadException e) {
-            e.printStackTrace();
+            lifeViewController.setLife(life);
         } catch (InvalidPositionException e) {
             e.printStackTrace();
         }
-        lifeViewController.setLife(life);
-        lifeViewController.setRootPane(lifeView);
-        System.out.println(Thread.currentThread().getName());
 
-        long period = 100;
         Life finalLife1 = life;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    finalLife1.step();
-                } catch (InvalidPositionException e) {
-                    e.printStackTrace();
-                } catch (AgentIsDeadException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 0, period);
 
         Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.millis(period), new EventHandler<ActionEvent>() {
 
@@ -80,5 +64,33 @@ public class RootController implements Initializable {
 
         fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
         fiveSecondsWonder.play();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    finalLife1.step();
+                } catch (InvalidPositionException e) {
+                    e.printStackTrace();
+                } catch (AgentIsDeadException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, period);
+        return true;
+    }
+
+    @Override
+    public boolean stop() {
+        // TODO(sami): create an excpetion for this
+        if (timer != null)
+            timer.cancel();
+        return false;
+    }
+
+    @Override
+    public boolean pause() {
+//        timer.wait();
+        return false;
     }
 }

@@ -23,6 +23,9 @@ public class ControlPanelController implements Initializable {
     public final String START_BUTTON_TEXT1 = "Start";
     public final String START_BUTTON_TEXT2 = "Pause";
 
+    private LifeStarter lifeStarter;
+
+
     @FXML private Button startButton;
     @FXML private Button stopButton;
     @FXML private TextField frequencyTextField;
@@ -45,6 +48,7 @@ public class ControlPanelController implements Initializable {
     }
 
     public void startButtonPressed(ActionEvent actionEvent) {
+        System.out.println("startButtonPressed");
         try {
             Map<String, Number> options = getOptions();
 
@@ -53,6 +57,7 @@ public class ControlPanelController implements Initializable {
 
             try {
                 Life life = new Life(options);
+                lifeStarter.start(life);
             } catch (GridCreationException e) {
                 e.printStackTrace();
             } catch (AgentIsDeadException e) {
@@ -63,6 +68,7 @@ public class ControlPanelController implements Initializable {
         }
         catch(NumberFormatException exc) {
 
+            System.out.println("exception mate: " + exc.getMessage());
         }
     }
 
@@ -87,8 +93,20 @@ public class ControlPanelController implements Initializable {
      * @param txt that is expected to be a number
      * @return the parsed number
      */
-    private int alertIfNotNumber(String txt) {
+    private int alertIfNotInteger(String txt) {
         try { return Integer.parseInt(txt); }
+        catch(NumberFormatException exc) {
+            // show alert here
+            throw exc;
+        }
+    }
+    /**
+     * @brief alert the user about the unparsable string
+     * @param txt that is expected to be a number
+     * @return the parsed number
+     */
+    private double alertIfNotDouble(String txt) {
+        try { return Double.parseDouble(txt); }
         catch(NumberFormatException exc) {
             // show alert here
             throw exc;
@@ -120,35 +138,35 @@ public class ControlPanelController implements Initializable {
 
         try {
             // general params
-            int cols = exceptionIfNegative(alertIfNotNumber(colsTextField.getText()));
-            int rows = exceptionIfNegative(alertIfNotNumber(rowsTextField.getText()));
-            int freq = exceptionIfNegative(alertIfNotNumber(frequencyTextField.getText()));
-            int maxIterations = exceptionIfNegative(alertIfNotNumber(maxIterationsTextField.getText()));
-            int stepDecrease = exceptionIfNegative(alertIfNotNumber(stepDecreaseTextField.getText()));
+            int cols = exceptionIfNegative(alertIfNotInteger(colsTextField.getText()));
+            int rows = exceptionIfNegative(alertIfNotInteger(rowsTextField.getText()));
+            int freq = exceptionIfNegative(alertIfNotInteger(frequencyTextField.getText()));
+            int maxIterations = exceptionIfNegative(alertIfNotInteger(maxIterationsTextField.getText()));
+            int stepDecrease = exceptionIfNegative(alertIfNotInteger(stepDecreaseTextField.getText()));
             options.put(Life.KEY_GRID_COLS, cols);
             options.put(Life.KEY_GRID_ROWS, rows);
             options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
 
             // initial count params
-            int iWolf = exceptionIfNegative(alertIfNotNumber(iWolfTextField.getText()));
-            int iDeer = exceptionIfNegative(alertIfNotNumber(iDeerTextField.getText()));
-            int iGrass = exceptionIfNegative(alertIfNotNumber(iGrassTextField.getText()));
+            int iWolf = exceptionIfNegative(alertIfNotInteger(iWolfTextField.getText()));
+            int iDeer = exceptionIfNegative(alertIfNotInteger(iDeerTextField.getText()));
+            int iGrass = exceptionIfNegative(alertIfNotInteger(iGrassTextField.getText()));
             options.put(Life.KEY_I_WOLF, iWolf);
             options.put(Life.KEY_I_DEER, iDeer);
             options.put(Life.KEY_I_GRASS, iGrass);
 
             // reproduction params
-            double rWolf = exceptionIfDoubleOutOfRange(alertIfNotNumber(rWolfTextField.getText()));
-            double rDeer = exceptionIfDoubleOutOfRange(alertIfNotNumber(rDeerTextField.getText()));
-            double rGrass = exceptionIfDoubleOutOfRange(alertIfNotNumber(rGrassTextField.getText()));
+            double rWolf = exceptionIfDoubleOutOfRange(alertIfNotDouble(rWolfTextField.getText()));
+            double rDeer = exceptionIfDoubleOutOfRange(alertIfNotDouble((rDeerTextField.getText())));
+            double rGrass = exceptionIfDoubleOutOfRange(alertIfNotDouble((rGrassTextField.getText())));
             options.put(Life.KEY_R_WOLF, rWolf);
             options.put(Life.KEY_R_DEER, rDeer);
             options.put(Life.KEY_R_GRASS, rGrass);
 
             // gain params
-            int gDeer = exceptionIfNegative(alertIfNotNumber(gDeerTextField.getText()));
-            int gWolf = exceptionIfNegative(alertIfNotNumber(gWolfTextField.getText()));
-            // int gGrass = alertIfNotNumber(gGrassTextField.getText()); // disabled
+            int gDeer = exceptionIfNegative(alertIfNotInteger(gDeerTextField.getText()));
+            int gWolf = exceptionIfNegative(alertIfNotInteger(gWolfTextField.getText()));
+            // int gGrass = alertIfNotInteger(gGrassTextField.getText()); // disabled
             options.put(Life.KEY_E_DEER_GAIN, gDeer);
             options.put(Life.KEY_E_WOLF_GAIN, gWolf);
 
@@ -157,12 +175,17 @@ public class ControlPanelController implements Initializable {
         catch (NumberFormatException exc) {
             // let's run over the test fields and highlight the ones that are mis-formatted
 //            return null;
+            System.out.println(exc.getMessage());
             throw exc;
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("initialize()");
+        System.out.println("initial");
+    }
+
+    public void setLifeStarter(LifeStarter lifeStarter) {
+        this.lifeStarter = lifeStarter;
     }
 }

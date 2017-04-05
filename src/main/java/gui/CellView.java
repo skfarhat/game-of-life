@@ -13,6 +13,13 @@ import java.util.Iterator;
  */
 public class CellView extends Pane {
 
+    Object mutex = new Object();
+
+    // TODO(sami): clean
+    public final static int MINICELL_ROWS = 3;
+    public final static int MINICELL_COLS = 3;
+//    private ImageView[][] miniCells = new ImageView[MINICELL_ROWS][MINICELL_COLS];
+
     /** @brief the width of the cell sides' width */
     public final static double LINE_WIDTH = 1;
 
@@ -62,62 +69,68 @@ public class CellView extends Pane {
 
     public void draw() {
 
-        getChildren().clear();
+        // TODO(sami): recheck mutex
+        synchronized (mutex) {
+            getChildren().clear();
 
+            // TODO:
+            // not ideal to add and remove those every time
+            getChildren().add(topLine);
+            getChildren().add(bottomLine);
+            getChildren().add(leftLine);
+            getChildren().add(rightLine);
 
-        // TODO:
-        // not ideal to add and remove those every time
-        getChildren().add(topLine);
-        getChildren().add(bottomLine);
-        getChildren().add(leftLine);
-        getChildren().add(rightLine);
+            // organise agents
+            int agentsCount = cell.agentsCount();
+            Iterator<Agent> it = cell.getAgents();
 
-        // organise agents
-        int agentsCount = cell.agentsCount();
-        Iterator<Agent> it = cell.getAgents();
+            boolean grassThere = false;
+            int addedCount = 0;
+            for (int i = 0; i < agentsCount; i++) {
 
-        boolean grassThere = false;
-        int addedCount = 0;
-        for (int i = 0; i < agentsCount; i++) {
+                // if we already encountered the grass agent AND drawn 9 (Wolves or Deers)
+                // then there is nothing more to draw, so we break
+                if (addedCount > 9 && grassThere) {
+                    break;
+                }
 
-            // if we already encountered the grass agent AND drawn 9 (Wolves or Deers)
-            // then there is nothing more to draw, so we break
-            if (addedCount > 9 && grassThere) {
-                break;
+                Image img = null;
+                Agent agent = it.next();
+
+                // TODO(sami): probably doesn't work when ROWSS != COLS -- fix
+                int row = (addedCount % MINICELL_ROWS);
+                int col = (addedCount / MINICELL_COLS);
+                double x = miniCellSide * row;
+                double y = miniCellSide * col;
+
+                if(agent instanceof Wolf) {
+                    img = new WolfView((Wolf) agent, miniCellSide, miniCellSide);
+                }
+                else if(agent instanceof Deer) {
+                    img = new DeerView((Deer) agent, miniCellSide, miniCellSide);
+                }
+                else if (agent instanceof Grass && grassThere == false) {
+                    addGrass();
+                    grassThere = true;
+                }
+
+                if (img != null && addedCount < 10) {
+                    ImageView imgView = new ImageView(img);
+                    imgView.setLayoutX(x);
+                    imgView.setLayoutY(y);
+                    getChildren().add(imgView);
+                    addedCount++;
+                }
             }
 
-            Image img = null;
-            Agent agent = it.next();
-
-            double x = miniCellSide * (i % 3);
-            double y = miniCellSide * (i / 3);
-
-            if(agent instanceof Wolf) {
-                img = new WolfView((Wolf) agent, miniCellSide, miniCellSide);
-            }
-            else if(agent instanceof Deer) {
-                img = new DeerView((Deer) agent, miniCellSide, miniCellSide);
-            }
-            else if (agent instanceof Grass) {
-                addGrass();
-                grassThere = true;
-            }
-
-            if (img != null) {
-                ImageView imgView = new ImageView(img);
-                imgView.setLayoutX(x);
-                imgView.setLayoutY(y);
-                getChildren().add(imgView);
-                addedCount++;
-            }
+            // if at the end of the loop no grass was found, then we remove it.
+            // we could have removed it before the loop (had it been there or not) and then re-added it
+            // in the loop when it was encountered. However, this will likely make cells blink a lot, and
+            // so it's better to just remove it when we are sure it is no longer there.
+            if (!grassThere)
+                removeGrass();
         }
 
-        // if at the end of the loop no grass was found, then we remove it.
-        // we could have removed it before the loop (had it been there or not) and then re-added it
-        // in the loop when it was encountered. However, this will likely make cells blink a lot, and
-        // so it's better to just remove it when we are sure it is no longer there.
-        if (!grassThere)
-            removeGrass();
     }
 
 }
