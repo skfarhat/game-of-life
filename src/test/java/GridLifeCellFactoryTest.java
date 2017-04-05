@@ -1,4 +1,4 @@
-import core.GridCellFactory;
+import core.GridLifeCellFactory;
 import core.GridCreationException;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Sami on 01/04/2017.
  */
-public class GridCellFactoryTest {
+public class GridLifeCellFactoryTest {
 
     /**
      * @brief a hack to call the private constructor
@@ -19,7 +19,7 @@ public class GridCellFactoryTest {
      */
     @Test
     public void testConstructorIsPrivate() throws Exception {
-        Constructor constructor = GridCellFactory.class.getDeclaredConstructor();
+        Constructor constructor = GridLifeCellFactory.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
@@ -33,7 +33,7 @@ public class GridCellFactoryTest {
         final int cols = rand.nextInt(bound);
 
         // if no exception is thrown we consider the test to have succeeded
-        GridCellFactory.createGridCell(rows, cols);
+        GridLifeCellFactory.createGridCell(rows, cols);
     }
 
 }

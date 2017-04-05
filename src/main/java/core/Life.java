@@ -1,12 +1,6 @@
-/**
- * Created by Sami on 29/03/2017.
- */
 package core;
-import java.sql.Time;
+
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Collectors;
 
 /**
  * @class Life class created for each simulation to step. The class captures user input and configures the system parameters.
@@ -149,11 +143,19 @@ public class Life {
     /** @brief initial number of wolves */
     public final int I_WOLF;
 
+    // ===========================================================================================
+    // MEMBER VARIABLES
+    // ===========================================================================================
+
     /** @brief the grid containing all cells on which the agents will be placed */
-    private final Grid<Cell> grid;
+    private final Grid<LifeCell> grid;
 
     /** @brief list of all of the agents in Life */
     private final List<Agent> agents;
+
+    // ===========================================================================================
+    // METHODS
+    // ===========================================================================================
 
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
     public Life() throws GridCreationException, InvalidPositionException, AgentIsDeadException { this(null);}
@@ -194,7 +196,7 @@ public class Life {
         // ---------------------
 
         // create grid
-        grid = GridCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
+        grid = GridLifeCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
 
         // create all agents and distribute
         agents = new ArrayList<Agent>(I_DEER+I_WOLF+I_GRASS);
@@ -213,35 +215,8 @@ public class Life {
         }
     }
 
-    public Grid<Cell> getGrid() {
-        return grid;
-    }
-
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
         return grid.randomAdjacentPoint(p);
-    }
-
-    /**
-     * @brief remove all dead agents from the cell s
-     * @param cell from which we want to filter dead agents
-     * @return return the number of agents that were removed
-     */
-    public int recycleDeadAgents(Cell cell) {
-        Iterator<Agent> it = cell.getAgents();
-        int count = 0;
-        for (; it.hasNext();) {
-            LifeAgent agent = (LifeAgent) it.next();
-            if (!agent.isAlive()) {
-                System.out.println("Removing " + agent);
-
-                // remove the agent from the agents ArrayList
-                agents.remove(agent);
-                // remove the agent from the cells agents
-                it.remove();
-                count++;
-            }
-        }
-        return count;
     }
 
     /**
@@ -265,17 +240,6 @@ public class Life {
         return nextCell;
     }
 
-    public void loop() throws AgentIsDeadException, InvalidPositionException {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-
-        // we can use sleep
-        // with this one not much has to be changed.
-
-        // or executor service
-        // with this one, we have to cancel the service when the frequency changes,
-        //
-    }
-
     /**
      * @brief chose an agent at random to act
      * @throws InvalidPositionException
@@ -285,9 +249,6 @@ public class Life {
     public int step() throws InvalidPositionException, AgentIsDeadException {
 
         System.out.println("agents-count: " + agents.size());
-        if (iteration >= maxIterations) {
-
-        }
 
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
@@ -329,13 +290,15 @@ public class Life {
 
             // only in the dst cell can someone die - this will remove the agents from the cell's list and
             // the 'agents' field list array
-            recycleDeadAgents(nextCell);
+            ((LifeCell)nextCell).recycleDeadAgents();
         }
         else if (chosen instanceof Grass) {
             // find an adjacent cell but don't moves
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
             Cell nextCell = grid.get(nextPoint);
             if (!nextCell.hasGrass()) {
+            LifeCell nextCell = (LifeCell) grid.get(nextPoint);
+            if (!nextCell.isContainsGrass()) {
                 System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
@@ -344,17 +307,6 @@ public class Life {
         }
         return iteration++;
     }
-
-    /**
-     * @return number of rows in the grid
-     */
-    public int getGridRows() { return grid.getRows(); }
-
-    /**
-     * @return number of columns in the grid
-     */
-    public int getGridCols() { return grid.getCols(); }
-
 
     /**
      * @param val that must be non-negative
@@ -377,10 +329,24 @@ public class Life {
         return agents;
     }
 
-    /** @brief get the current iteration */
+    /** @return the current iteration */
     public int getIteration() {
         return iteration;
     }
+
+    public Grid<LifeCell> getGrid() {
+        return grid;
+    }
+
+    /**
+     * @return number of rows in the grid
+     */
+    public int getGridRows() { return grid.getRows(); }
+
+    /**
+     * @return number of columns in the grid
+     */
+    public int getGridCols() { return grid.getCols(); }
 
     public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {
         Life life = new Life();

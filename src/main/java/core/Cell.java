@@ -1,7 +1,3 @@
-/**
- * Created by Sami on 31/03/2017.
- */
-
 package core;
 
 import java.util.ArrayList;
@@ -13,7 +9,7 @@ import java.util.List;
  *
  * Cell in a grid with a position (Point2D) containing Agents
  */
-public class Cell implements Positionable {
+public class Cell<T extends Agent> implements Positionable {
 
     /**
      * @brief the cell's position
@@ -23,7 +19,7 @@ public class Cell implements Positionable {
     /**
      * @brief list of agents that this cell contains
      */
-    private List<Agent> agents = new ArrayList<>();
+    protected List<T> agents = new ArrayList<>();
 
     /**
      * @param x coordinate of this cell's position
@@ -48,8 +44,6 @@ public class Cell implements Positionable {
         return pos;
     }
 
-    private boolean hasGrass = false;
-
     /** @brief set new position */
     public void setPos(Point2D pos) { getPos().set(pos);  }
 
@@ -58,41 +52,26 @@ public class Cell implements Positionable {
      * @return true if an agent was added, false if not. If the Cell already contains a Grass Agent,
      * not another will be added and false will be returned.
      * */
-    public boolean addAgent(Agent a) {
-        if (a instanceof Grass) {
-            if (!hasGrass) {
-                hasGrass = true;
-                a.setPos(getPos());
-                return agents.add(a);
-            }
-            else {
-                return false;
-            }
-        }
-        a.setPos(getPos());
-        return agents.add(a);
+    public boolean addAgent(T t) {
+        t.setPos(getPos());
+        return agents.add(t);
     }
 
-//    /**
-//     * @brief remove agent from the agents lisst
-//     * @param a agent to remove
-//     * @return true if remove succeeded
-//     */
-//    public boolean removeAgent(Agent a) {
-//        if (a instanceof Grass)
-//            hasGrass = false;
-//
-//        return agents.remove(a);
-//    }
-
-    public boolean hasGrass() {
-        return hasGrass;
+    /**
+     * @brief remove agent from the agents lisst
+     * @param t agent to remove
+     * @return true if remove succeeded
+     */
+    public boolean removeAgent(T t) {
+        synchronized (agents) {
+            return agents.remove(t);
+        }
     }
 
     /**
      * @return iterator over the agents that this cell contains
      */
-    public Iterator<Agent> getAgents() {
+    public Iterator<T> getAgents() {
         return agents.iterator();
     }
 

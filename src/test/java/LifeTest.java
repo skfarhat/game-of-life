@@ -1,7 +1,3 @@
-/**
- * Created by Sami on 29/03/2017.
- */
-
 import core.*;
 import org.junit.Test;
 
@@ -120,64 +116,6 @@ public class LifeTest {
     @Test
     public void testMoveToAdjacentCell() {
         // TODO;
-    }
-
-    @Test
-    public void testRecycleDeadAgentsFromCell() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
-        Life life = new Life();
-//
-        Cell cell = new Cell(new Point2D(0, 0));
-        // create a list of agents (N = [10,100])
-        ArrayList<LifeAgent> originalAgents = new ArrayList<>();
-        final int N = 10 + Utils.randomPositiveInteger(91);
-        for (int i = 0; i < N; i++) {
-            LifeAgent agent = new LifeAgent() {
-                @Override
-                public LifeAgent reproduce() throws AgentIsDeadException {
-                    return null;
-                }
-            };
-            originalAgents.add(agent);
-            cell.addAgent(agent);
-         }
-
-        // copy originalAgents into agentsStillAlive
-        // will have agents who die removed from it
-        final ArrayList<LifeAgent> agentsStillAlive = new ArrayList<>(); // will hold all the remaining alive agents
-        agentsStillAlive.addAll(originalAgents);
-
-        // kill a random number of those agents
-        final int killCount = 1 + Utils.randomPositiveInteger(N-1);
-
-        ArrayList<LifeAgent> agentsKilled = new ArrayList<>(); // will hold all the agents that were killed
-        for (int i = 0; i < killCount; i++) {
-
-            // find an agent that hasn't been killed yet
-            int index = Utils.randomPositiveInteger(agentsStillAlive.size());
-
-            // kill them
-            LifeAgent agentToKill = agentsStillAlive.get(index);
-            agentToKill.die();
-
-            // add and remove them from the concerned lists
-            assertTrue(agentsKilled.add(agentToKill));
-            assertTrue(agentsStillAlive.remove(agentToKill));
-        }
-
-        assertEquals("agentsKilled array doesn't have the correct end size", killCount, agentsKilled.size());
-        assertEquals("agentsStillAlive array doesn't have the correct end size", N-killCount, agentsStillAlive.size());
-
-        // call the method we are testing
-        int actuallyKilled = life.recycleDeadAgents(cell);
-        assertEquals("the number of killed agents is not correct", killCount, actuallyKilled);
-        assertEquals("the final size of the list is not correct", N-killCount, originalAgents.size());
-
-        // make sure all the agents in 'agentsKilled' are dead
-        agentsKilled.stream().forEach(a -> {
-            assertFalse(a.isAlive()); // agent should be dead
-            assertFalse(originalAgents.contains(a));
-        });
-
     }
 
     @Test

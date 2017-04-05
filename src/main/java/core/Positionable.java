@@ -5,7 +5,7 @@ package core;
  */
 public interface Positionable {
 
-    public Point2D getPos();
+    Point2D getPos();
 
-    public void setPos(Point2D pos);
+    void setPos(Point2D pos);
 }

@@ -6,18 +6,18 @@ package core;
 /**
  * @class Factory class to construct a Grid of Cells
  */
-public class GridCellFactory {
+public class GridLifeCellFactory {
 
     /** @brief private constructor */
-    private GridCellFactory() {}
+    private GridLifeCellFactory() {}
 
     /**
      * @param rows
      * @param cols
      * @return null on failure
      */
-    public static Grid<Cell> createGridCell(int rows, int cols) throws GridCreationException {
-        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+    public static Grid<LifeCell> createGridCell(int rows, int cols) throws GridCreationException {
+        Grid<LifeCell> grid = new Grid<LifeCell>(LifeCell.class, rows, cols);
         return grid;
     }
 }
