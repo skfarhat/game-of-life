@@ -44,6 +44,6 @@ public class Deer extends LifeAgent implements Ages, Consumes {
 
     @Override
     public String toString() {
-        return "Deer (" + getEnergy() + ")";
+        return String.format("Deer[%s](e=%d)", getId().substring(0, 5), getEnergy());
     }
 }

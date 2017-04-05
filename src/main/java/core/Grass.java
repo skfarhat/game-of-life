@@ -25,6 +25,6 @@ public class Grass extends LifeAgent {
 
     @Override
     public String toString() {
-        return "Grass (" + getEnergy() + ")";
+        return String.format("Grass[%s](e=%d)", getId().substring(0, 5), getEnergy());
     }
 }
