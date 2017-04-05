@@ -244,15 +244,22 @@ public class Life {
      * @brief chose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentIsDeadException
-     * @return the iteration index
+     * @return the iteration index or -1 if there was nothing to do
      */
     public int step() throws InvalidPositionException, AgentIsDeadException {
+
+        // nothing to do
+        if (agents.size() < 1) {
+            return -1;
+        }
 
         System.out.println("agents-count: " + agents.size());
 
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
+        if (!chosen.isAlive())
+            System.out.println("We chose a non-alive agent!");
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
@@ -287,9 +294,12 @@ public class Life {
             // decrease energy
             chosen.decreaseEnergyBy(E_STEP_DECREASE);
 
-            // only in the dst cell can someone die - this will remove the agents from the cell's list and
-            // the 'agents' field list array
-            ((LifeCell)nextCell).recycleDeadAgents();
+            // only in the dst cell can someone die - this will remove the agents from the cell's list
+            List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
+
+            // remove the agents from the life 'agents' array
+            agents.removeAll(deadAgents);
+
         }
         else if (chosen instanceof Grass) {
             // find an adjacent cell but don't moves
