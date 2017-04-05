@@ -74,6 +74,27 @@ public class LifeTest {
         assertEquals(params.get(Life.KEY_R_WOLF), life.R_WOLF);
     }
 
+    @Test
+    public void testNoMoreDeerWhenNoFoodAndNoReproduction() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+        Map<String, Number> opts = new HashMap<>();
+        int nDeer = 1;
+        int eDeer = 10;
+
+        opts.put(Life.KEY_I_DEER, nDeer);
+        opts.put(Life.KEY_E_DEER_INITIAL, eDeer);
+        opts.put(Life.KEY_R_DEER, 0.0);
+        opts.put(Life.KEY_I_WOLF, 0);
+        opts.put(Life.KEY_I_GRASS, 0);
+
+        Life life = new Life(opts);
+
+        for (int i = 0; i < eDeer; i++) {
+            assertEquals(1, life.getAgents().size());
+            life.step();
+        }
+        assertEquals(0, life.getAgents().size());
+    }
+
     private double randDoubleOutOfRange() {
         Random rand = Utils.getRand();
         final int RANGE = rand.nextInt();
@@ -112,6 +133,19 @@ public class LifeTest {
         Map<String, Number> params = new HashMap<String, Number>();
         params.put(Life.KEY_R_WOLF, val);
         new Life(params);
+    }
+
+    @Test
+    public void testStepReturnsMinusOneWhenNoAgents() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+        Map<String, Number> opts = new HashMap<>();
+
+        opts.put(Life.KEY_I_DEER, 0);
+        opts.put(Life.KEY_I_WOLF, 0);
+        opts.put(Life.KEY_I_GRASS, 0);
+
+        Life life = new Life(opts);
+        int x = life.step();
+        assertEquals(-1, x);
     }
 
     @Test

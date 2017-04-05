@@ -253,8 +253,6 @@ public class Life {
             return -1;
         }
 
-        System.out.println("agents-count: " + agents.size());
-
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
