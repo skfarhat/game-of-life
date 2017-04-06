@@ -12,16 +12,24 @@ public class LifeViewController {
 
     @FXML private Pane rootPane;
 
-    Life life;
+    private Life life;
 
-    GridView gridView;
+    private GridView gridView;
 
     public LifeViewController(){}
 
     public void setLife(Life life) throws InvalidPositionException {
+
+        // only update the Pane if the passed life is non-null and different from the previous s
+        if (life != null && life != this.life) {
+            this.gridView = new GridView(life.getGrid(), rootPane.getPrefWidth(), rootPane.getPrefHeight());
+
+            // clear the pane then add the gridview
+            rootPane.getChildren().clear();
+            rootPane.getChildren().add(gridView);
+        }
+
         this.life = life;
-        this.gridView = new GridView(life.getGrid(), rootPane.getPrefWidth(), rootPane.getPrefHeight());
-        rootPane.getChildren().add(gridView);
     }
 
     public void setRootPane(Pane rootPane) {

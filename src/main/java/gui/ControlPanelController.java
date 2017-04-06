@@ -15,13 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+
 /**
  * Created by Sami on 04/04/2017.
  */
 public class ControlPanelController implements Initializable {
 
+
     public final String START_BUTTON_TEXT1 = "Start";
     public final String START_BUTTON_TEXT2 = "Pause";
+
+//    private State currentState = State.STOPPED;
 
     private LifeStarter lifeStarter;
 
@@ -46,47 +50,71 @@ public class ControlPanelController implements Initializable {
 
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {}
+
     public void startButtonPressed(ActionEvent actionEvent) {
-        System.out.println("startButtonPressed");
         try {
             Map<String, Number> options = getOptions();
 
-            // if working
-            switchStartButton(startButton);
-
-            try {
+            // user wants to start a new simulation
+            if (State.STOPPED == lifeStarter.getState()) {
                 Life life = new Life(options);
-                lifeStarter.start(life);
-            } catch (GridCreationException e) {
-                e.printStackTrace();
-            } catch (AgentIsDeadException e) {
-                e.printStackTrace();
-            } catch (InvalidPositionException e) {
-                e.printStackTrace();
+
+                if (lifeStarter.start(life))
+                    setStartedState();
+            }
+            // user wants to continue the paused simulation
+            else if (State.PAUSED == lifeStarter.getState()) {
+                lifeStarter.unpause();
+                setStartedState();
+            }
+            // user wants to pause the current simulation
+            else if (State.STARTED == lifeStarter.getState()) {
+                if (lifeStarter.pause())
+                    setPausedState();
             }
         }
+        // TODO(sami): provide UIAlerts for the user s
         catch(NumberFormatException exc) {
-
             System.out.println("exception mate: " + exc.getMessage());
+        } catch (GridCreationException e) {
+            e.printStackTrace();
+        } catch (InvalidPositionException e) {
+            e.printStackTrace();
+        } catch (AgentIsDeadException e) {
+            e.printStackTrace();
         }
     }
 
     public void stopButtonPressed(ActionEvent actionEvent) {
-
+        if (lifeStarter.stop())
+            setStoppedState();
     }
 
     /** @brief change the name (and other properties?) appearing on the start button */
-    private void switchStartButton(Button btn) {
-        if (btn.getText().equals(START_BUTTON_TEXT1)) {
-            btn.setText(START_BUTTON_TEXT2);
-        }
-        else if (btn.getText().equals(START_BUTTON_TEXT2)) {
-            btn.setText(START_BUTTON_TEXT1);
-        }
-        else {
+    private void changeButtonsState(State state) {
 
+        switch(state) {
+            case STOPPED:
+                stopButton.setDisable(true);
+            case PAUSED:
+                startButton.setText(START_BUTTON_TEXT1);
+                break;
+            case STARTED:
+                startButton.setText(START_BUTTON_TEXT2);
+                stopButton.setDisable(false);
+            default:
+                break;
         }
     }
+
+    private void setPausedState() { changeButtonsState(lifeStarter.getState()); }
+    private void setStartedState() {
+        changeButtonsState(lifeStarter.getState());
+    }
+    private void setStoppedState() { changeButtonsState(lifeStarter.getState()); }
+
     /**
      * @brief alert the user about the unparsable string
      * @param txt that is expected to be a number
@@ -170,18 +198,12 @@ public class ControlPanelController implements Initializable {
             options.put(Life.KEY_E_WOLF_GAIN, gWolf);
 
             return options;
-        }
-        catch (NumberFormatException exc) {
+        } catch (NumberFormatException exc) {
             // let's run over the test fields and highlight the ones that are mis-formatted
 //            return null;
             System.out.println(exc.getMessage());
             throw exc;
         }
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("initial");
     }
 
     public void setLifeStarter(LifeStarter lifeStarter) {
