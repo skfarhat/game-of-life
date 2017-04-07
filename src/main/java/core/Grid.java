@@ -131,7 +131,7 @@ public class Grid<T extends Cell> {
 
         while(it.hasNext())
             if (agent == it.next())
-                it.remove();;
+                it.remove();
 //        boolean removeWorks = srcCell.removeAgent(agent);
 
         // set new position

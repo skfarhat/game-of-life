@@ -276,14 +276,14 @@ public class Life {
                 int index = Utils.randomPositiveInteger(consumableAgents.size());
                 Consumable agentToConsume = consumableAgents.get(index);
                 ((Consumes)chosen).consume(agentToConsume);
-                System.out.println(chosen + " will eat " + consumableAgents.toString());
+//                System.out.println(chosen + " will eat " + consumableAgents.toString());
             }
 
             // reproduce at random
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
-                System.out.println(chosen + " is reproducing.");
+//                System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
                 agents.add(newBaby);
@@ -304,13 +304,17 @@ public class Life {
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
             LifeCell nextCell = (LifeCell) grid.get(nextPoint);
             if (!nextCell.isContainsGrass()) {
-                System.out.println(chosen + " is reproducing.");
+                // System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
                 agents.add(newBaby);
             }
         }
         return iteration++;
+    }
+
+    public boolean startInNewThread() {
+        return false;
     }
 
     /**

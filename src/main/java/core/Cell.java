@@ -1,8 +1,8 @@
 package core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Collections.copy;
 
 /**
  * @class Cell
@@ -63,9 +63,13 @@ public class Cell<T extends Agent> implements Positionable {
      * @return true if remove succeeded
      */
     public boolean removeAgent(T t) {
-        synchronized (agents) {
-            return agents.remove(t);
-        }
+        return agents.remove(t);
+    }
+
+    public List<T> getCopyList() {
+        ArrayList<T> dst = new ArrayList<T>(agentsCount());
+        dst.addAll(agents);
+        return agents;
     }
 
     /**

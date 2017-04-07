@@ -65,7 +65,6 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
     /** @brief kill the poor LifeAgent, there's no coming back after this */
     @Override
     final public void die() throws AgentIsDeadException {
-        System.out.println("die called on " + toString());
         if (!isAlive()) {
             throw new AgentIsDeadException("Can't kill a LifeAgent twice. You're mean.");
         }

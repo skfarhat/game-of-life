@@ -71,5 +71,25 @@ public final class Utils {
         int y = rand.nextInt(yBound);
         return new Point2D(x, y);
     }
+
+
+    /**
+     * @param val that must be in 0-1 range
+     * @throws IllegalArgumentException if val is out of the range
+     */
+    public static void exceptionIfOutOfRange(double val) throws IllegalArgumentException {
+        if (false == doubleInRange(val))
+            throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
+    }
+
+    /**
+     * @param val double to evaluate
+     * @return true if the value is in [0,1], false otherwise
+     */
+    public static boolean doubleInRange(double val) throws IllegalArgumentException {
+        if (val < 0 || val > 1)
+            return false;
+        return true;
+    }
 }
 
