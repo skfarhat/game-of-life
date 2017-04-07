@@ -1,10 +1,7 @@
 import core.*;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.io.IOException;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -151,6 +148,55 @@ public class LifeTest {
     @Test
     public void testMoveToAdjacentCell() {
         // TODO;
+    }
+
+    /**
+     * test that aims to replicate the concurrent modification exception observed
+     * the exception is thrown more regularly when the number of agents increase and the period between step()
+     * runs decreases.
+     */
+    @Test
+    public void testReplicateConcurrentModificationException() throws AgentIsDeadException, InvalidPositionException, InterruptedException, GridCreationException {
+        final long period = 10;
+
+        Map<String, Number> opts = new HashMap<>();
+        opts.put(Life.KEY_I_DEER,   100);
+        opts.put(Life.KEY_I_WOLF,   100);
+        opts.put(Life.KEY_I_GRASS,  100);
+        opts.put(Life.KEY_MAX_ITERATIONS, -1); // let's ensure we won't exceed the  maxIterations counters
+
+        Life life = new Life(opts);
+
+        class BoolVal { boolean running = true; }
+        BoolVal bool = new BoolVal();
+
+        // in another thread, read the some cells' agents s
+        Thread t = new Thread(() -> {
+            while(bool.running) {
+                Point2D randomPoint = Utils.randomPoint(life.getGridRows(), life.getGridCols());
+                try {
+                    LifeCell cell = (LifeCell) life.getGrid().get(randomPoint);
+                    Iterator<LifeAgent> it = cell.getAgents();
+                    while(it.hasNext()) {
+                        it.next();
+                        it.remove();
+                    }
+                } catch (InvalidPositionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        t.start();
+
+        long testDuration = 10 * 1000; // 10 seconds
+        long startTime = System.currentTimeMillis();
+        while((System.currentTimeMillis() - startTime) < testDuration) {
+            life.step();
+            Thread.sleep(period);
+        }
+
+        bool.running = false;
     }
 
     @Test
