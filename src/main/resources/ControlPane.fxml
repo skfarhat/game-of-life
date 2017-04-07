@@ -31,7 +31,7 @@
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="frequencyTextField" layoutX="101.0" layoutY="159.0" prefHeight="27.0" prefWidth="70.0" promptText="frequency" text="1">
+                <TextField fx:id="frequencyTextField" layoutX="101.0" layoutY="159.0" prefHeight="27.0" prefWidth="70.0" promptText="frequency" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
@@ -130,7 +130,7 @@
                   <Font size="11.0" />
                </font>
             </Label>
-            <Slider layoutX="10.0" layoutY="194.0" prefHeight="15.0" prefWidth="160.0" />
+            <Slider fx:id="frequencySlider" layoutX="10.0" layoutY="194.0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" />
             <Label layoutX="11.0" layoutY="129.0" text="Iterations">
                <font>
                   <Font size="11.0" />

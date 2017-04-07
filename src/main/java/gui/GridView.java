@@ -2,7 +2,10 @@ package gui;
 
 import core.Grid;
 import core.InvalidPositionException;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
 public class GridView extends Pane {
@@ -44,6 +47,33 @@ public class GridView extends Pane {
         }
     }
 
+    public void drawParallel() {
+        int threads = 4;
+        ObservableList<Node> children = getChildren();
+        int n = children.size();
+
+        int i1 = n / 4;
+        int i2 = 2 * (n / 4);
+        int i3 = 3 * (n / 4);
+//        assert(i1 == (i2 - i1) && i1 == (i3 - i2) && i1 == (n - i3));
+        compute(children, 0, i1);
+        compute(children, i1, i2);
+        compute(children, i2, i3);
+        compute(children, i3, n);
+    }
+
+    private void compute(ObservableList<Node> children, int start, int end) {
+        Platform.runLater(() -> {
+            for (int i = start ; i < end; i++) {
+                Node node = children.get(i);
+                if (node instanceof CellView){
+                    ((CellView)node).draw();
+                }
+            }
+        });
+    }
+
+    // TODO(sami): can we parallelise this
     public void draw() {
         getChildren().stream().forEach(cellView -> {
             if(cellView instanceof CellView)

@@ -8,7 +8,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DragEvent;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -21,11 +23,8 @@ import java.util.ResourceBundle;
  */
 public class ControlPanelController implements Initializable {
 
-
     public final String START_BUTTON_TEXT1 = "Start";
     public final String START_BUTTON_TEXT2 = "Pause";
-
-//    private State currentState = State.STOPPED;
 
     private LifeStarter lifeStarter;
 
@@ -45,13 +44,18 @@ public class ControlPanelController implements Initializable {
     @FXML private TextField stepDecreaseTextField;
     @FXML private TextField colsTextField;
     @FXML private TextField rowsTextField;
+    @FXML private Slider frequencySlider;
 
     public ControlPanelController() {
 
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {}
+    public void initialize(URL location, ResourceBundle resources) {
+        frequencySlider.valueChangingProperty().addListener(event -> {
+            frequencySliderDone();
+        });
+    }
 
     public void startButtonPressed(ActionEvent actionEvent) {
         try {
@@ -78,6 +82,7 @@ public class ControlPanelController implements Initializable {
         // TODO(sami): provide UIAlerts for the user s
         catch(NumberFormatException exc) {
             System.out.println("exception mate: " + exc.getMessage());
+            exc.printStackTrace();
         } catch (GridCreationException e) {
             e.printStackTrace();
         } catch (InvalidPositionException e) {
@@ -94,7 +99,6 @@ public class ControlPanelController implements Initializable {
 
     /** @brief change the name (and other properties?) appearing on the start button */
     private void changeButtonsState(State state) {
-
         switch(state) {
             case STOPPED:
                 stopButton.setDisable(true);
@@ -144,6 +148,15 @@ public class ControlPanelController implements Initializable {
      * @throws IllegalArgumentException if val is negative
      * @return the passed number
      */
+    private double exceptionIfNegative(double val) throws IllegalArgumentException {
+        if (val < 0) throw new IllegalArgumentException();
+        return val;
+    }
+    /**
+     * @param val that must be non-negative
+     * @throws IllegalArgumentException if val is negative
+     * @return the passed number
+     */
     private int exceptionIfNegative(int val) throws IllegalArgumentException {
         if (val < 0) throw new IllegalArgumentException();
         return val;
@@ -164,10 +177,11 @@ public class ControlPanelController implements Initializable {
         Map<String, Number> options = new HashMap<>();
 
         try {
+            lifeStarter.setFrequency(exceptionIfNegative(Double.parseDouble(frequencyTextField.getText())));
+
             // general params
             int cols = exceptionIfNegative(alertIfNotInteger(colsTextField.getText()));
             int rows = exceptionIfNegative(alertIfNotInteger(rowsTextField.getText()));
-            int freq = exceptionIfNegative(alertIfNotInteger(frequencyTextField.getText()));
             int maxIterations = exceptionIfNegative(alertIfNotInteger(maxIterationsTextField.getText()));
             int stepDecrease = exceptionIfNegative(alertIfNotInteger(stepDecreaseTextField.getText()));
             options.put(Life.KEY_GRID_COLS, cols);
@@ -208,5 +222,20 @@ public class ControlPanelController implements Initializable {
 
     public void setLifeStarter(LifeStarter lifeStarter) {
         this.lifeStarter = lifeStarter;
+    }
+
+    public void frequencySliderDone() {
+//        if (frequencySlider == null) // guard
+//            return;
+
+        System.out.println(frequencySlider.getValue());
+        // change the frequency using the interface LifeStarter
+        double val = frequencySlider.getValue()/100.0f;
+
+        // set the frequency as percent
+        lifeStarter.setFrequency(val);
+
+        // get the actual value of the frequency
+        frequencyTextField.setText(Double.toString(lifeStarter.getFrequency()));
     }
 }

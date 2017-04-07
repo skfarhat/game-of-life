@@ -22,4 +22,6 @@ public interface LifeStarter {
     State getState();
 
     void setFrequency(double hz);
+
+    double getFrequency();
 }

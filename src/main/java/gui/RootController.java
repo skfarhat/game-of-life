@@ -3,6 +3,7 @@ package gui;
 import core.AgentIsDeadException;
 import core.InvalidPositionException;
 import core.Life;
+import core.Utils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -23,8 +24,28 @@ import java.util.TimerTask;
  */
 public class RootController implements Initializable, LifeStarter {
 
-    /** @brief period between calls to step() in msec */
-    private final static int DEFAULT_PERIOD = 100;
+    // ===========================================================================================
+    // CONSTANTS
+    // ===========================================================================================
+
+    /** @brief period between calls to step() in milli-seconds */
+    private final static int DEFAULT_PERIOD = 100;  // 100 milliseconds
+    private final static int MIN_PERIOD = 10;       // 10 milliseconds
+    private final static int MAX_PERIOD = 200;
+
+    // calculate the frequency ranges fom the (min, max) period
+    private static final double MIN_FREQUENCY = calculateFrequencyFromPeriod(MAX_PERIOD);
+    private static final double MAX_FREQUENCY = calculateFrequencyFromPeriod(MIN_PERIOD);
+
+    // ===========================================================================================
+    // MEMBER VARIABLES
+    // ===========================================================================================
+
+    private int period = DEFAULT_PERIOD; // milliseconds
+    private Timer timer;
+    private Timeline drawTimer;
+    private State currentState = State.STOPPED;
+    private Life life;
 
     // ===========================================================================================
     // FXML
@@ -36,17 +57,22 @@ public class RootController implements Initializable, LifeStarter {
     @FXML private Pane lifeView;
     @FXML private LifeViewController lifeViewController;
 
-    private Life life;
-
     // ===========================================================================================
-    // MEMBER VARIABLES
+    // STATIC METHODS
     // ===========================================================================================
 
-//    private boolean running = false;
-    private int period = DEFAULT_PERIOD; // milliseconds
-    private Timer timer;
-    private Timeline drawTimer;
-    private State currentState = State.STOPPED;
+    /**
+     * @param period in milliseconds
+     * @return
+     */
+    public static double calculateFrequencyFromPeriod(int period) {
+        return 1000.0f / period;
+    }
+
+    /** @return period in milliseconds from the frequency */
+    public static int calculatePeriodFromFrequency(double freq) {
+        return (int) (1000.0f / freq);
+    }
 
     // ===========================================================================================
     // METHODS
@@ -121,20 +147,34 @@ public class RootController implements Initializable, LifeStarter {
      * @brief sets the wait period between calls to life.step().
      * If an invalid value is passed (hz <= 0), the period will be set to default.
      *
-     * @param freq frequency value bete
+     * @param freqPercent must be in [0,1]
      */
     @Override
-    public void setFrequency(double freq) {
-        // set to default if invalid value passed
-        if (freq <= 0.0f)
+    public void setFrequency(double freqPercent) {
+        if (false == Utils.doubleInRange(freqPercent))
             period = DEFAULT_PERIOD;
-        else
-            period = (int) (1000 * (1.0/freq));
+        else {
+            double freq = MIN_FREQUENCY + freqPercent * (MAX_FREQUENCY - MIN_FREQUENCY);
+            period = calculatePeriodFromFrequency(freq);
 
-        // after setting the frequency we need to adjust re-adjust the timers,
-        // the easiest way is to pause then start
-        pause();
-        start(this.life);
+            // after setting the frequency we need to adjust re-adjust the timers,
+            // the easiest way is to pause then start
+            if (getState() == State.STARTED) {
+                pause();
+                unpause();
+            }
+        }
+    }
+
+    long count = 0;
+    double cum = 0.0f;
+
+    long drawCount = 0;
+    double drawCum = 0.0f;
+
+    @Override
+    public double getFrequency() {
+        return calculateFrequencyFromPeriod(period);
     }
 
     /** @brief: run the timers to step through life
@@ -147,19 +187,33 @@ public class RootController implements Initializable, LifeStarter {
             return false;
 
         drawTimer = new Timeline(new KeyFrame(Duration.millis(period), event -> {
-            try { lifeViewController.draw(); }
+            try {
+                long startTime = System.nanoTime();
+                lifeViewController.draw();
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+                drawCum+=duration;
+                System.out.printf("[draw]\tavg: %.2fms\tduration= %.2f ms\n", drawCum/(1000.0f*(++drawCount)), duration/1000.0f);
+            }
             catch (InvalidPositionException e) { e.printStackTrace();}
         }));
 
         drawTimer.setCycleCount(Timeline.INDEFINITE);
         drawTimer.play();
 
+
+        System.out.println("runTimers with period: " + period);
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
+                    long startTime = System.nanoTime();
                     life.step();
+                    long endTime = System.nanoTime();
+                    long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+                    cum+=duration;
+                    System.out.printf("[logic]\tavg: %.2fms\tduration= %.2f ms\n", cum/(1000.0f*(++count)), duration/1000.0f);
                 } catch (InvalidPositionException e) {
                     e.printStackTrace();
                 } catch (AgentIsDeadException e) {
