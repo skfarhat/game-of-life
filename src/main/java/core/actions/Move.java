@@ -1,0 +1,29 @@
+package core.actions;
+
+import core.LifeAgent;
+import core.Point2D;
+
+public class Move extends Action<LifeAgent> {
+
+    private Point2D from;
+    private Point2D to;
+
+    /**
+     * @param from the source point
+     * @param to the destination point
+     */
+    public Move(LifeAgent agent, Point2D from, Point2D to){
+        super(agent);
+
+        this.from = from;
+        this.to = to;
+    }
+
+    public Point2D getFrom() {
+        return from;
+    }
+
+    public Point2D getTo() {
+        return to;
+    }
+}

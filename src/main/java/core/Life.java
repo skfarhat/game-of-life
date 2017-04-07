@@ -1,5 +1,9 @@
 package core;
 
+import core.actions.Action;
+import core.actions.Consume;
+import core.actions.Move;
+
 import java.util.*;
 
 /**
@@ -246,24 +250,28 @@ public class Life {
      * @throws AgentIsDeadException
      * @return the iteration index or -1 if there was nothing to do
      */
-    public int step() throws InvalidPositionException, AgentIsDeadException {
+    public List<Action> step() throws InvalidPositionException, AgentIsDeadException {
 
-        // nothing to do
+        List<Action> actions = new ArrayList<>();
+
+        // guard - nothing to do
         if (agents.size() < 1) {
-            return -1;
+            return actions;
         }
 
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
         if (!chosen.isAlive())
-            System.out.println("We chose a non-alive agent!");
+            System.out.println("We chose a non-alive agent!"); // TODO(sami): throw an exception
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
 
             // move to adjacent cell
+            Point2D currPos = chosen.getPos();
             Cell nextCell = moveToAdjacentCell(chosen);
+            actions.add(new Move(chosen, currPos, nextCell.getPos()));
 
             // put all the cell's agents in an ArrayList and pass them to the chosen
             List<Consumable> cellAgents = new ArrayList<>();
@@ -276,14 +284,13 @@ public class Life {
                 int index = Utils.randomPositiveInteger(consumableAgents.size());
                 Consumable agentToConsume = consumableAgents.get(index);
                 ((Consumes)chosen).consume(agentToConsume);
-//                System.out.println(chosen + " will eat " + consumableAgents.toString());
+                actions.add(new Consume(chosen, agentToConsume));
             }
 
             // reproduce at random
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
-//                System.out.println(chosen + " is reproducing.");
                 LifeAgent newBaby = chosen.reproduce();
                 nextCell.addAgent(newBaby);
                 agents.add(newBaby);
@@ -310,7 +317,7 @@ public class Life {
                 agents.add(newBaby);
             }
         }
-        return iteration++;
+        return actions;
     }
 
     public boolean startInNewThread() {

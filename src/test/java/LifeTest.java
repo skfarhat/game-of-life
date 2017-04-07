@@ -1,4 +1,5 @@
 import core.*;
+import core.actions.Action;
 import org.junit.Test;
 import java.io.IOException;
 import java.util.*;
@@ -133,7 +134,7 @@ public class LifeTest {
     }
 
     @Test
-    public void testStepReturnsMinusOneWhenNoAgents() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+    public void testStepReturnsEmptyListWhenNoAgentsToAct() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
         Map<String, Number> opts = new HashMap<>();
 
         opts.put(Life.KEY_I_DEER, 0);
@@ -141,8 +142,8 @@ public class LifeTest {
         opts.put(Life.KEY_I_GRASS, 0);
 
         Life life = new Life(opts);
-        int x = life.step();
-        assertEquals(-1, x);
+        List<Action> actions = life.step();
+        assertEquals(0, actions.size());
     }
 
     @Test
