@@ -2,6 +2,7 @@ package gui;
 
 import core.InvalidPositionException;
 import core.Life;
+import core.actions.Action;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
@@ -36,7 +37,10 @@ public class LifeViewController {
         this.rootPane = rootPane;
     }
 
-    public void draw() throws InvalidPositionException {
+    public void draw() {
         gridView.draw();
+    }
+    public void draw(Action action) throws InvalidPositionException {
+        gridView.draw(action);
     }
 }

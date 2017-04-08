@@ -37,7 +37,11 @@ public abstract class Agent implements Positionable {
      */
     public Agent(Point2D pos) {
         id = IdPool.getInstance().newId();
-        this.pos =  pos;
+        // TODO(sami): check on the position - throw exception
+        if (pos == null)
+            this.pos = new Point2D(0, 0);
+        else
+            this.pos = pos;
     }
 
     /** @brief getter for ID */

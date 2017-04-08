@@ -3,6 +3,7 @@ package core.actions;
 import core.LifeAgent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,5 +21,9 @@ public class Reproduce extends Action<LifeAgent> {
         super(lifeAgent);
         this.babies = new ArrayList<>();
         this.babies.add(baby);
+    }
+
+    public Iterator<LifeAgent> getBabies() {
+        return babies.iterator();
     }
 }

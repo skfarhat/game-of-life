@@ -3,6 +3,7 @@ package core;
 import core.actions.Action;
 import core.actions.Consume;
 import core.actions.Move;
+import core.actions.Reproduce;
 
 import java.util.*;
 
@@ -236,16 +237,59 @@ public class Life {
         return list;
     }
 
-    /** @brief move to next position */
-    public Cell moveToAdjacentCell(Agent agent) throws InvalidPositionException {
-        Point2D nextPoint = findAdjacentPointInGrid(agent.getPos());
-        Cell nextCell = grid.get(nextPoint);
-        grid.moveAgentToCell(agent, nextCell);
-        return nextCell;
+    private List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, Agent agent) {
+        final List<Class> consumableClasses = CONSUME_RULES.get(agent.getClass()); // list of classes consumable by agent
+        List<Consumable> consumables = new ArrayList<>();
+        while(it.hasNext()){
+            Consumable c = it.next();
+            if (consumableClasses.contains(c.getClass()))
+                consumables.add(c);
+        }
+        return consumables;
     }
 
+    private void addAgent(Agent agent) throws InvalidPositionException {
+        // TODO(sami): check that the agent doesn't already exist there
+        grid.get(agent.getPos()).addAgent(agent);
+        agents.add(agent);
+    }
+
+    private void processMoveAction(Move action) throws InvalidPositionException {
+        Cell nextCell = grid.get(action.getTo());
+        grid.moveAgentToCell(action.getAgent(), nextCell);
+    }
+
+    private void processReproduce(Reproduce action) throws InvalidPositionException {
+        Iterator<LifeAgent> babies = action.getBabies();
+        while(babies.hasNext()) {
+            LifeAgent baby = babies.next();
+            addAgent(baby);
+        }
+    }
+
+    private void processConsume(Consume action) throws AgentIsDeadException {
+        Consumable consumable = action.getConsumables().next();
+        ((Consumes) action.getAgent()).consume(consumable);
+    }
+
+    private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
+        for (Action action: actions) {
+            if (action instanceof Consume) {
+                processConsume((Consume) action);
+            }
+            else if (action instanceof Reproduce) {
+                processReproduce((Reproduce) action);
+            }
+            else if (action instanceof  Move) {
+                processMoveAction((Move) action);
+            }
+        }
+    }
+
+
+    // TODO(sami): have only one processActions
     /**
-     * @brief chose an agent at random to act
+     * @brief choose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentIsDeadException
      * @return the iteration index or -1 if there was nothing to do
@@ -268,36 +312,49 @@ public class Life {
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
 
-            // move to adjacent cell
-            Point2D currPos = chosen.getPos();
-            Cell nextCell = moveToAdjacentCell(chosen);
-            actions.add(new Move(chosen, currPos, nextCell.getPos()));
+            // -------
+            // Move
+            // -------
+            Point2D srcPoint = new Point2D(chosen.getPos()); // make a new copy of the src point
+            Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
+            Cell nextCell = grid.get(nextPoint);
+            Action move = new Move(chosen, srcPoint, nextPoint);
+            actions.add(move);
 
-            // put all the cell's agents in an ArrayList and pass them to the chosen
-            List<Consumable> cellAgents = new ArrayList<>();
-            for (Iterator<Agent> it = nextCell.getAgents(); it.hasNext();)
-                cellAgents.add((Consumable) it.next());
-            List<Consumable> consumableAgents = filterConsumablesForAgent(cellAgents, chosen);
+            // -------
+            // Consume
+            // -------
 
-            // consume only one
+            List<Consumable> consumableAgents = filterConsumablesForAgent(nextCell.getAgents(), chosen);
+
+            // choose one at random to consume
             if (consumableAgents.size() > 0) {
                 int index = Utils.randomPositiveInteger(consumableAgents.size());
                 Consumable agentToConsume = consumableAgents.get(index);
-                ((Consumes)chosen).consume(agentToConsume);
-                actions.add(new Consume(chosen, agentToConsume));
+                Action consume = new Consume(chosen, agentToConsume);
+                actions.add(consume);
             }
 
-            // reproduce at random
+            // ---------
+            // Reproduce
+            // ---------
+
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
-                LifeAgent newBaby = chosen.reproduce();
-                nextCell.addAgent(newBaby);
-                agents.add(newBaby);
+                Action reproduce = new Reproduce(chosen, chosen.reproduce());
+                actions.add(reproduce);
             }
+
+            // ---------
+            // Age
+            // ---------
 
             // decrease energy
             chosen.decreaseEnergyBy(E_STEP_DECREASE);
+
+            processActions(actions);
+
 
             // only in the dst cell can someone die - this will remove the agents from the cell's list
             List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
@@ -306,6 +363,7 @@ public class Life {
             agents.removeAll(deadAgents);
 
         }
+
         else if (chosen instanceof Grass) {
             // find an adjacent cell but don't moves
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
@@ -316,12 +374,12 @@ public class Life {
                 nextCell.addAgent(newBaby);
                 agents.add(newBaby);
             }
-        }
-        return actions;
-    }
 
-    public boolean startInNewThread() {
-        return false;
+            processActions(actions);
+        }
+
+
+        return actions;
     }
 
     /**

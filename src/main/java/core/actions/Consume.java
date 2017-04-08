@@ -4,6 +4,7 @@ import core.Consumable;
 import core.LifeAgent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,5 +23,9 @@ public class Consume extends Action<LifeAgent> {
         super(lifeAgent);
         consumables = new ArrayList<>();
         consumables.add(consumable);
+    }
+
+    public Iterator<Consumable> getConsumables() {
+        return consumables.iterator();
     }
 }

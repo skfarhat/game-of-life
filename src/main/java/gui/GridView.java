@@ -1,14 +1,24 @@
 package gui;
 
-import core.Grid;
-import core.InvalidPositionException;
+import core.*;
+import core.actions.Action;
+import core.actions.Consume;
+import core.actions.Move;
+import core.actions.Reproduce;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
+import javax.xml.stream.XMLReporter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 public class GridView extends Pane {
+
+    private Map<Point2D, CellView> cells = new HashMap<>();
 
     private Grid grid;
 
@@ -30,7 +40,9 @@ public class GridView extends Pane {
         for (int i = 0; i < grid.getCols(); i++) {
             for (int j = 0; j < grid.getRows(); j++) {
 
-                CellView cellView = new CellView(grid.get(i, j), cellSide);
+                Point2D p = new Point2D(i, j);
+
+                CellView cellView = new CellView(grid.get(p), cellSide);
 
                 double x = marginRightLeft + i * cellSide;
                 double y = marginTopBottom + j * cellSide;
@@ -43,6 +55,7 @@ public class GridView extends Pane {
                 //   cellView.setStyle("-fx-background-color:yellow");
 
                 getChildren().add(cellView);
+                cells.put(p, cellView);
             }
         }
     }
@@ -79,5 +92,42 @@ public class GridView extends Pane {
             if(cellView instanceof CellView)
                 ((CellView)cellView).draw();
         });
+    }
+
+    public void draw(Action action)  {
+        // get the affected cells
+        Agent agent = action.getAgent();
+        if (action instanceof Move) {
+            Move move = (Move) action;
+            Point2D srcPt = move.getFrom();
+            Point2D dstPt = move.getTo();
+
+            CellView srcCell = cells.get(srcPt);
+            CellView dstCell = cells.get(dstPt);
+
+            srcCell.draw();
+            dstCell.draw();
+        }
+        else if (action instanceof Consume) {
+            Point2D pt = ((Consume) action).getAgent().getPos();
+            CellView cellView = cells.get(pt);
+            cellView.draw();
+        }
+        else if (action instanceof Reproduce) {
+            Reproduce reproduce = (Reproduce) action;
+            Point2D pt = reproduce.getAgent().getPos();
+
+            // draw the agent's cell
+            CellView agentCell = cells.get(pt);
+            agentCell.draw();
+
+            // draw all cells where babies are located (except the agent's cell)
+            Iterator<LifeAgent> it = reproduce.getBabies();
+            while(it.hasNext()) {
+                Point2D p = it.next().getPos();
+                if (p.equals(pt))
+                    cells.get(p).draw();
+            }
+        }
     }
 }

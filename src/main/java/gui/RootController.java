@@ -4,8 +4,12 @@ import core.AgentIsDeadException;
 import core.InvalidPositionException;
 import core.Life;
 import core.Utils;
+import core.actions.Action;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
@@ -13,9 +17,8 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @class RootController
@@ -43,9 +46,10 @@ public class RootController implements Initializable, LifeStarter {
 
     private int period = DEFAULT_PERIOD; // milliseconds
     private Timer timer;
-    private Timeline drawTimer;
+//    private Timeline drawTimer;
     private State currentState = State.STOPPED;
     private Life life;
+    private ConcurrentLinkedQueue<Action> queue = new ConcurrentLinkedQueue<>();
 
     // ===========================================================================================
     // FXML
@@ -114,6 +118,8 @@ public class RootController implements Initializable, LifeStarter {
         if (getState() == State.STOPPED) {
             return false;
         }
+
+        this.life = null;
 
         // cancel timers and change state
         cancelTimers();
@@ -185,22 +191,48 @@ public class RootController implements Initializable, LifeStarter {
     private boolean runTimers() {
         if (this.life == null || getState() == State.STARTED)
             return false;
+//
+//        drawTimer = new Timeline(new KeyFrame(Duration.millis(period), event -> {
+//            try {
+//                long startTime = System.nanoTime();
+//                lifeViewController.draw();
+//                long endTime = System.nanoTime();
+//                long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+//                drawCum+=duration;
+//                System.out.printf("[draw]\tavg: %.2fms\tduration= %.2f ms\n", drawCum/(1000.0f*(++drawCount)), duration/1000.0f);
+//            }
+//            catch (InvalidPositionException e) { e.printStackTrace();}
+//        }));
 
-        drawTimer = new Timeline(new KeyFrame(Duration.millis(period), event -> {
-            try {
-                long startTime = System.nanoTime();
-                lifeViewController.draw();
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-                drawCum+=duration;
-                System.out.printf("[draw]\tavg: %.2fms\tduration= %.2f ms\n", drawCum/(1000.0f*(++drawCount)), duration/1000.0f);
+//        drawTimer.setCycleCount(Timeline.INDEFINITE);
+//        drawTimer.play();
+
+        // Consumer
+        Thread t = new Thread(new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                while(RootController.this.getState() == gui.State.STARTED) {
+                    Action action = queue.poll();
+                    if (action != null) {
+                        try {
+                            Platform.runLater(() -> {
+                                try {
+                                    lifeViewController.draw(action);
+                                } catch (InvalidPositionException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                        catch(Exception exc) {
+                            exc.printStackTrace();
+                            return null;
+                        }
+                    }
+                }
+                System.out.println("returning.. ");
+                return null;
             }
-            catch (InvalidPositionException e) { e.printStackTrace();}
-        }));
-
-        drawTimer.setCycleCount(Timeline.INDEFINITE);
-        drawTimer.play();
-
+        });
 
         System.out.println("runTimers with period: " + period);
         timer = new Timer();
@@ -209,11 +241,15 @@ public class RootController implements Initializable, LifeStarter {
             public void run() {
                 try {
                     long startTime = System.nanoTime();
-                    life.step();
+                    List<Action> actions = life.step();
+                    for (Action action : actions) {
+//                        System.out.println("offered action to queue");
+                        queue.offer(action);
+                    }
                     long endTime = System.nanoTime();
                     long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
                     cum+=duration;
-                    System.out.printf("[logic]\tavg: %.2fms\tduration= %.2f ms\n", cum/(1000.0f*(++count)), duration/1000.0f);
+//                    System.out.printf("[logic]\tavg: %.2fms\tduration= %.2f ms\n", cum/(1000.0f*(++count)), duration/1000.0f);
                 } catch (InvalidPositionException e) {
                     e.printStackTrace();
                 } catch (AgentIsDeadException e) {
@@ -221,6 +257,10 @@ public class RootController implements Initializable, LifeStarter {
                 }
             }
         }, 0, period);
+
+        t.start();
+
+
         return true;
     }
 
@@ -228,7 +268,7 @@ public class RootController implements Initializable, LifeStarter {
     private void cancelTimers() {
         if (getState() != State.STOPPED) {
             timer.cancel();
-            drawTimer.stop();
+//            drawTimer.stop();
         }
     }
 

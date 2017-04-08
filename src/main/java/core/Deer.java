@@ -12,13 +12,20 @@ public class Deer extends LifeAgent implements Ages, Consumes {
     public Deer() throws AgentIsDeadException {
         super();
     }
-
     /**
      * @brief constructor for Deer with @param initial energy
-     * @param initialE initialEnergy of the deer
+     * @param initialEnergy of the deer
      */
-    public Deer(int initialE) throws AgentIsDeadException {
-        super(initialE);
+    public Deer(int initialEnergy) throws AgentIsDeadException {
+        super(initialEnergy);
+    }
+
+    public Deer(Point2D p) throws AgentIsDeadException {
+        super(p);
+    }
+
+    public Deer(Point2D p, int energy) throws AgentIsDeadException {
+        super(p, energy);
     }
 
     /** @brief */
@@ -26,8 +33,12 @@ public class Deer extends LifeAgent implements Ages, Consumes {
         decreaseEnergyBy(val);
     }
 
+    // TODO(sami): replace with a new exception
     @Override
     public boolean consume(Consumable consumable) throws AgentIsDeadException {
+        if (consumable == this)
+            throw new IllegalArgumentException("Cannot consume myself!");
+
         try {
             consumable.die();
             return true;
@@ -49,7 +60,7 @@ public class Deer extends LifeAgent implements Ages, Consumes {
     }
 
     public LifeAgent reproduce() throws AgentIsDeadException {
-        return new Deer(this.MY_INITIAL_ENERGY);
+        return new Deer(getPos(), this.MY_INITIAL_ENERGY);
     }
 
     @Override

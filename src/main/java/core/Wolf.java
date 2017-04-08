@@ -10,12 +10,21 @@ public class Wolf extends LifeAgent implements Ages, Consumes {
     public Wolf() throws AgentIsDeadException {
         super();
     }
+
     public Wolf(int initialEnergy) throws AgentIsDeadException {
         super(initialEnergy);
     }
 
+    public Wolf(Point2D p) throws AgentIsDeadException {
+        super(p);
+    }
+
+    public Wolf(Point2D p, int energy) throws AgentIsDeadException {
+        super(p, energy);
+    }
+
     public LifeAgent reproduce() throws AgentIsDeadException {
-        Wolf babyWolf = new Wolf();
+        Wolf babyWolf = new Wolf(getPos(), MY_INITIAL_ENERGY);
         return babyWolf;
     }
 
@@ -24,8 +33,11 @@ public class Wolf extends LifeAgent implements Ages, Consumes {
         decreaseEnergyBy(val);
     }
 
+    // TODO(sami): replace with a new exception
     @Override
     public boolean consume(Consumable consumable) throws AgentIsDeadException {
+        if (consumable == this)
+            throw new IllegalArgumentException("Cannot consume myself!");
         try {
             consumable.die();
             return true;

@@ -33,7 +33,11 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
 
     /** @brief default constructor */
     public LifeAgent() throws AgentIsDeadException {
-        this(DEFAULT_INITIAL_ENERGY);
+        this(null, DEFAULT_INITIAL_ENERGY);
+    }
+
+    public LifeAgent(Point2D p) throws AgentIsDeadException {
+        this(p, DEFAULT_INITIAL_ENERGY);
     }
 
     /** @brief constructor with initial energy - records the instance's initial energy */
@@ -42,6 +46,13 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
         if (initialEnergy <= 0)
             throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
         setEnergy(MY_INITIAL_ENERGY = initialEnergy);
+    }
+
+    public LifeAgent(Point2D p, int energy) throws AgentIsDeadException {
+        super(p);
+        if (energy <= 0)
+            throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
+        setEnergy(MY_INITIAL_ENERGY = energy);
     }
 
     /** @return the energy of the LifeAgent */

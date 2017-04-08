@@ -5,6 +5,5 @@ package core;
  */
 public interface Reproduces {
 
-    /** @brief called when */
-    public LifeAgent reproduce() throws AgentIsDeadException;
+    LifeAgent reproduce() throws AgentIsDeadException;
 }
