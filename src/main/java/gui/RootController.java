@@ -46,7 +46,6 @@ public class RootController implements Initializable, LifeStarter {
 
     private int period = DEFAULT_PERIOD; // milliseconds
     private Timer timer;
-//    private Timeline drawTimer;
     private State currentState = State.STOPPED;
     private Life life;
     private ConcurrentLinkedQueue<Action> queue = new ConcurrentLinkedQueue<>();
@@ -191,21 +190,6 @@ public class RootController implements Initializable, LifeStarter {
     private boolean runTimers() {
         if (this.life == null || getState() == State.STARTED)
             return false;
-//
-//        drawTimer = new Timeline(new KeyFrame(Duration.millis(period), event -> {
-//            try {
-//                long startTime = System.nanoTime();
-//                lifeViewController.draw();
-//                long endTime = System.nanoTime();
-//                long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-//                drawCum+=duration;
-//                System.out.printf("[draw]\tavg: %.2fms\tduration= %.2f ms\n", drawCum/(1000.0f*(++drawCount)), duration/1000.0f);
-//            }
-//            catch (InvalidPositionException e) { e.printStackTrace();}
-//        }));
-
-//        drawTimer.setCycleCount(Timeline.INDEFINITE);
-//        drawTimer.play();
 
         // Consumer
         Thread t = new Thread(new Task<Void>() {
@@ -268,7 +252,6 @@ public class RootController implements Initializable, LifeStarter {
     private void cancelTimers() {
         if (getState() != State.STOPPED) {
             timer.cancel();
-//            drawTimer.stop();
         }
     }
 

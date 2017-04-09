@@ -69,7 +69,7 @@ public class Cell<T extends Agent> implements Positionable {
     public List<T> getCopyList() {
         ArrayList<T> dst = new ArrayList<T>(agentsCount());
         dst.addAll(agents);
-        return agents;
+        return dst;
     }
 
     /**
