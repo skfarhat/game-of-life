@@ -213,7 +213,6 @@ public class RootController implements Initializable, LifeStarter {
                         }
                     }
                 }
-                System.out.println("returning.. ");
                 return null;
             }
         });

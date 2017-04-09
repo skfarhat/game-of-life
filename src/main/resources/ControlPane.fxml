@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -19,19 +20,15 @@
             <children>
                 <Button fx:id="startButton" layoutX="68.0" layoutY="13.0" mnemonicParsing="false" onAction="#startButtonPressed" prefHeight="27.0" prefWidth="108.0" text="Start" />
                 <Button fx:id="stopButton" disable="true" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" onAction="#stopButtonPressed" prefHeight="27.0" prefWidth="56.0" text="Stop" />
-                <TextField fx:id="rowsTextField" layoutX="100.0" layoutY="85.0" prefHeight="27.0" prefWidth="70.0" promptText="rows" text="10">
+                <TextField fx:id="rowsTextField" layoutX="100.0" layoutY="50.0" prefHeight="27.0" prefWidth="70.0" promptText="rows" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="colsTextField" layoutX="100.0" layoutY="50.0" prefHeight="27.0" prefWidth="70.0" promptText="cols" text="10">
+                <TextField fx:id="colsTextField" layoutX="100.0" layoutY="87.0" prefHeight="27.0" prefWidth="70.0" promptText="cols" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
                 <TextField fx:id="maxIterationsTextField" layoutX="101.0" layoutY="124.0" prefHeight="27.0" prefWidth="70.0" promptText="max iterations" text="0">
-               <font>
-                  <Font size="11.0" />
-               </font></TextField>
-                <TextField fx:id="frequencyTextField" layoutX="101.0" layoutY="159.0" prefHeight="27.0" prefWidth="70.0" promptText="frequency" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
@@ -45,15 +42,15 @@
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <TextField fx:id="iWolfTextField" layoutX="101.0" layoutY="279.0" prefHeight="27.0" prefWidth="70.0" promptText="Wolf: Initial" text="10">
+                <TextField fx:id="iWolfTextField" layoutX="100.0" layoutY="279.0" prefHeight="27.0" prefWidth="70.0" promptText="Wolf: Initial" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="iDeerTextField" layoutX="101.0" layoutY="319.0" prefHeight="27.0" prefWidth="70.0" promptText="Deer: Initial" text="10">
+                <TextField fx:id="iDeerTextField" layoutX="100.0" layoutY="319.0" prefHeight="27.0" prefWidth="70.0" promptText="Deer: Initial" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="iGrassTextField" layoutX="101.0" layoutY="357.0" prefHeight="27.0" prefWidth="70.0" promptText="Grass: Initial" text="10">
+                <TextField fx:id="iGrassTextField" layoutX="100.0" layoutY="357.0" prefHeight="27.0" prefWidth="70.0" promptText="Grass: Initial" text="10">
                <font>
                   <Font size="11.0" />
                </font></TextField>
@@ -70,7 +67,7 @@
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="rWolfTextField" layoutX="101.0" layoutY="396.0" prefHeight="27.0" prefWidth="70.0" promptText="[0;1]" text="0.33">
+                <TextField fx:id="rWolfTextField" layoutX="100.0" layoutY="396.0" prefHeight="27.0" prefWidth="70.0" promptText="[0;1]" text="0.33">
                <font>
                   <Font size="11.0" />
                </font></TextField>
@@ -116,7 +113,7 @@
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="stepDecreaseTextField" layoutX="101.0" layoutY="240.0" prefHeight="27.0" prefWidth="70.0" promptText="Aging" text="1">
+                <TextField fx:id="stepDecreaseTextField" layoutX="100.0" layoutY="240.0" prefHeight="27.0" prefWidth="70.0" promptText="Aging" text="1">
                <font>
                   <Font size="11.0" />
                </font></TextField>
@@ -125,12 +122,12 @@
                         <Font size="11.0" />
                     </font>
                 </Label>
-            <Label layoutX="11.0" layoutY="166.0" text="Frequency">
+            <Label layoutX="11.0" layoutY="167.0" text="Speed">
                <font>
                   <Font size="11.0" />
                </font>
             </Label>
-            <Slider fx:id="frequencySlider" layoutX="10.0" layoutY="194.0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" />
+            <Slider fx:id="frequencySlider" blockIncrement="1.0" layoutX="10.0" layoutY="199.0" majorTickUnit="10.0" minorTickCount="0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" showTickLabels="true" showTickMarks="true" />
             <Label layoutX="11.0" layoutY="129.0" text="Iterations">
                <font>
                   <Font size="11.0" />
@@ -144,7 +141,15 @@
                <font>
                   <Font size="11.0" />
                </font></Label>
+            <Label fx:id="speedLabel" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="165.0" prefHeight="17.0" prefWidth="68.0" text="50%" textAlignment="RIGHT">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
             </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
         </Pane>
     </content>
 </ScrollPane>

@@ -7,14 +7,12 @@ import core.Life;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.input.DragEvent;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -25,12 +23,12 @@ public class ControlPanelController implements Initializable {
 
     public final String START_BUTTON_TEXT1 = "Start";
     public final String START_BUTTON_TEXT2 = "Pause";
+    public Label speedLabel;
 
     private LifeStarter lifeStarter;
 
     @FXML private Button startButton;
     @FXML private Button stopButton;
-    @FXML private TextField frequencyTextField;
     @FXML private TextField maxIterationsTextField;
     @FXML private TextField rGrassTextField;
     @FXML private TextField rDeerTextField;
@@ -52,9 +50,10 @@ public class ControlPanelController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        frequencySlider.valueChangingProperty().addListener(event -> {
+        frequencySlider.valueProperty().addListener(event -> {
             frequencySliderDone();
         });
+
     }
 
     public void startButtonPressed(ActionEvent actionEvent) {
@@ -80,9 +79,8 @@ public class ControlPanelController implements Initializable {
             }
         }
         // TODO(sami): provide UIAlerts for the user s
-        catch(NumberFormatException exc) {
-            System.out.println("exception mate: " + exc.getMessage());
-            exc.printStackTrace();
+        catch(IllegalArgumentException exc) {
+            System.out.println("Invalid user input");
         } catch (GridCreationException e) {
             e.printStackTrace();
         } catch (InvalidPositionException e) {
@@ -120,101 +118,107 @@ public class ControlPanelController implements Initializable {
     private void setStoppedState() { changeButtonsState(lifeStarter.getState()); }
 
     /**
-     * @brief alert the user about the unparsable string
-     * @param txt that is expected to be a number
-     * @return the parsed number
+     * parses string input in the textfield to the correct Number format. If the string is not a number, an
+     * @param t
+     * @param c
+     * @return the number in the textfield if it satisfied all conditions
+     * @throws IllegalArgumentException if the input is not a number, is a negative integer or is a double not between [0-1]
      */
-    private int alertIfNotInteger(String txt) {
-        try { return Integer.parseInt(txt); }
-        catch(NumberFormatException exc) {
-            // show alert here
-            throw exc;
-        }
-    }
-    /**
-     * @brief alert the user about the unparsable string
-     * @param txt that is expected to be a number
-     * @return the parsed number
-     */
-    private double alertIfNotDouble(String txt) {
-        try { return Double.parseDouble(txt); }
-        catch(NumberFormatException exc) {
-            // show alert here
-            throw exc;
-        }
-    }
-    /**
-     * @param val that must be non-negative
-     * @throws IllegalArgumentException if val is negative
-     * @return the passed number
-     */
-    private double exceptionIfNegative(double val) throws IllegalArgumentException {
-        if (val < 0) throw new IllegalArgumentException();
-        return val;
-    }
-    /**
-     * @param val that must be non-negative
-     * @throws IllegalArgumentException if val is negative
-     * @return the passed number
-     */
-    private int exceptionIfNegative(int val) throws IllegalArgumentException {
-        if (val < 0) throw new IllegalArgumentException();
-        return val;
-    }
+    private Number validateInput(TextField t, Class<? extends Number> c) throws IllegalArgumentException {
+        if (Integer.class == c) {
+            int val = Integer.MIN_VALUE;
+            try {
+                val = Integer.parseInt(t.getText());
+                if (val < 0)
+                    throw new NumberFormatException();
+                return val;
+            }
+            catch(NumberFormatException exc) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                // alert.setTitle("Error Dialog");
+                alert.setHeaderText("Invalid input");
 
-    /**
-     * @param val that must be in 0-1 range
-     * @throws IllegalArgumentException if val is out of the range
-     * @return the passed number
-     */
-    private double exceptionIfDoubleOutOfRange(double val) throws IllegalArgumentException {
-        if (val < 0 || val > 1)
-            throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
-        return val;
+                // extract the name of the textfield from the id
+                String fieldName = t.getId().toLowerCase().replaceAll("textfield", "");
+
+                if (val == Integer.MIN_VALUE)
+                    alert.setContentText(String.format("%s: Error parsing input.\n", fieldName));
+                else
+                    alert.setContentText(String.format("%s (%d) cannot be negative.\n", fieldName, val));
+
+                t.requestFocus();
+                alert.showAndWait();
+                throw new IllegalArgumentException();
+            }
+        }
+        else if (Double.class == c) {
+            try {
+                double val = Double.parseDouble(t.getText());
+                if (val < 0 || val > 1) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    //            alert.setTitle("Error Dialog");
+                    alert.setHeaderText("Invalid input");
+
+                    // strip the string
+                    String fieldName = t.getId().toLowerCase().replaceAll("textfield", "");
+
+                    alert.setContentText(String.format("%s (%d) cannot be negative.\n", fieldName, val));
+                    alert.showAndWait();
+                    throw new IllegalArgumentException();
+                }
+                return val;
+            }
+            catch(NumberFormatException exc) {
+                throw new IllegalArgumentException();
+            }
+        }
+        else {
+            throw new IllegalArgumentException("The parameter c must be Integer or Double");
+        }
     }
 
     public Map<String, Number> getOptions() throws NumberFormatException {
         Map<String, Number> options = new HashMap<>();
 
         try {
-            lifeStarter.setFrequency(exceptionIfNegative(Double.parseDouble(frequencyTextField.getText())));
+            double frequency = getSpeedVal();
+            lifeStarter.setFrequency(frequency);
 
             // general params
-            int cols = exceptionIfNegative(alertIfNotInteger(colsTextField.getText()));
-            int rows = exceptionIfNegative(alertIfNotInteger(rowsTextField.getText()));
-            int maxIterations = exceptionIfNegative(alertIfNotInteger(maxIterationsTextField.getText()));
-            int stepDecrease = exceptionIfNegative(alertIfNotInteger(stepDecreaseTextField.getText()));
+            int cols = validateInput(colsTextField, Integer.class).intValue();
+            int rows = validateInput(rowsTextField, Integer.class).intValue();
+            int maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
+            int stepDecrease = validateInput(stepDecreaseTextField, Integer.class).intValue();
             options.put(Life.KEY_GRID_COLS, cols);
             options.put(Life.KEY_GRID_ROWS, rows);
             options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
 
             // initial count params
-            int iWolf = exceptionIfNegative(alertIfNotInteger(iWolfTextField.getText()));
-            int iDeer = exceptionIfNegative(alertIfNotInteger(iDeerTextField.getText()));
-            int iGrass = exceptionIfNegative(alertIfNotInteger(iGrassTextField.getText()));
+            int iWolf = validateInput(iWolfTextField, Integer.class).intValue();
+            int iDeer = validateInput(iDeerTextField, Integer.class).intValue();
+            int iGrass = validateInput(iGrassTextField, Integer.class).intValue();
             options.put(Life.KEY_I_WOLF, iWolf);
             options.put(Life.KEY_I_DEER, iDeer);
             options.put(Life.KEY_I_GRASS, iGrass);
 
             // reproduction params
-            double rWolf = exceptionIfDoubleOutOfRange(alertIfNotDouble(rWolfTextField.getText()));
-            double rDeer = exceptionIfDoubleOutOfRange(alertIfNotDouble((rDeerTextField.getText())));
-            double rGrass = exceptionIfDoubleOutOfRange(alertIfNotDouble((rGrassTextField.getText())));
+            double rWolf = validateInput(rWolfTextField, Double.class).doubleValue();
+            double rDeer = validateInput(rDeerTextField, Double.class).doubleValue();
+            double rGrass = validateInput(rGrassTextField, Double.class).doubleValue();
             options.put(Life.KEY_R_WOLF, rWolf);
             options.put(Life.KEY_R_DEER, rDeer);
             options.put(Life.KEY_R_GRASS, rGrass);
 
             // gain params
-            int gDeer = exceptionIfNegative(alertIfNotInteger(gDeerTextField.getText()));
-            int gWolf = exceptionIfNegative(alertIfNotInteger(gWolfTextField.getText()));
-            // int gGrass = alertIfNotInteger(gGrassTextField.getText()); // disabled
+            int gDeer = validateInput(gDeerTextField, Integer.class).intValue();
+            int gWolf = validateInput(gWolfTextField, Integer.class).intValue();
+            // int gGrass = validateInput(gGrassTextField, Integer.class).intValue();
             options.put(Life.KEY_E_DEER_GAIN, gDeer);
             options.put(Life.KEY_E_WOLF_GAIN, gWolf);
 
             return options;
-        } catch (NumberFormatException exc) {
+        } catch (IllegalArgumentException exc) {
             // let's run over the test fields and highlight the ones that are mis-formatted
-//            return null;
             System.out.println(exc.getMessage());
             throw exc;
         }
@@ -225,17 +229,27 @@ public class ControlPanelController implements Initializable {
     }
 
     public void frequencySliderDone() {
-//        if (frequencySlider == null) // guard
-//            return;
 
-        System.out.println(frequencySlider.getValue());
         // change the frequency using the interface LifeStarter
-        double val = frequencySlider.getValue()/100.0f;
+        double val = getSpeedVal();
 
         // set the frequency as percent
         lifeStarter.setFrequency(val);
 
-        // get the actual value of the frequency
-        frequencyTextField.setText(Double.toString(lifeStarter.getFrequency()));
+        // adjust the speed label
+        speedLabel.setText(String.format("%.1f%%", val*100));
+    }
+
+    private double getSpeedVal() {
+        return frequencySlider.getValue() / 100.0f;
+    }
+
+    public void alertError(String error) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("Look, an Error Dialog");
+        alert.setContentText("Ooops, there was an error!");
+
+        alert.showAndWait();
     }
 }
