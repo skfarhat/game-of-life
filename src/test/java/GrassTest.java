@@ -1,4 +1,4 @@
-import core.AgentIsDeadException;
+import core.exceptions.AgentIsDeadException;
 import core.Grass;
 import core.LifeAgent;
 import org.junit.Test;

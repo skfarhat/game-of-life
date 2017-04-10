@@ -5,13 +5,13 @@ import core.actions.Action;
 import core.actions.Consume;
 import core.actions.Move;
 import core.actions.Reproduce;
+import core.exceptions.InvalidPositionException;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
-import javax.xml.stream.XMLReporter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

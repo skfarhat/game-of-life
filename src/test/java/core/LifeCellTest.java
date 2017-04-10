@@ -1,8 +1,10 @@
 package core;
 
+import core.exceptions.AgentIsDeadException;
+import core.exceptions.GridCreationException;
+import core.exceptions.InvalidPositionException;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

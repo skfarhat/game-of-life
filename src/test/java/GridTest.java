@@ -1,4 +1,7 @@
 import core.*;
+import core.exceptions.AgentIsDeadException;
+import core.exceptions.GridCreationException;
+import core.exceptions.InvalidPositionException;
 import org.junit.Test;
 
 import java.util.Iterator;

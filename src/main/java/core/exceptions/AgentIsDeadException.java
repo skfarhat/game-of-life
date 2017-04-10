@@ -1,9 +1,6 @@
-package core;
+package core.exceptions;
 
-/**
- * Created by Sami on 28/03/2017.
- */
-public class AgentIsDeadException extends Exception {
+public class AgentIsDeadException extends LifeException {
 
     public AgentIsDeadException() { super(); }
 

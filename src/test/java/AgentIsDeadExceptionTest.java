@@ -1,4 +1,4 @@
-import core.AgentIsDeadException;
+import core.exceptions.AgentIsDeadException;
 import core.Utils;
 import org.junit.Test;
 

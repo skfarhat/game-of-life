@@ -4,6 +4,8 @@
 
 package core;
 
+import core.exceptions.AgentIsDeadException;
+
 /**
  * @class Grass is a LifeAgent, it reproduces
  */

@@ -2,12 +2,13 @@
  * Created by Sami on 01/04/2017.
  */
 
-package core;
+package core.exceptions;
 
 /**
  * @class Exception class thrown when the creation of Grid object fails
  */
-public class GridCreationException extends Exception {
+public class GridCreationException extends LifeException {
+
     /** @brief default constructor */
     public GridCreationException() { super(); }
 

@@ -1,6 +1,7 @@
 package core;
 
-import core.Cell;
+import core.exceptions.GridCreationException;
+import core.exceptions.InvalidPositionException;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;

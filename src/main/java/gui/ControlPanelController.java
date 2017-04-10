@@ -1,9 +1,10 @@
 package gui;
 
-import core.AgentIsDeadException;
-import core.GridCreationException;
-import core.InvalidPositionException;
+import core.exceptions.AgentIsDeadException;
+import core.exceptions.GridCreationException;
+import core.exceptions.InvalidPositionException;
 import core.Life;
+import core.exceptions.LifeException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -93,11 +94,7 @@ public class ControlPanelController implements Initializable {
         }
         catch(IllegalArgumentException exc) {
             System.out.println("Invalid user input");
-        } catch (GridCreationException e) {
-            e.printStackTrace();
-        } catch (InvalidPositionException e) {
-            e.printStackTrace();
-        } catch (AgentIsDeadException e) {
+        } catch (LifeException e) {
             e.printStackTrace();
         }
     }

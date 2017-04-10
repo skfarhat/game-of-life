@@ -4,6 +4,8 @@
 
 package core;
 
+import core.exceptions.AgentIsDeadException;
+
 import java.util.List;
 
 public class Deer extends LifeAgent implements Ages, Consumes {

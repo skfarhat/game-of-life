@@ -1,5 +1,5 @@
 import core.GridLifeCellFactory;
-import core.GridCreationException;
+import core.exceptions.GridCreationException;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;

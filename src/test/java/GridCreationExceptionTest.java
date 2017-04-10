@@ -1,4 +1,4 @@
-import core.GridCreationException;
+import core.exceptions.GridCreationException;
 import core.Utils;
 import org.junit.Test;
 

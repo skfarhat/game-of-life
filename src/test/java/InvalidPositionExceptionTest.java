@@ -1,4 +1,4 @@
-import core.InvalidPositionException;
+import core.exceptions.InvalidPositionException;
 import core.Utils;
 import org.junit.Test;
 

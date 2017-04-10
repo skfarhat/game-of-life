@@ -3,6 +3,8 @@
  */
 package core;
 
+import core.exceptions.AgentIsDeadException;
+
 /**
  * something that can be consumed and die
  */

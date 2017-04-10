@@ -3,6 +3,8 @@
  */
 package core;
 
+import core.exceptions.GridCreationException;
+
 /**
  * @class Factory class to construct a Grid of Cells
  */

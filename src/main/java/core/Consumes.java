@@ -3,6 +3,8 @@
  */
 
 package core;
+import core.exceptions.AgentIsDeadException;
+
 import java.util.List;
 
 /**

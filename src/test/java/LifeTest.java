@@ -1,7 +1,11 @@
 import core.*;
 import core.actions.Action;
+import core.exceptions.AgentIsDeadException;
+import core.exceptions.GridCreationException;
+import core.exceptions.InvalidPositionException;
+import core.exceptions.LifeException;
 import org.junit.Test;
-import java.io.IOException;
+
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -12,7 +16,7 @@ public class LifeTest {
     private static final double DELTA = 0.0000001;
 
     @Test
-    public void testLifeDefaults() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+    public void testLifeDefaults() throws LifeException {
         Life life = new Life();
 
         assertEquals(life.E_DEFAULT_INITIAL, life.E_GRASS_INITIAL);
@@ -32,7 +36,7 @@ public class LifeTest {
     }
 
     @Test
-    public void testLifeWithOverriddenValues() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
+    public void testLifeWithOverriddenValues() throws LifeException {
         Map<String, Number> params = new HashMap<String, Number>();
         Random rand = Utils.getRand();
 
@@ -73,7 +77,7 @@ public class LifeTest {
     }
 
     @Test
-    public void testNoMoreDeerWhenNoFoodAndNoReproduction() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+    public void testNoMoreDeerWhenNoFoodAndNoReproduction() throws LifeException {
         Map<String, Number> opts = new HashMap<>();
         int nDeer = 1;
         int eDeer = 10;
@@ -104,7 +108,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRGrassValueThrowsException() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
+    public void testLifeWithInvalidRGrassValueThrowsException() throws LifeException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -114,7 +118,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRDEERValueThrowsException() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
+    public void testLifeWithInvalidRDEERValueThrowsException() throws LifeException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -124,7 +128,7 @@ public class LifeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLifeWithInvalidRWolfValueThrowsException() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
+    public void testLifeWithInvalidRWolfValueThrowsException() throws LifeException {
         // choose a random double not between 0-1
         double val = randDoubleOutOfRange();
 
@@ -134,7 +138,7 @@ public class LifeTest {
     }
 
     @Test
-    public void testStepReturnsEmptyListWhenNoAgentsToAct() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+    public void testStepReturnsEmptyListWhenNoAgentsToAct() throws LifeException {
         Map<String, Number> opts = new HashMap<>();
 
         opts.put(Life.KEY_I_DEER, 0);
@@ -152,7 +156,7 @@ public class LifeTest {
     }
 
     @Test
-    public void testRun() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+    public void testRun() throws LifeException {
         Life life = new Life();
 
         for (int i = 0; i < 30; i++) {

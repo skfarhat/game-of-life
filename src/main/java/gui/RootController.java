@@ -2,25 +2,19 @@ package gui;
 
 import core.*;
 import core.actions.Action;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import core.exceptions.AgentIsDeadException;
+import core.exceptions.InvalidPositionException;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**

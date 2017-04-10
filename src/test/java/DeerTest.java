@@ -1,4 +1,4 @@
-import core.AgentIsDeadException;
+import core.exceptions.AgentIsDeadException;
 import core.Consumable;
 import core.Deer;
 import core.LifeAgent;

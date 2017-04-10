@@ -1,6 +1,6 @@
 package gui;
 
-import core.InvalidPositionException;
+import core.exceptions.InvalidPositionException;
 import core.Life;
 import core.actions.Action;
 import javafx.fxml.FXML;

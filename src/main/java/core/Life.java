@@ -4,6 +4,10 @@ import core.actions.Action;
 import core.actions.Consume;
 import core.actions.Move;
 import core.actions.Reproduce;
+import core.exceptions.AgentIsDeadException;
+import core.exceptions.GridCreationException;
+import core.exceptions.InvalidPositionException;
+import core.exceptions.LifeException;
 
 import java.util.*;
 
@@ -105,12 +109,12 @@ public class Life implements LifeGetter {
     // ===========================================================================================
 
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
-    public Life() throws GridCreationException, InvalidPositionException, AgentIsDeadException { this(null);}
+    public Life() throws LifeException, IllegalArgumentException { this(null);}
 
     // AgentIsDeadException --> invalid initial energy
     // InvalidPositionException --> distribution of the agents failed.
     /** @brief constructor taking in a params map specifying the input parameters */
-    public Life(Map<String, Number> params) throws IllegalArgumentException, GridCreationException, AgentIsDeadException, InvalidPositionException {
+    public Life(Map<String, Number> params) throws LifeException, IllegalArgumentException {
 
         // Consume Rules: dictate who is allowed to consume whom
         CONSUME_RULES.put(Wolf.class, new ArrayList<Class>(){{add(Deer.class );}}); // Wolf eats Deer
@@ -151,7 +155,6 @@ public class Life implements LifeGetter {
         for (int i = 0; i < I_WOLF; i++) agents.add(new Wolf(E_WOLF_INITIAL));
         for (int i = 0; i < I_GRASS; i++) agents.add(new Grass(E_GRASS_INITIAL));
         uniformlyDistribute(agents);
-
     }
 
     /**
@@ -378,7 +381,7 @@ public class Life implements LifeGetter {
     @Override
     public int getGridCols() { return grid.getCols(); }
 
-    public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {
+    public static void main(String []args) throws LifeException {
         Life life = new Life();
 
         while(life.agents.size() > 0){

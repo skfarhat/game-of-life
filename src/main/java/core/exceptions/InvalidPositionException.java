@@ -1,9 +1,6 @@
-package core;
+package core.exceptions;
 
-/**
- * Created by Sami on 31/03/2017.
- */
-public class InvalidPositionException extends Exception {
+public class InvalidPositionException extends LifeException {
 
     /** @brief default constructor */
     public InvalidPositionException() {super(); };

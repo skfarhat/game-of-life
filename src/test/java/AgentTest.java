@@ -1,4 +1,5 @@
 import core.*;
+import core.exceptions.AgentIsDeadException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
