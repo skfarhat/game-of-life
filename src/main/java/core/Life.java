@@ -1,11 +1,7 @@
 package core;
 
-import core.actions.Action;
-import core.actions.Consume;
-import core.actions.Move;
-import core.actions.Reproduce;
+import core.actions.*;
 import core.exceptions.AgentIsDeadException;
-import core.exceptions.GridCreationException;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.LifeException;
 
@@ -32,6 +28,7 @@ public class Life implements LifeGetter {
     public static final String KEY_E_WOLF_INITIAL = "E_WOLF_INITIAL";
     public static final String KEY_E_DEER_GAIN = "E_DEER_GAIN";
     public static final String KEY_E_WOLF_GAIN = "E_WOLF_GAIN";
+    public static final String KEY_E_GRASS_GAIN = "KEY_E_GRASS_GAIN";
     public static final String KEY_E_STEP_DECREASE = "E_STEP_DECREASE";
     public static final String KEY_R_GRASS = "R_GRASS";
     public static final String KEY_R_DEER = "R_DEER";
@@ -51,16 +48,34 @@ public class Life implements LifeGetter {
     public static final int DEFAULT_GRID_N = 10;
 
     /** @brief default energy gained by wolf and deer when they consume other agents */
-    public static final int E_DEFAULT_GAIN = 2;
+    public static final int DEFAULT_GRASS_GAIN = 3;
+
+    /** @brief default energy gained by grass during reproduction*/
+    public static final int DEFAULT_E_GAIN = 2;
 
     /** @brief default energy decrease for Agents when they age */
-    public static final int E_DEFAULT_DECREASE = 1;
+    public static final int DEFAULT_AGE = 1;
 
-    /** @brief default initial agent energy */
-    public static final int E_DEFAULT_INITIAL = 10;
+    /** @brief default initial deer energy */
+    public static final int DEFAULT_E_DEER = 5;
 
-    /** @brief default random schedule frequency - how often are you likely to be selected to act by the scheduler */
-    public static final double R_DEFAULT = 0.33;
+    /** @brief default initial wolf energy */
+    public static final int DEFAULT_E_WOLF = 5;
+
+    /** @brief default initial number of wolves */
+    public static final int DEFAULT_I_WOLF = 5;
+
+    /** @brief default initial number of deers */
+    public static final int DEFAULT_I_DEER = 10;
+
+    /** @brief default probability of reproducing for a wolf */
+    public static final double DEFAULT_R_WOLF = 0.1;
+
+    /** @brief default probability of reproducing for a deer*/
+    public static final double DEFAULT_R_DEER = 0.2;
+
+    /** @brief default probability of reproducing for grass */
+    public static final double R_GRASS_DEFAULT = 1.0;
 
     /** @brief default initial number of instance of an agent type */
     public static final int I_DEFAULT = 5;
@@ -80,15 +95,17 @@ public class Life implements LifeGetter {
     public final int E_GRASS_INITIAL;
     public final int E_DEER_INITIAL;
     public final int E_WOLF_INITIAL;
+    public final int E_GRASS_GAIN;
     public final int E_DEER_GAIN;
     public final int E_WOLF_GAIN;
-    public final int E_STEP_DECREASE;
     public final double R_GRASS;
     public final double R_DEER;
     public final double R_WOLF;
     public final int I_GRASS;
     public final int I_DEER;
     public final int I_WOLF;
+    public final int AGE_WOLF;
+    public final int AGE_DEER;
 
     /** @brief the maximum number of iterations - max number of times step is called, a negative means run indefinitely */
     public final int maxIterations;
@@ -127,21 +144,30 @@ public class Life implements LifeGetter {
         maxIterations = params.containsKey(KEY_MAX_ITERATIONS)? params.get(KEY_MAX_ITERATIONS).intValue() : DEFAULT_MAX_ITERATIONS;
         exceptionIfNegative(GRID_COLS = params.containsKey(KEY_GRID_COLS)? params.get(KEY_GRID_COLS).intValue() : DEFAULT_GRID_N);
         exceptionIfNegative(GRID_ROWS = params.containsKey(KEY_GRID_ROWS)? params.get(KEY_GRID_ROWS).intValue() : DEFAULT_GRID_N);
-        exceptionIfNegative(E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : E_DEFAULT_INITIAL);
-        exceptionIfNegative(E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : E_DEFAULT_INITIAL);
-        exceptionIfNegative(E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : E_DEFAULT_INITIAL);
-        exceptionIfNegative(E_DEER_GAIN = params.containsKey(KEY_E_DEER_GAIN)? params.get(KEY_E_DEER_GAIN).intValue() : E_DEFAULT_GAIN);
-        exceptionIfNegative(E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : E_DEFAULT_GAIN);
-        exceptionIfNegative(E_STEP_DECREASE = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : E_DEFAULT_DECREASE);
+
+        // initial energy
+        exceptionIfNegative(E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : DEFAULT_E_DEER);
+        exceptionIfNegative(E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : DEFAULT_E_DEER);
+        exceptionIfNegative(E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : DEFAULT_E_WOLF);
+
+        // energy gain
+        exceptionIfNegative(E_GRASS_GAIN = params.containsKey(KEY_E_GRASS_GAIN)? params.get(KEY_E_GRASS_GAIN).intValue() : DEFAULT_GRASS_GAIN);
+        exceptionIfNegative(E_DEER_GAIN = params.containsKey(KEY_E_DEER_GAIN)? params.get(KEY_E_DEER_GAIN).intValue() : DEFAULT_E_GAIN);
+        exceptionIfNegative(E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : DEFAULT_E_GAIN);
+
+        // initial count
         exceptionIfNegative(I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : I_DEFAULT);
-        exceptionIfNegative(I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : I_DEFAULT);
-        exceptionIfNegative(I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : I_DEFAULT);
+        exceptionIfNegative(I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : DEFAULT_I_DEER);
+        exceptionIfNegative(I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : DEFAULT_I_WOLF);
 
-        // the doubles must be in range 0-1 - we use exceptionIfOutOfRange
-        exceptionIfOutOfRange(R_GRASS = params.containsKey(KEY_R_GRASS)? params.get(KEY_R_GRASS).doubleValue() : R_DEFAULT);
-        exceptionIfOutOfRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : R_DEFAULT);
-        exceptionIfOutOfRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : R_DEFAULT);
+        // age
+        exceptionIfNegative(AGE_DEER = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : DEFAULT_AGE);
+        exceptionIfNegative(AGE_WOLF = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : DEFAULT_AGE);
 
+        // reproduction (the doubles must be in range [0-1])
+        exceptionIfOutOfRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : DEFAULT_R_DEER);
+        exceptionIfOutOfRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : DEFAULT_R_WOLF);
+        R_GRASS = R_GRASS_DEFAULT; // at the time of writing this should not be variable and has thus been hardcoded
 
         // Create Life in 7 days
         // ---------------------
@@ -155,19 +181,6 @@ public class Life implements LifeGetter {
         for (int i = 0; i < I_WOLF; i++) agents.add(new Wolf(E_WOLF_INITIAL));
         for (int i = 0; i < I_GRASS; i++) agents.add(new Grass(E_GRASS_INITIAL));
         uniformlyDistribute(agents);
-    }
-
-    /**
-     *
-     * @param list list to filter from
-     * @param agent agent which consumes
-     * @return a list of all consumable Agents by Agent @param a
-     */
-    private List<Consumable> filterConsumablesForAgent(List<Consumable> list, Agent agent) {
-        // list of classes that the chosen type can consume
-        final List<Class> consumables =  CONSUME_RULES.get(agent.getClass());
-        list.removeIf(a -> !consumables.contains(a.getClass()));
-        return list;
     }
 
     private List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, Agent agent) {
@@ -200,6 +213,7 @@ public class Life implements LifeGetter {
 
         // guard - nothing to do
         if (agents.size() < 1) {
+            System.out.println("nothing to do ");
             return actions;
         }
 
@@ -211,7 +225,7 @@ public class Life implements LifeGetter {
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
-
+            System.out.println("Wolf/Deer");
             // -------
             // Move
             // -------
@@ -250,11 +264,11 @@ public class Life implements LifeGetter {
             // Age
             // ---------
 
-            // decrease energy
-            chosen.decreaseEnergyBy(E_STEP_DECREASE);
+            int ageBy = (chosen instanceof Wolf)? AGE_WOLF: AGE_DEER;
+            Age age = new Age(chosen, ageBy);
+            actions.add(age);
 
             processActions(actions);
-
 
             // only in the dst cell can someone die - this will remove the agents from the cell's list
             List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
@@ -262,18 +276,29 @@ public class Life implements LifeGetter {
             // remove the agents from the life 'agents' array
             agents.removeAll(deadAgents);
 
+            // TODO(sami); consider sending events for all new dead agents,
         }
 
         else if (chosen instanceof Grass) {
-            // find an adjacent cell but don't moves
+            System.out.println("Grass");
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
-            LifeCell nextCell = (LifeCell) grid.get(nextPoint);
-            if (!nextCell.isContainsGrass()) {
-                // System.out.println(chosen + " is reproducing.");
-                LifeAgent newBaby = chosen.reproduce();
-                nextCell.addAgent(newBaby);
-                agents.add(newBaby);
+
+            // ---------
+            // Reproduce
+            // ---------
+
+            if (!((LifeCell)grid.get(nextPoint)).isContainsGrass()) {
+                LifeAgent babyGrass = chosen.reproduce();
+                babyGrass.setPos(nextPoint);
+                Action reproduce = new Reproduce(chosen, babyGrass);
+                actions.add(reproduce);
             }
+
+            // ---------------
+            // Increase Energy
+            // ---------------
+
+            chosen.increaseEnergyBy(E_GRASS_GAIN);
 
             processActions(actions);
         }
@@ -284,7 +309,10 @@ public class Life implements LifeGetter {
 
     private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
         for (Action action: actions) {
-            if (action instanceof Consume) {
+            if (action instanceof  Age) {
+                processAgeAction((Age) action);
+            }
+            else if (action instanceof Consume) {
                 processConsume((Consume) action);
             }
             else if (action instanceof Reproduce) {
@@ -294,6 +322,10 @@ public class Life implements LifeGetter {
                 processMoveAction((Move) action);
             }
         }
+    }
+
+    private void processAgeAction(Age age) throws AgentIsDeadException {
+        age.getAgent().decreaseEnergyBy(age.getAgeBy());
     }
 
     private void processMoveAction(Move action) throws InvalidPositionException {

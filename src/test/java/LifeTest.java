@@ -1,7 +1,6 @@
 import core.*;
 import core.actions.Action;
 import core.exceptions.AgentIsDeadException;
-import core.exceptions.GridCreationException;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.LifeException;
 import org.junit.Test;
@@ -19,12 +18,12 @@ public class LifeTest {
     public void testLifeDefaults() throws LifeException {
         Life life = new Life();
 
-        assertEquals(life.E_DEFAULT_INITIAL, life.E_GRASS_INITIAL);
-        assertEquals(life.E_DEFAULT_INITIAL, life.E_DEER_INITIAL);
-        assertEquals(life.E_DEFAULT_INITIAL, life.E_WOLF_INITIAL);
-        assertEquals(life.E_DEFAULT_GAIN, life.E_DEER_GAIN);
-        assertEquals(life.E_DEFAULT_GAIN, life.E_WOLF_GAIN);
-        assertEquals(life.E_DEFAULT_DECREASE, life.E_STEP_DECREASE);
+        assertEquals(life.DEFAULT_E_DEER, life.E_GRASS_INITIAL);
+        assertEquals(life.DEFAULT_E_DEER, life.E_DEER_INITIAL);
+        assertEquals(life.DEFAULT_E_DEER, life.E_WOLF_INITIAL);
+        assertEquals(life.DEFAULT_E_GAIN, life.E_DEER_GAIN);
+        assertEquals(life.DEFAULT_E_GAIN, life.E_WOLF_GAIN);
+        assertEquals(life.DEFAULT_AGE, life.E_STEP_DECREASE);
         assertEquals(life.DEFAULT_GRID_N, life.getGridCols());
         assertEquals(life.DEFAULT_GRID_N, life.getGridRows());
         assertEquals(life.R_DEFAULT, life.R_WOLF, DELTA);

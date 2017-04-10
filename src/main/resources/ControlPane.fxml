@@ -59,7 +59,7 @@
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <TextField fx:id="rGrassTextField" layoutX="100.0" layoutY="474.0" prefHeight="27.0" prefWidth="70.0" promptText="[0;1]" text="0.33">
+                <TextField fx:id="rGrassTextField" disable="true" layoutX="100.0" layoutY="474.0" prefHeight="27.0" prefWidth="70.0" promptText="[0;1]" text="1">
                <font>
                   <Font size="11.0" />
                </font></TextField>
@@ -109,7 +109,7 @@
                <font>
                   <Font size="11.0" />
                </font></TextField>
-                <TextField fx:id="gGrassTextField" disable="true" layoutX="100.0" layoutY="593.0" prefHeight="27.0" prefWidth="70.0">
+                <TextField fx:id="gGrassTextField" disable="true" layoutX="100.0" layoutY="593.0" prefHeight="27.0" prefWidth="70.0" text="1">
                <font>
                   <Font size="11.0" />
                </font></TextField>

@@ -40,6 +40,7 @@ public class LifeViewController {
     public void draw() {
         gridView.draw();
     }
+
     public void draw(Action action) throws InvalidPositionException {
         gridView.draw(action);
     }

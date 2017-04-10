@@ -64,6 +64,10 @@ public class ControlPanelController implements Initializable {
             frequencySliderDone();
         });
 
+        rDeerTextField.setText(new Double(Life.DEFAULT_R_DEER).toString());
+        rWolfTextField.setText(new Double(Life.DEFAULT_R_WOLF).toString());
+        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
+
         updateSpeedLabelText();
     }
 

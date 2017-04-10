@@ -1,10 +1,7 @@
 package gui;
 
 import core.*;
-import core.actions.Action;
-import core.actions.Consume;
-import core.actions.Move;
-import core.actions.Reproduce;
+import core.actions.*;
 import core.exceptions.InvalidPositionException;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -95,9 +92,13 @@ public class GridView extends Pane {
     }
 
     public void draw(Action action)  {
-        // get the affected cells
-        Agent agent = action.getAgent();
-        if (action instanceof Move) {
+        if (action instanceof Age) {
+            Age age = (Age) action;
+            Point2D srcPt = age.getAgent().getPos();
+            CellView srcCell = cells.get(srcPt);
+            srcCell.draw();
+        }
+        else if (action instanceof Move) {
             Move move = (Move) action;
             Point2D srcPt = move.getFrom();
             Point2D dstPt = move.getTo();
@@ -129,5 +130,6 @@ public class GridView extends Pane {
                     cells.get(p).draw();
             }
         }
+
     }
 }
