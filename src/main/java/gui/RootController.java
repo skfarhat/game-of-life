@@ -1,13 +1,14 @@
 package gui;
 
-import core.AgentIsDeadException;
-import core.InvalidPositionException;
-import core.Life;
-import core.Utils;
+import core.*;
 import core.actions.Action;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
@@ -19,6 +20,8 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @class RootController
@@ -49,6 +52,7 @@ public class RootController implements Initializable, LifeStarter {
     private State currentState = State.STOPPED;
     private Life life;
     private ConcurrentLinkedQueue<Action> queue = new ConcurrentLinkedQueue<>();
+    private SimpleIntegerProperty iterations = new SimpleIntegerProperty();
 
     // ===========================================================================================
     // FXML
@@ -171,15 +175,9 @@ public class RootController implements Initializable, LifeStarter {
         }
     }
 
-    long count = 0;
-    double cum = 0.0f;
-
-    long drawCount = 0;
-    double drawCum = 0.0f;
-
     @Override
-    public double getFrequency() {
-        return calculateFrequencyFromPeriod(period);
+    public SimpleIntegerProperty getIterationsObservable() {
+        return iterations;
     }
 
     /** @brief: run the timers to step through life
@@ -190,6 +188,15 @@ public class RootController implements Initializable, LifeStarter {
     private boolean runTimers() {
         if (this.life == null || getState() == State.STARTED)
             return false;
+
+        // inner lambda function returning true if we have not exceeded the max number of iterations
+        // if maxIterations < 1, this always returns true
+        Function<Void, Boolean> checkIteration = (Void) -> {
+            if (life.getMaxIterations() < 1)
+                return true;
+
+            return life.getIteration() < life.getMaxIterations();
+        };
 
         // Consumer
         Thread t = new Thread(new Task<Void>() {
@@ -223,16 +230,18 @@ public class RootController implements Initializable, LifeStarter {
             @Override
             public void run() {
                 try {
-                    long startTime = System.nanoTime();
                     List<Action> actions = life.step();
+                    iterations.setValue(life.getIteration());
+
                     for (Action action : actions) {
-//                        System.out.println("offered action to queue");
                         queue.offer(action);
                     }
-                    long endTime = System.nanoTime();
-                    long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-                    cum+=duration;
-//                    System.out.printf("[logic]\tavg: %.2fms\tduration= %.2f ms\n", cum/(1000.0f*(++count)), duration/1000.0f);
+
+                    // cancel timer if max iterations exceeded
+                    if (life.getMaxIterations() > 0 &&  life.getIteration() >= life.getMaxIterations()) {
+                        cancelTimers();
+                    }
+
                 } catch (InvalidPositionException e) {
                     e.printStackTrace();
                 } catch (AgentIsDeadException e) {
@@ -247,16 +256,26 @@ public class RootController implements Initializable, LifeStarter {
         return true;
     }
 
+    /**
+     * @return the current state of the system (e.g. Started, Stopped, Paused)
+     */
+    @Override
+    public State getState() {
+        return currentState;
+    }
+
+    /**
+     * @return lifeGetter interface to expose some of the getter methods in life without handing the full refrenece to it
+     */
+    public LifeGetter lifeGetter() {
+        return life;
+    }
+
     /** @brief cancel all timers effectively stopping the drawing and logic in life */
     private void cancelTimers() {
         if (getState() != State.STOPPED) {
             timer.cancel();
         }
-    }
-
-    @Override
-    public State getState() {
-        return currentState;
     }
 
 }

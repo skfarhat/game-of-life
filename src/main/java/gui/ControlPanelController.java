@@ -4,6 +4,7 @@ import core.AgentIsDeadException;
 import core.GridCreationException;
 import core.InvalidPositionException;
 import core.Life;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +13,6 @@ import javafx.scene.control.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -43,19 +43,32 @@ public class ControlPanelController implements Initializable {
     @FXML private TextField colsTextField;
     @FXML private TextField rowsTextField;
     @FXML private Slider frequencySlider;
+    @FXML private Label iterationsLabel;
 
+    /**
+     *
+     */
     public ControlPanelController() {
 
     }
 
+    /**
+     *
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         frequencySlider.valueProperty().addListener(event -> {
             frequencySliderDone();
         });
 
+        updateSpeedLabelText();
     }
 
+    /**
+     * @param actionEvent
+     */
     public void startButtonPressed(ActionEvent actionEvent) {
         try {
             Map<String, Number> options = getOptions();
@@ -78,7 +91,6 @@ public class ControlPanelController implements Initializable {
                     setPausedState();
             }
         }
-        // TODO(sami): provide UIAlerts for the user s
         catch(IllegalArgumentException exc) {
             System.out.println("Invalid user input");
         } catch (GridCreationException e) {
@@ -90,9 +102,85 @@ public class ControlPanelController implements Initializable {
         }
     }
 
+    /**
+     * @param actionEvent
+     */
     public void stopButtonPressed(ActionEvent actionEvent) {
         if (lifeStarter.stop())
             setStoppedState();
+    }
+
+    /**
+     *
+     * @return
+     * @throws NumberFormatException
+     */
+    public Map<String, Number> getOptions() throws NumberFormatException {
+        Map<String, Number> options = new HashMap<>();
+
+        try {
+            double frequency = getSpeedVal();
+            lifeStarter.setFrequency(frequency);
+
+            // general params
+            int cols = validateInput(colsTextField, Integer.class).intValue();
+            int rows = validateInput(rowsTextField, Integer.class).intValue();
+            int maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
+            int stepDecrease = validateInput(stepDecreaseTextField, Integer.class).intValue();
+            options.put(Life.KEY_MAX_ITERATIONS, maxIterations);
+            options.put(Life.KEY_GRID_COLS, cols);
+            options.put(Life.KEY_GRID_ROWS, rows);
+            options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
+
+            // initial count params
+            int iWolf = validateInput(iWolfTextField, Integer.class).intValue();
+            int iDeer = validateInput(iDeerTextField, Integer.class).intValue();
+            int iGrass = validateInput(iGrassTextField, Integer.class).intValue();
+            options.put(Life.KEY_I_WOLF, iWolf);
+            options.put(Life.KEY_I_DEER, iDeer);
+            options.put(Life.KEY_I_GRASS, iGrass);
+
+            // reproduction params
+            double rWolf = validateInput(rWolfTextField, Double.class).doubleValue();
+            double rDeer = validateInput(rDeerTextField, Double.class).doubleValue();
+            double rGrass = validateInput(rGrassTextField, Double.class).doubleValue();
+            options.put(Life.KEY_R_WOLF, rWolf);
+            options.put(Life.KEY_R_DEER, rDeer);
+            options.put(Life.KEY_R_GRASS, rGrass);
+
+            // gain params
+            int gDeer = validateInput(gDeerTextField, Integer.class).intValue();
+            int gWolf = validateInput(gWolfTextField, Integer.class).intValue();
+            // int gGrass = validateInput(gGrassTextField, Integer.class).intValue();
+            options.put(Life.KEY_E_DEER_GAIN, gDeer);
+            options.put(Life.KEY_E_WOLF_GAIN, gWolf);
+
+            return options;
+        } catch (IllegalArgumentException exc) {
+            System.out.println(exc.getMessage());
+            throw exc;
+        }
+    }
+
+    public void setLifeStarter(LifeStarter lifeStarter) {
+        this.lifeStarter = lifeStarter;
+
+        // listen to changes on iterations in lifeStarter and adjust the Label
+        lifeStarter.getIterationsObservable().addListener((observable, oldVal, newVal) -> {
+            int maxIter = lifeStarter.lifeGetter().getMaxIterations();
+            String maxStr = (maxIter < 1)? "∞" : String.format("%d", maxIter);
+            Platform.runLater(() -> iterationsLabel.setText(String.format("Iterations: %d / %s", newVal, maxStr)));
+        });
+
+    }
+
+    public void frequencySliderDone() {
+
+        double val = getSpeedVal();
+
+        lifeStarter.setFrequency(val);
+
+        updateSpeedLabelText();
     }
 
     /** @brief change the name (and other properties?) appearing on the start button */
@@ -111,11 +199,13 @@ public class ControlPanelController implements Initializable {
         }
     }
 
-    private void setPausedState() { changeButtonsState(lifeStarter.getState()); }
-    private void setStartedState() {
-        changeButtonsState(lifeStarter.getState());
+    /**
+     * @brief get the speed for the slider (0-1) and adjust the speed label in percent terms
+     */
+    private void updateSpeedLabelText() {
+        double val = getSpeedVal();
+        speedLabel.setText(String.format("%.1f%%", val*100));
     }
-    private void setStoppedState() { changeButtonsState(lifeStarter.getState()); }
 
     /**
      * parses string input in the textfield to the correct Number format. If the string is not a number, an
@@ -177,79 +267,13 @@ public class ControlPanelController implements Initializable {
         }
     }
 
-    public Map<String, Number> getOptions() throws NumberFormatException {
-        Map<String, Number> options = new HashMap<>();
-
-        try {
-            double frequency = getSpeedVal();
-            lifeStarter.setFrequency(frequency);
-
-            // general params
-            int cols = validateInput(colsTextField, Integer.class).intValue();
-            int rows = validateInput(rowsTextField, Integer.class).intValue();
-            int maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
-            int stepDecrease = validateInput(stepDecreaseTextField, Integer.class).intValue();
-            options.put(Life.KEY_GRID_COLS, cols);
-            options.put(Life.KEY_GRID_ROWS, rows);
-            options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
-
-            // initial count params
-            int iWolf = validateInput(iWolfTextField, Integer.class).intValue();
-            int iDeer = validateInput(iDeerTextField, Integer.class).intValue();
-            int iGrass = validateInput(iGrassTextField, Integer.class).intValue();
-            options.put(Life.KEY_I_WOLF, iWolf);
-            options.put(Life.KEY_I_DEER, iDeer);
-            options.put(Life.KEY_I_GRASS, iGrass);
-
-            // reproduction params
-            double rWolf = validateInput(rWolfTextField, Double.class).doubleValue();
-            double rDeer = validateInput(rDeerTextField, Double.class).doubleValue();
-            double rGrass = validateInput(rGrassTextField, Double.class).doubleValue();
-            options.put(Life.KEY_R_WOLF, rWolf);
-            options.put(Life.KEY_R_DEER, rDeer);
-            options.put(Life.KEY_R_GRASS, rGrass);
-
-            // gain params
-            int gDeer = validateInput(gDeerTextField, Integer.class).intValue();
-            int gWolf = validateInput(gWolfTextField, Integer.class).intValue();
-            // int gGrass = validateInput(gGrassTextField, Integer.class).intValue();
-            options.put(Life.KEY_E_DEER_GAIN, gDeer);
-            options.put(Life.KEY_E_WOLF_GAIN, gWolf);
-
-            return options;
-        } catch (IllegalArgumentException exc) {
-            // let's run over the test fields and highlight the ones that are mis-formatted
-            System.out.println(exc.getMessage());
-            throw exc;
-        }
-    }
-
-    public void setLifeStarter(LifeStarter lifeStarter) {
-        this.lifeStarter = lifeStarter;
-    }
-
-    public void frequencySliderDone() {
-
-        // change the frequency using the interface LifeStarter
-        double val = getSpeedVal();
-
-        // set the frequency as percent
-        lifeStarter.setFrequency(val);
-
-        // adjust the speed label
-        speedLabel.setText(String.format("%.1f%%", val*100));
-    }
-
     private double getSpeedVal() {
         return frequencySlider.getValue() / 100.0f;
     }
-
-    public void alertError(String error) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("Look, an Error Dialog");
-        alert.setContentText("Ooops, there was an error!");
-
-        alert.showAndWait();
+    private void setPausedState() { changeButtonsState(lifeStarter.getState()); }
+    private void setStartedState() {
+        changeButtonsState(lifeStarter.getState());
     }
+    private void setStoppedState() { changeButtonsState(lifeStarter.getState()); }
+
 }

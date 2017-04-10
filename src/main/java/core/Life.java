@@ -14,55 +14,26 @@ import java.util.*;
  * But it was later noted that we may want to simulate multiple lives at the same time concurrently, which
  * would be impractical (impossible?) with singletons. The design was then changed.
  */
-public class Life {
+public class Life implements LifeGetter {
 
     // ===========================================================================================
     // List of keys in the params map
     // ===========================================================================================
 
-    /** @brief MAX_ITERATIONS key in params */
     public static final String KEY_MAX_ITERATIONS = "MAX_ITERATIONS";
-
-    /** @brief GRID_COLS key in params */
     public static final String KEY_GRID_COLS = "GRID_COLS";
-
-    /** @brief GRID_ROWS key in params */
     public static final String KEY_GRID_ROWS = "GRID_ROWS";
-
-    /** @brief E_GRASS_INITIAL key in params */
     public static final String KEY_E_GRASS_INITIAL = "E_GRASS_INITIAL";
-
-    /** @brief E_DEER_INITIAL key in params */
     public static final String KEY_E_DEER_INITIAL = "E_DEER_INITIAL";
-
-    /** @brief E_WOLF_INITIAL key in params */
     public static final String KEY_E_WOLF_INITIAL = "E_WOLF_INITIAL";
-
-    /** @brief E_DEER_GAIN key in params */
     public static final String KEY_E_DEER_GAIN = "E_DEER_GAIN";
-
-    /** @brief E_WOLF_GAIN key in params */
     public static final String KEY_E_WOLF_GAIN = "E_WOLF_GAIN";
-
-    /** @brief E_STEP_DECREASE key in params */
     public static final String KEY_E_STEP_DECREASE = "E_STEP_DECREASE";
-
-    /** @brief R_GRASS key in params */
     public static final String KEY_R_GRASS = "R_GRASS";
-
-    /** @brief R_DEER key in params */
     public static final String KEY_R_DEER = "R_DEER";
-
-    /** @brief R_WOLF key in params */
     public static final String KEY_R_WOLF = "R_WOLF";
-
-    /** @brief I_GRASS key in params */
     public static final String KEY_I_GRASS = "I_GRASS";
-
-    /** @brief I_DEER key in params */
     public static final String KEY_I_DEER = "I_DEER";
-
-    /** @brief I_WOLF key in params */
     public static final String KEY_I_WOLF = "I_WOLF";
 
     // ===========================================================================================
@@ -100,53 +71,24 @@ public class Life {
      */
     private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
 
+    public final int GRID_COLS;
+    public final int GRID_ROWS;
+    public final int E_GRASS_INITIAL;
+    public final int E_DEER_INITIAL;
+    public final int E_WOLF_INITIAL;
+    public final int E_DEER_GAIN;
+    public final int E_WOLF_GAIN;
+    public final int E_STEP_DECREASE;
+    public final double R_GRASS;
+    public final double R_DEER;
+    public final double R_WOLF;
+    public final int I_GRASS;
+    public final int I_DEER;
+    public final int I_WOLF;
+
     /** @brief the maximum number of iterations - max number of times step is called, a negative means run indefinitely */
     public final int maxIterations;
-
-    /** @brief the index of the current iteration */
     private int iteration;
-
-    /** @brief number of columns in the grid */
-    public final int GRID_COLS;
-
-    /** @brief number of rows in the grid */
-    public final int GRID_ROWS;
-
-    /** @brief grass' initial energy */
-    public final int E_GRASS_INITIAL;
-
-    /** @brief deer's initial energy */
-    public final int E_DEER_INITIAL;
-
-    /** @brief wolf's initial energy */
-    public final int E_WOLF_INITIAL;
-
-    /** @brief energy gained when the deer consumes grass */
-    public final int E_DEER_GAIN;
-
-    /** @brief energy gained when the wolf consumes a deer */
-    public final int E_WOLF_GAIN;
-
-    /** @brief value by which Agent's energy is decreased at each step */
-    public final int E_STEP_DECREASE;
-
-    /** @brief grass' random scheduling frequency */
-    public final double R_GRASS;
-
-    /** @brief deer's random scheduling frequency */
-    public final double R_DEER;
-
-    /** @brief wolf's random scheduling frequency */
-    public final double R_WOLF;
-
-    /** @brief initial number of grass instances */
-    public final int I_GRASS;
-
-    /** @brief initial number of deers */
-    public final int I_DEER;
-
-    /** @brief initial number of wolves */
-    public final int I_WOLF;
 
     // ===========================================================================================
     // MEMBER VARIABLES
@@ -212,18 +154,6 @@ public class Life {
 
     }
 
-    /** @brief uniformly distribute the agents on the grid */
-    private void uniformlyDistribute(List<Agent> agents) throws InvalidPositionException {
-        for (Agent a : agents) {
-            Point2D p = Utils.randomPoint(this.GRID_ROWS, this.GRID_COLS);
-            grid.get(p.getX(), p.getY()).addAgent(a);
-        }
-    }
-
-    private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
-        return grid.randomAdjacentPoint(p);
-    }
-
     /**
      *
      * @param list list to filter from
@@ -248,46 +178,13 @@ public class Life {
         return consumables;
     }
 
+    // TODO(sami): create the equivalent removeAgent() method and remove ticket from Trello
     private void addAgent(Agent agent) throws InvalidPositionException {
         // TODO(sami): check that the agent doesn't already exist there
         grid.get(agent.getPos()).addAgent(agent);
         agents.add(agent);
     }
 
-    private void processMoveAction(Move action) throws InvalidPositionException {
-        Cell nextCell = grid.get(action.getTo());
-        grid.moveAgentToCell(action.getAgent(), nextCell);
-    }
-
-    private void processReproduce(Reproduce action) throws InvalidPositionException {
-        Iterator<LifeAgent> babies = action.getBabies();
-        while(babies.hasNext()) {
-            LifeAgent baby = babies.next();
-            addAgent(baby);
-        }
-    }
-
-    private void processConsume(Consume action) throws AgentIsDeadException {
-        Consumable consumable = action.getConsumables().next();
-        ((Consumes) action.getAgent()).consume(consumable);
-    }
-
-    private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
-        for (Action action: actions) {
-            if (action instanceof Consume) {
-                processConsume((Consume) action);
-            }
-            else if (action instanceof Reproduce) {
-                processReproduce((Reproduce) action);
-            }
-            else if (action instanceof  Move) {
-                processMoveAction((Move) action);
-            }
-        }
-    }
-
-
-    // TODO(sami): have only one processActions
     /**
      * @brief choose an agent at random to act
      * @throws InvalidPositionException
@@ -378,8 +275,52 @@ public class Life {
             processActions(actions);
         }
 
-
+        iteration++;
         return actions;
+    }
+
+    private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
+        for (Action action: actions) {
+            if (action instanceof Consume) {
+                processConsume((Consume) action);
+            }
+            else if (action instanceof Reproduce) {
+                processReproduce((Reproduce) action);
+            }
+            else if (action instanceof  Move) {
+                processMoveAction((Move) action);
+            }
+        }
+    }
+
+    private void processMoveAction(Move action) throws InvalidPositionException {
+        Cell nextCell = grid.get(action.getTo());
+        grid.moveAgentToCell(action.getAgent(), nextCell);
+    }
+
+    private void processReproduce(Reproduce action) throws InvalidPositionException {
+        Iterator<LifeAgent> babies = action.getBabies();
+        while(babies.hasNext()) {
+            LifeAgent baby = babies.next();
+            addAgent(baby);
+        }
+    }
+
+    private void processConsume(Consume action) throws AgentIsDeadException {
+        Consumable consumable = action.getConsumables().next();
+        ((Consumes) action.getAgent()).consume(consumable);
+    }
+
+    /** @brief uniformly distribute the agents on the grid */
+    private void uniformlyDistribute(List<Agent> agents) throws InvalidPositionException {
+        for (Agent a : agents) {
+            Point2D p = Utils.randomPoint(this.GRID_ROWS, this.GRID_COLS);
+            grid.get(p.getX(), p.getY()).addAgent(a);
+        }
+    }
+
+    private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
+        return grid.randomAdjacentPoint(p);
     }
 
     /**
@@ -399,15 +340,28 @@ public class Life {
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
     }
 
+    /**
+     * @return
+     */
+    @Override
     public List<Agent> getAgents() {
         return agents;
     }
 
     /** @return the current iteration */
+    @Override
     public int getIteration() {
         return iteration;
     }
 
+    /** @return the maximum number of iterations that this simulation should run - this is not enforced in this class
+     * but the member variable is set when parsing the options */
+    @Override
+    public int getMaxIterations() {
+        return maxIterations;
+    }
+
+    @Override
     public Grid<LifeCell> getGrid() {
         return grid;
     }
@@ -415,11 +369,13 @@ public class Life {
     /**
      * @return number of rows in the grid
      */
+    @Override
     public int getGridRows() { return grid.getRows(); }
 
     /**
      * @return number of columns in the grid
      */
+    @Override
     public int getGridCols() { return grid.getCols(); }
 
     public static void main(String []args) throws GridCreationException, AgentIsDeadException, InvalidPositionException {

@@ -1,6 +1,9 @@
 package gui;
 
 import core.Life;
+import core.LifeGetter;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 
 
 enum State {
@@ -23,5 +26,8 @@ public interface LifeStarter {
 
     void setFrequency(double hz);
 
-    double getFrequency();
+    LifeGetter lifeGetter();
+
+    SimpleIntegerProperty getIterationsObservable();
+
 }

@@ -127,7 +127,7 @@
                   <Font size="11.0" />
                </font>
             </Label>
-            <Slider fx:id="frequencySlider" blockIncrement="1.0" layoutX="10.0" layoutY="199.0" majorTickUnit="10.0" minorTickCount="0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" showTickLabels="true" showTickMarks="true" />
+            <Slider fx:id="frequencySlider" blockIncrement="1.0" layoutX="10.0" layoutY="199.0" majorTickUnit="10.0" minorTickCount="0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" showTickLabels="true" showTickMarks="true" value="50.0" />
             <Label layoutX="11.0" layoutY="129.0" text="Iterations">
                <font>
                   <Font size="11.0" />
@@ -142,6 +142,11 @@
                   <Font size="11.0" />
                </font></Label>
             <Label fx:id="speedLabel" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="165.0" prefHeight="17.0" prefWidth="68.0" text="50%" textAlignment="RIGHT">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label fx:id="iterationsLabel" layoutX="12.0" layoutY="699.0" prefHeight="17.0" prefWidth="164.0" text="Iterations: 0/1">
                <font>
                   <Font size="11.0" />
                </font>
