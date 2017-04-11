@@ -126,8 +126,7 @@ public class GridView extends Pane {
             Iterator<LifeAgent> it = reproduce.getBabies();
             while(it.hasNext()) {
                 Point2D p = it.next().getPos();
-                if (p.equals(pt))
-                    cells.get(p).draw();
+                cells.get(p).draw();
             }
         }
 
