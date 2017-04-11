@@ -8,7 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,11 +21,13 @@ public class GridView extends Pane {
 
     private Grid grid;
 
+
     // e.g. we are given 800x800px
     // for (row, col) = 100, 80
     // cellSide =  min(8, 10) = 8
     public GridView(Grid grid, double totalWidth, double totalHeight) throws InvalidPositionException {
         this.grid = grid;
+
 
         // a single cell's side
         double cellSide = Math.min(totalWidth/grid.getRows(), totalHeight/grid.getCols());
@@ -47,6 +51,7 @@ public class GridView extends Pane {
                 cellView.setLayoutX(x);
                 cellView.setLayoutY(y);
 
+//                cellView.setStyle("-fx-background-color: " + toRGBCode(colors.get(i)));
                 // shade colors
                 // if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0))
                 //   cellView.setStyle("-fx-background-color:yellow");

@@ -41,13 +41,15 @@ public class CellView extends Pane {
 
     public CellView(Cell cell) { this(cell, DEFAULT_SIDE_PX); }
 
-    private void addGrass() {
-        setStyle("-fx-background-color: green");
-    }
+//    private void addGrass(Grass grass) {
+//        int energy = grass.getEnergy();
+//
+//        setStyle("-fx-background-color: green");
+//    }
 
-    private void removeGrass() {
-        setStyle("-fx-background-color: none");
-    }
+//    private void removeGrass() {
+//        setStyle("-fx-background-color: none");
+//    }
 
     public CellView(Cell cell, double side) {
         this.cell = cell;
@@ -99,22 +101,25 @@ public class CellView extends Pane {
                 double x = miniCellSide * row;
                 double y = miniCellSide * col;
                 Pane pane = null;
-                if(agent instanceof Wolf) {
-                    pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
-                }
-                else if(agent instanceof Deer) {
-                    pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
-                }
-                else if (agent instanceof Grass && grassThere == false) {
-                    addGrass();
+                if (agent instanceof Grass && grassThere == false) {
+                    pane = new GrassView((Grass) agent);
+                    pane.setPrefSize(side, side);
                     grassThere = true;
+                    getChildren().add(0, pane); // we need to add it as the first so that it doesn't mask others
                 }
-
-                if (pane != null && addedCount < 10) {
-                    pane.setLayoutX(x);
-                    pane.setLayoutY(y);
-                    getChildren().add(pane);
-                    addedCount++;
+                else {
+                    if(agent instanceof Wolf) {
+                        pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
+                    }
+                    else if(agent instanceof Deer) {
+                        pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
+                    }
+                    if (pane != null && addedCount < 10) {
+                        pane.setLayoutX(x);
+                        pane.setLayoutY(y);
+                        getChildren().add(pane);
+                        addedCount++;
+                    }
                 }
             }
 
@@ -122,8 +127,8 @@ public class CellView extends Pane {
             // We could have removed it before the loop (had it been there or not) and then re-added it
             // in the loop when it was encountered. However, this will likely make cells blink a lot, and
             // so it's better to just remove it when we are sure it is no longer there.
-            if (!grassThere)
-                removeGrass();
+//            if (!grassThere)
+//                removeGrass();
         }
 
     }

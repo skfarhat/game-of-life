@@ -154,7 +154,7 @@ public class RootController implements Initializable, LifeStarter {
      */
     @Override
     public void setFrequency(double freqPercent) {
-        if (false == Utils.doubleInRange(freqPercent))
+        if (false == core.Utils.doubleInRange(freqPercent))
             period = DEFAULT_PERIOD;
         else {
             double freq = MIN_FREQUENCY + freqPercent * (MAX_FREQUENCY - MIN_FREQUENCY);
@@ -225,7 +225,7 @@ public class RootController implements Initializable, LifeStarter {
             public void run() {
                 try {
                     List<Action> actions = life.step();
-//                    System.out.println("agents size: "  + life.getAgents().size());
+                    System.out.println("agents size: "  + life.getAgents().size());
                     iterations.setValue(life.getIteration());
 
                     for (Action action : actions) {
