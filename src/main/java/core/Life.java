@@ -233,6 +233,7 @@ public class Life implements LifeGetter {
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
             Cell nextCell = grid.get(nextPoint);
             Action move = new Move(chosen, srcPoint, nextPoint);
+            processMoveAction((Move) move);
             actions.add(move);
 
             // -------
@@ -247,6 +248,7 @@ public class Life implements LifeGetter {
                 Consumable agentToConsume = consumableAgents.get(index);
                 Action consume = new Consume(chosen, agentToConsume);
                 actions.add(consume);
+                processConsume((Consume) consume);
             }
 
             // ---------
@@ -256,8 +258,10 @@ public class Life implements LifeGetter {
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
+
                 Action reproduce = new Reproduce(chosen, chosen.reproduce());
                 actions.add(reproduce);
+                processReproduce((Reproduce) reproduce);
             }
 
             // ---------
@@ -265,10 +269,12 @@ public class Life implements LifeGetter {
             // ---------
 
             int ageBy = (chosen instanceof Wolf)? AGE_WOLF: AGE_DEER;
-            Age age = new Age(chosen, ageBy);
+            Action age = new Age(chosen, ageBy);
             actions.add(age);
+            processAgeAction((Age) age);
 
-            processActions(actions);
+
+//            processActions(actions);
 
             // only in the dst cell can someone die - this will remove the agents from the cell's list
             List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
