@@ -225,7 +225,6 @@ public class Life implements LifeGetter {
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
-            System.out.println("Wolf/Deer");
             // -------
             // Move
             // -------
@@ -286,7 +285,6 @@ public class Life implements LifeGetter {
         }
 
         else if (chosen instanceof Grass) {
-            System.out.println("Grass");
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
 
             // ---------

@@ -225,6 +225,7 @@ public class RootController implements Initializable, LifeStarter {
             public void run() {
                 try {
                     List<Action> actions = life.step();
+//                    System.out.println("agents size: "  + life.getAgents().size());
                     iterations.setValue(life.getIteration());
 
                     for (Action action : actions) {
