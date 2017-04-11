@@ -21,6 +21,7 @@ public class WolfView extends Pane {
     private Wolf wolf;
 
     public WolfView(Wolf wolf, double width, double height) {
+        super();
         this.wolf = wolf;
         ImageView imgView = new ImageView(new Image(Deer.class.getResource(WOLF_IMG_64).toString(), width, height, true, true));
         Label energyLabel = new Label(((LifeAgent)wolf).getEnergy().toString());

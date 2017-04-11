@@ -15,6 +15,7 @@ public class DeerView extends Pane {
     private Deer deer;
 
     public DeerView(Deer deer, double width, double height) {
+        super();
         this.deer = deer;
         ImageView imgView = new ImageView(new Image(Deer.class.getResource(DEER_IMG_64).toString(), width, height, true, true));
         Label energyLabel = new Label(deer.getEnergy().toString());
