@@ -41,15 +41,6 @@ public class CellView extends Pane {
 
     public CellView(Cell cell) { this(cell, DEFAULT_SIDE_PX); }
 
-//    private void addGrass(Grass grass) {
-//        int energy = grass.getEnergy();
-//
-//        setStyle("-fx-background-color: green");
-//    }
-
-//    private void removeGrass() {
-//        setStyle("-fx-background-color: none");
-//    }
 
     public CellView(Cell cell, double side) {
         this.cell = cell;
