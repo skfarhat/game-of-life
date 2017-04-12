@@ -26,4 +26,9 @@ public class Move extends Action<LifeAgent> {
     public Point2D getTo() {
         return to;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[Move(%s): %s --> %s]", getAgent(), from, to);
+    }
 }

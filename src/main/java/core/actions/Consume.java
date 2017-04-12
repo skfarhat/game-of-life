@@ -28,4 +28,9 @@ public class Consume extends Action<LifeAgent> {
     public Iterator<Consumable> getConsumables() {
         return consumables.iterator();
     }
+
+    @Override
+    public String toString() {
+        return String.format("[Consume(%s): %s", getAgent(), consumables);
+    }
 }

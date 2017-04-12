@@ -26,4 +26,9 @@ public class Reproduce extends Action<LifeAgent> {
     public Iterator<LifeAgent> getBabies() {
         return babies.iterator();
     }
+
+    @Override
+    public String toString() {
+        return String.format("[Reproduce(%s): %s]", getAgent(), babies.toString());
+    }
 }
