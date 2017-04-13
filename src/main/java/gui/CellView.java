@@ -57,21 +57,21 @@ public class CellView extends Pane {
 
     public void draw() {
 
-        // TODO(sami): recheck mutex
-        getChildren().clear();
+        synchronized (this) {
+            // TODO(sami): recheck mutex
+            getChildren().clear();
 
-        // TODO:
-        // not ideal to add and remove those every time
-        getChildren().add(topLine);
-        getChildren().add(bottomLine);
-        getChildren().add(leftLine);
-        getChildren().add(rightLine);
+            // TODO:
+            // not ideal to add and remove those every time
+            getChildren().add(topLine);
+            getChildren().add(bottomLine);
+            getChildren().add(leftLine);
+            getChildren().add(rightLine);
 
-        // organise agents
-        int agentsCount = cell.agentsCount();
-        synchronized (cell) {
+            // organise agents
+            int agentsCount = cell.agentsCount();
 
-            Iterator<Agent> it = cell.getCopyList().iterator();
+            Iterator<Agent> it = cell.getAgentsCopy().iterator();
 
             boolean grassThere = false;
             int addedCount = 0;
@@ -83,7 +83,6 @@ public class CellView extends Pane {
                     break;
                 }
 
-                Image img = null;
                 Agent agent = it.next();
 
                 // TODO(sami): probably doesn't work when ROWSS != COLS -- fix
@@ -99,17 +98,41 @@ public class CellView extends Pane {
                     getChildren().add(0, pane); // we need to add it as the first so that it doesn't mask others
                 }
                 else {
-                    if(agent instanceof Wolf) {
-                        pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
-                    }
-                    else if(agent instanceof Deer) {
-                        pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
-                    }
-                    if (pane != null && addedCount < 10) {
-                        pane.setLayoutX(x);
-                        pane.setLayoutY(y);
-                        getChildren().add(pane);
-                        addedCount++;
+                    if (addedCount < 10) {
+                        if (!((LifeAgent)agent).isAlive()) {
+                            try {
+                                throw new Exception("Why is there a dead agent in this array?? ");
+                            } catch (Exception e) {
+                                System.out.println("----------------------------------------------------------");
+                                System.out.println("issue with Cell: " + cell.getPos() );
+                                System.out.println("agentsCount: " + agentsCount);
+                                System.out.println("agent: " + agent);
+                                System.out.println("rechecking [agentsCount]: " + cell.agentsCount());
+
+                                System.out.println("let's try to recycle again.. ");
+                                ((LifeCell)cell).recycleDeadAgents();
+                                System.out.println("[agentsCount]: " + cell.agentsCount());
+                                System.out.println("----------------------------------------------------------");
+//                                e.printStackTrace();
+                            }
+                        }
+
+                        if(agent instanceof Wolf) {
+                            pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
+                        }
+                        else if(agent instanceof Deer) {
+                            pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
+                        }
+                        else {
+                            System.out.println("unknown agent instance.. ");
+                        }
+
+                        if (pane != null) {
+                            pane.setLayoutX(x);
+                            pane.setLayoutY(y);
+                            getChildren().add(pane);
+                            addedCount++;
+                        }
                     }
                 }
             }

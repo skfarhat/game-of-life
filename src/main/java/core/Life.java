@@ -69,16 +69,16 @@ public class Life implements LifeGetter {
     public static final int DEFAULT_I_WOLF = 5;
 
     /** @brief default initial number of deers */
-    public static final int DEFAULT_I_DEER = 0;
+    public static final int DEFAULT_I_DEER = 5;
 
     /** @brief default initial number of deers */
-    public static final int DEFAULT_I_GRASS = 0;
+    public static final int DEFAULT_I_GRASS = 5;
 
     /** @brief default probability of reproducing for a wolf */
     public static final double DEFAULT_R_WOLF = 0.1;
 
     /** @brief default probability of reproducing for a deer*/
-    public static final double DEFAULT_R_DEER = 0.0;
+    public static final double DEFAULT_R_DEER = 0.15;
 
     /** @brief default probability of reproducing for grass */
     public static final double DEFAULT_R_GRASS = 1.0;
@@ -279,8 +279,6 @@ public class Life implements LifeGetter {
             // only in the dst cell can someone die - this will remove the agents from the cell's list
             List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
             totalRemoved += deadAgents.size();
-            System.out.println("totalRemoved: " + totalRemoved);
-            System.out.println("AGENTS_COUNT: " + Agent.AGENTS_COUNT);
 
             // remove the agents from the life 'agents' array
             agents.removeAll(deadAgents);

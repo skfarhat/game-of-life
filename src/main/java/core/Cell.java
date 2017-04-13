@@ -19,7 +19,7 @@ public class Cell<T extends Agent> implements Positionable {
     /**
      * @brief list of agents that this cell contains
      */
-    protected List<T> agents = new ArrayList<>();
+    protected List<T> agents = new Vector<>();
 
     /**
      * @param x coordinate of this cell's position
@@ -44,9 +44,6 @@ public class Cell<T extends Agent> implements Positionable {
         return pos;
     }
 
-    /** @brief set new position */
-    public void setPos(Point2D pos) { getPos().set(pos);  }
-
     /**
      * @brief add agent to the agents list
      * @return true if an agent was added, false if not. If the Cell already contains a Grass Agent,
@@ -66,8 +63,8 @@ public class Cell<T extends Agent> implements Positionable {
         return agents.remove(t);
     }
 
-    public List<T> getCopyList() {
-        ArrayList<T> dst = new ArrayList<T>(agentsCount());
+    public List<T> getAgentsCopy() {
+        ArrayList<T> dst = new ArrayList<>(agentsCount());
         dst.addAll(agents);
         return dst;
     }

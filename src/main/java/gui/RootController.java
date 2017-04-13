@@ -268,15 +268,6 @@ public class RootController implements Initializable, LifeStarter {
         if (getState() != State.STOPPED) {
             timer.cancel();
         }
-        try {
-            System.out.println("counted drawn agents: " + lifeViewController.countAgents());
-            lifeViewController.draw();
-            System.out.println("counted drawn agents: " + lifeViewController.countAgents());
-//            System.out.println("counted agents: " + life.getAgents().size());
-        } catch (InvalidPositionException e) {
-            e.printStackTrace();
-        }
-//        Platform.runLater(() -> lifeViewController.draw());
     }
 
 }

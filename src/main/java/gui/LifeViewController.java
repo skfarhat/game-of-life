@@ -6,6 +6,8 @@ import core.actions.Action;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
+import java.util.List;
+
 /**
  * @class LifeViewController
  */
@@ -37,11 +39,21 @@ public class LifeViewController {
         this.rootPane = rootPane;
     }
 
-    public void draw() {
-        gridView.draw();
+    public void drawAll() {
+        gridView.drawAll();
     }
 
     public void draw(Action action) throws InvalidPositionException {
         gridView.draw(action);
     }
+
+    public void draw(List<Action> actions) throws InvalidPositionException {
+        gridView.draw(actions);
+    }
+
+    // Uncomment and make GridView.countAgents public
+//    /** @brief counts the number of agents drawn on the grid - useful for debugging */
+//    private int countAgents() throws InvalidPositionException {
+//        return this.gridView.countAgents();
+//    }
 }

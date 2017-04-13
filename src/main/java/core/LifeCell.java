@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +24,16 @@ public class LifeCell extends Cell<LifeAgent> {
      * @return list of agents that were removed
      */
     public List<LifeAgent> recycleDeadAgents() {
-        List<LifeAgent> toRemove = agents.stream().filter(a -> !((LifeAgent)a).isAlive()).collect(Collectors.toList());
-        agents.removeAll(toRemove);
+
+        ArrayList<LifeAgent> toRemove = new ArrayList<>();
+        Iterator<LifeAgent> it = agents.iterator();
+        while(it.hasNext()) {
+            LifeAgent agent = it.next();
+            if (!agent.isAlive()) {
+                toRemove.add(agent);
+                it.remove();
+            }
+        }
         return toRemove;
     }
 
@@ -33,6 +43,9 @@ public class LifeCell extends Cell<LifeAgent> {
                 containsGrass = true;
             }
             else {
+                // TODO(sami): remove
+                System.out.println("FYI: addAgent returning false");
+                // we're trying to add grass to a cell but it is already there..
                 return false;
             }
         }

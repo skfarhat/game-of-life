@@ -8,12 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class GridView extends Pane {
 
@@ -21,10 +17,16 @@ public class GridView extends Pane {
 
     private Grid grid;
 
-
-    // e.g. we are given 800x800px
-    // for (row, col) = 100, 80
-    // cellSide =  min(8, 10) = 8
+    /**
+     *  e.g. we are given 800x800px
+     *  for (row, col) = 100, 80
+     *  cellSide =  min(8, 10) = 8
+     *
+     * @param grid
+     * @param totalWidth
+     * @param totalHeight
+     * @throws InvalidPositionException
+     */
     public GridView(Grid grid, double totalWidth, double totalHeight) throws InvalidPositionException {
         this.grid = grid;
 
@@ -51,51 +53,27 @@ public class GridView extends Pane {
                 cellView.setLayoutX(x);
                 cellView.setLayoutY(y);
 
-//                cellView.setStyle("-fx-background-color: " + toRGBCode(colors.get(i)));
-                // shade colors
-                // if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0))
-                //   cellView.setStyle("-fx-background-color:yellow");
-
                 getChildren().add(cellView);
                 cells.put(p, cellView);
             }
         }
     }
 
-    public void drawParallel() {
-        int threads = 4;
-        ObservableList<Node> children = getChildren();
-        int n = children.size();
-
-        int i1 = n / 4;
-        int i2 = 2 * (n / 4);
-        int i3 = 3 * (n / 4);
-//        assert(i1 == (i2 - i1) && i1 == (i3 - i2) && i1 == (n - i3));
-        compute(children, 0, i1);
-        compute(children, i1, i2);
-        compute(children, i2, i3);
-        compute(children, i3, n);
-    }
-
-    private void compute(ObservableList<Node> children, int start, int end) {
-        Platform.runLater(() -> {
-            for (int i = start ; i < end; i++) {
-                Node node = children.get(i);
-                if (node instanceof CellView){
-                    ((CellView)node).draw();
-                }
-            }
-        });
-    }
-
-    // TODO(sami): can we parallelise this
-    public void draw() {
+    /** @brief draw all cells */
+    public void drawAll() {
         getChildren().stream().forEach(cellView -> {
             if(cellView instanceof CellView)
                 ((CellView)cellView).draw();
         });
     }
 
+    /** @brief redraw all cells affected by any one of the actions in the @param actions list */
+    public void draw(List<Action> actions)  {
+        for (Action action : actions)
+            draw(action);
+    }
+
+    /** @brief redraw the cells affected by @param action. This depends on what the action is exactly. */
     public void draw(Action action)  {
         if (action instanceof EnergyChange) {
             EnergyChange age = (EnergyChange) action;
@@ -134,6 +112,17 @@ public class GridView extends Pane {
                 cells.get(p).draw();
             }
         }
+    }
 
+    /** @brief counts the number of agents added to GridView - useful for debugging */
+    private int countAgents() throws InvalidPositionException {
+        int total = 0;
+        for (Node node: getChildren()) {
+            if (node instanceof CellView) {
+                CellView cell = (CellView) node;
+                total +=(cell.getChildren().size() - 4);
+            }
+        }
+        return total;
     }
 }

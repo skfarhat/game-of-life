@@ -57,6 +57,6 @@ public class Wolf extends LifeAgent implements Consumes {
 
     @Override
     public String toString() {
-        return String.format("Wolf[%s](e=%d)", getId().substring(0, 5), getEnergy());
+        return String.format("Wolf[%s]%s(e=%d)", getId().substring(0, 5), getPos(), getEnergy());
     }
 }
