@@ -97,8 +97,8 @@ public class GridView extends Pane {
     }
 
     public void draw(Action action)  {
-        if (action instanceof Age) {
-            Age age = (Age) action;
+        if (action instanceof EnergyChange) {
+            EnergyChange age = (EnergyChange) action;
             Point2D srcPt = age.getAgent().getPos();
             CellView srcCell = cells.get(srcPt);
             srcCell.draw();

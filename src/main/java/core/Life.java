@@ -30,6 +30,9 @@ public class Life implements LifeGetter {
     public static final String KEY_E_WOLF_GAIN = "E_WOLF_GAIN";
     public static final String KEY_E_GRASS_GAIN = "KEY_E_GRASS_GAIN";
     public static final String KEY_E_STEP_DECREASE = "E_STEP_DECREASE";
+//    public static final String KEY_AGE_GRASS = "AGE_GRASS";
+    public static final String KEY_AGE_DEER = "AGE_DEER";
+    public static final String KEY_AGE_WOLF = "AGE_WOLF";
     public static final String KEY_R_GRASS = "R_GRASS";
     public static final String KEY_R_DEER = "R_DEER";
     public static final String KEY_R_WOLF = "R_WOLF";
@@ -45,7 +48,7 @@ public class Life implements LifeGetter {
     public static final int DEFAULT_MAX_ITERATIONS = -1;
 
     /** @brief default energy gained by wolf and deer when they consume other agents */
-    public static final int DEFAULT_GRID_N = 10;
+    public static final int DEFAULT_GRID_N = 5;
 
     /** @brief default energy gained by wolf and deer when they consume other agents */
     public static final int DEFAULT_GRASS_GAIN = 3;
@@ -66,19 +69,19 @@ public class Life implements LifeGetter {
     public static final int DEFAULT_I_WOLF = 5;
 
     /** @brief default initial number of deers */
-    public static final int DEFAULT_I_DEER = 10;
+    public static final int DEFAULT_I_DEER = 0;
+
+    /** @brief default initial number of deers */
+    public static final int DEFAULT_I_GRASS = 0;
 
     /** @brief default probability of reproducing for a wolf */
     public static final double DEFAULT_R_WOLF = 0.1;
 
     /** @brief default probability of reproducing for a deer*/
-    public static final double DEFAULT_R_DEER = 0.2;
+    public static final double DEFAULT_R_DEER = 0.0;
 
     /** @brief default probability of reproducing for grass */
-    public static final double R_GRASS_DEFAULT = 1.0;
-
-    /** @brief default initial number of instance of an agent type */
-    public static final int I_DEFAULT = 5;
+    public static final double DEFAULT_R_GRASS = 1.0;
 
     // ===========================================================================================
     // Params
@@ -120,6 +123,7 @@ public class Life implements LifeGetter {
 
     /** @brief list of all of the agents in Life */
     private final List<Agent> agents;
+    private int totalRemoved = 0;
 
     // ===========================================================================================
     // METHODS
@@ -156,18 +160,18 @@ public class Life implements LifeGetter {
         exceptionIfNegative(E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : DEFAULT_E_GAIN);
 
         // initial count
-        exceptionIfNegative(I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : I_DEFAULT);
+        exceptionIfNegative(I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : DEFAULT_I_GRASS);
         exceptionIfNegative(I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : DEFAULT_I_DEER);
         exceptionIfNegative(I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : DEFAULT_I_WOLF);
 
         // age
-        exceptionIfNegative(AGE_DEER = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : DEFAULT_AGE);
-        exceptionIfNegative(AGE_WOLF = params.containsKey(KEY_E_STEP_DECREASE)? params.get(KEY_E_STEP_DECREASE).intValue() : DEFAULT_AGE);
+        exceptionIfNegative(AGE_DEER = params.containsKey(KEY_AGE_DEER)? params.get(KEY_AGE_DEER).intValue() : DEFAULT_AGE);
+        exceptionIfNegative(AGE_WOLF = params.containsKey(KEY_AGE_WOLF)? params.get(KEY_AGE_WOLF).intValue() : DEFAULT_AGE);
 
         // reproduction (the doubles must be in range [0-1])
         exceptionIfOutOfRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : DEFAULT_R_DEER);
         exceptionIfOutOfRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : DEFAULT_R_WOLF);
-        R_GRASS = R_GRASS_DEFAULT; // at the time of writing this should not be variable and has thus been hardcoded
+        R_GRASS = DEFAULT_R_GRASS; // at the time of writing this should not be variable and has thus been hardcoded
 
         // Create Life in 7 days
         // ---------------------
@@ -213,7 +217,7 @@ public class Life implements LifeGetter {
 
         // guard - nothing to do
         if (agents.size() < 1) {
-            System.out.println("nothing to do ");
+//            System.out.println("nothing to do ");
             return actions;
         }
 
@@ -232,8 +236,8 @@ public class Life implements LifeGetter {
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
             Cell nextCell = grid.get(nextPoint);
             Action move = new Move(chosen, srcPoint, nextPoint);
-            processMoveAction((Move) move);
             actions.add(move);
+            processMoveAction((Move) move);
 
             // -------
             // Consume
@@ -257,26 +261,27 @@ public class Life implements LifeGetter {
             double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
-
-                Action reproduce = new Reproduce(chosen, chosen.reproduce());
+                LifeAgent baby = chosen.reproduce();
+                Action reproduce = new Reproduce(chosen, baby);
                 actions.add(reproduce);
                 processReproduce((Reproduce) reproduce);
             }
 
-            // ---------
-            // Age
-            // ---------
+            // ------------
+            // EnergyChange
+            // ------------
 
             int ageBy = (chosen instanceof Wolf)? AGE_WOLF: AGE_DEER;
-            Action age = new Age(chosen, ageBy);
+            Action age = new EnergyChange(chosen, -ageBy);
             actions.add(age);
-            processAgeAction((Age) age);
-
-
-//            processActions(actions);
+            processAgeAction((EnergyChange) age);
 
             // only in the dst cell can someone die - this will remove the agents from the cell's list
             List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
+            totalRemoved += deadAgents.size();
+            System.out.println("totalRemoved: " + totalRemoved);
+            System.out.println("AGENTS_COUNT: " + Agent.AGENTS_COUNT);
+
 
             // remove the agents from the life 'agents' array
             agents.removeAll(deadAgents);
@@ -296,25 +301,28 @@ public class Life implements LifeGetter {
                 babyGrass.setPos(nextPoint);
                 Action reproduce = new Reproduce(chosen, babyGrass);
                 actions.add(reproduce);
+                processReproduce((Reproduce) reproduce);
             }
 
             // ---------------
             // Increase Energy
             // ---------------
-
-            chosen.increaseEnergyBy(E_GRASS_GAIN);
-
-            processActions(actions);
+//            chosen.changeEnergyBy(E_GRASS_GAIN);
+//            processActions(actions);
+            Action energyGain = new EnergyChange(chosen, E_GRASS_GAIN);
+            actions.add(energyGain);
+            processAgeAction((EnergyChange) energyGain);
         }
 
         iteration++;
+//        System.out.println(actions);
         return actions;
     }
 
     private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
         for (Action action: actions) {
-            if (action instanceof  Age) {
-                processAgeAction((Age) action);
+            if (action instanceof EnergyChange) {
+                processAgeAction((EnergyChange) action);
             }
             else if (action instanceof Consume) {
                 processConsume((Consume) action);
@@ -328,8 +336,8 @@ public class Life implements LifeGetter {
         }
     }
 
-    private void processAgeAction(Age age) throws AgentIsDeadException {
-        age.getAgent().decreaseEnergyBy(age.getAgeBy());
+    private void processAgeAction(EnergyChange age) throws AgentIsDeadException {
+        age.getAgent().changeEnergyBy(age.getEnergyDelta());
     }
 
     private void processMoveAction(Move action) throws InvalidPositionException {

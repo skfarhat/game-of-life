@@ -81,18 +81,15 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
         if (!isAlive()) {
             throw new AgentIsDeadException("Can't kill a LifeAgent twice. You're mean.");
         }
+        System.out.println(toString() + "died. ");
         died = true;
     }
 
     /**
-     * @brief is a convenience method to decrease the energy by @param val,
+     * @brief is a convenience method to change the energy by @param val which can be positive (for energy gain) and negative
+     * (for energy loss)
      * */
-    public void decreaseEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() - val); }
-
-    /**
-     * @brief is a convenience method to increase the energy by @param val,
-     * */
-    public void increaseEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() + val); }
+    public void changeEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() + val); }
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
     public boolean isAlive() { return !died; }

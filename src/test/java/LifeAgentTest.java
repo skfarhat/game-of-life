@@ -1,3 +1,5 @@
+import core.Point2D;
+import core.Utils;
 import core.exceptions.AgentIsDeadException;
 import core.LifeAgent;
 import org.junit.Test;
@@ -21,6 +23,16 @@ public class LifeAgentTest {
         return agent;
     }
 
+    /** @return a subclass of core.LifeAgent with position (Point2D) passed - reproduce method is not implemented  */
+    private LifeAgent lifeAgentSubclass(Point2D p) throws AgentIsDeadException {
+        LifeAgent agent = new LifeAgent(p){
+            public LifeAgent reproduce() throws AgentIsDeadException {
+                return null;
+            }
+        };
+        return agent;
+    }
+
     /** @return a subclass of core.LifeAgent with energy passed - reproduce method is not implemented  */
     private LifeAgent lifeAgentSubclass(int energy) throws AgentIsDeadException {
         LifeAgent agent = new LifeAgent(energy){
@@ -30,7 +42,15 @@ public class LifeAgentTest {
         };
         return agent;
     }
-
+    /** @return a subclass of core.LifeAgent with position and energy passed - reproduce method is not implemented  */
+    private LifeAgent lifeAgentSubclass(Point2D p, int energy) throws AgentIsDeadException {
+        LifeAgent agent = new LifeAgent(p, energy){
+            public LifeAgent reproduce() throws AgentIsDeadException {
+                return null;
+            }
+        };
+        return agent;
+    }
 
     @Test
     public void testAliveAgent() throws AgentIsDeadException {
@@ -38,6 +58,13 @@ public class LifeAgentTest {
         int energy = 1 + Math.abs(rand.nextInt());
         LifeAgent agent = lifeAgentSubclass(energy);
         assertEquals(energy, agent.getEnergy().intValue());
+    }
+
+    @Test
+    public void testConstructor1Param() throws AgentIsDeadException {
+        Point2D p =  Utils.randomPoint(100,100);
+        LifeAgent agent = lifeAgentSubclass(p);
+        assertEquals(p, agent.getPos());
     }
 
     @Test
@@ -60,6 +87,11 @@ public class LifeAgentTest {
     }
 
     @Test(expected = AgentIsDeadException.class)
+    public void testExceptionThrownWhenCreatingLifeAgentWithNegativeInitialEnergy2() throws AgentIsDeadException {
+        lifeAgentSubclass(new Point2D(0, 0), -Utils.randomPositiveInteger(100));
+    }
+
+    @Test(expected = AgentIsDeadException.class)
     public void testExceptionThrownWhenSettingEnergyOnDeadLifeAgent() throws AgentIsDeadException {
         LifeAgent agent = null;
         try {
@@ -74,6 +106,8 @@ public class LifeAgentTest {
         agent.setEnergy(0);
     }
 
+
+
     @Test(expected = AgentIsDeadException.class)
     public void testExceptionIsThrownWhenKillingAnAlreadyDeadLifeAgent() throws AgentIsDeadException {
         LifeAgent agent = lifeAgentSubclass();
@@ -82,13 +116,13 @@ public class LifeAgentTest {
     }
 
     @Test
-    public void testDecreaseEnergy() throws AgentIsDeadException {
+    public void testEnegyChange() throws AgentIsDeadException {
         final int initialEnergy = 100;
-        final int decreaseBy = new Random().nextInt(initialEnergy);
-        final int expectedFinalEnergy = initialEnergy - decreaseBy;
+        final int delta = Utils.randomPositiveInteger(initialEnergy*2 ) - initialEnergy;
+        final int expectedFinalEnergy = initialEnergy + delta;
 
         LifeAgent agent = lifeAgentSubclass(initialEnergy);
-        agent.decreaseEnergyBy(decreaseBy);
+        agent.changeEnergyBy(delta);
         assertEquals(expectedFinalEnergy, agent.getEnergy().intValue());
     }
 

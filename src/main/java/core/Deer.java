@@ -8,7 +8,7 @@ import core.exceptions.AgentIsDeadException;
 
 import java.util.List;
 
-public class Deer extends LifeAgent implements Ages, Consumes {
+public class Deer extends LifeAgent implements Consumes {
 
     /** @brief default constructor, calls LifeAgent's constructor */
     public Deer() throws AgentIsDeadException {
@@ -28,11 +28,6 @@ public class Deer extends LifeAgent implements Ages, Consumes {
 
     public Deer(Point2D p, int energy) throws AgentIsDeadException {
         super(p, energy);
-    }
-
-    /** @brief */
-    public void ageBy(int val) throws AgentIsDeadException {
-        decreaseEnergyBy(val);
     }
 
     // TODO(sami): replace with a new exception

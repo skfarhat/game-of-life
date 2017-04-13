@@ -37,14 +37,14 @@ public class DeerTest {
         assertTrue(agent instanceof Deer);
     }
 
-    @Test
-    public void testDeerAgesCorrectly() throws AgentIsDeadException {
-        final int initialEnergy = 100;
-        final int ageBy = 10;
-        Deer deer = new Deer(initialEnergy);
-        deer.ageBy(ageBy);
-        assertEquals(initialEnergy-ageBy, deer.getEnergy().intValue());
-    }
+//    @Test
+//    public void testDeerAgesCorrectly() throws AgentIsDeadException {
+//        final int initialEnergy = 100;
+//        final int ageBy = 10;
+//        Deer deer = new Deer(initialEnergy);
+//        deer.ageBy(ageBy);
+//        assertEquals(initialEnergy-ageBy, deer.getEnergy().intValue());
+//    }
 
     @Test
     public void testToString() throws AgentIsDeadException {
