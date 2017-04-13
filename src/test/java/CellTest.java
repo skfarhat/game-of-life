@@ -26,15 +26,15 @@ public class CellTest {
         assertEquals(cell.getPos(), p);
     }
 
-    @Test
-    public void setPos() throws Exception {
-        Point2D p1 = Utils.randomPoint(30, 30);
-        Point2D p2 = Utils.randomPoint(30, 30);
-        Cell cell = new Cell(p1);
-        cell.setPos(p2);
-
-        assertEquals(cell.getPos(), p2);
-    }
+//    @Test
+//    public void setPos() throws Exception {
+//        Point2D p1 = Utils.randomPoint(30, 30);
+//        Point2D p2 = Utils.randomPoint(30, 30);
+//        Cell cell = new Cell(p1);
+//        cell.setPos(p2);
+//
+//        assertEquals(cell.getPos(), p2);
+//    }
 
     @Test
     public void addAgent() throws Exception {

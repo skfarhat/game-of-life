@@ -31,8 +31,6 @@ public class LifeCell extends Cell<LifeAgent> {
         if (a instanceof Grass) {
             if (!containsGrass) {
                 containsGrass = true;
-                a.setPos(getPos());
-                return agents.add(a);
             }
             else {
                 return false;

@@ -26,7 +26,7 @@ public class Point2D {
 
     /** @brief create by making a copy */
     public Point2D(Point2D p) {
-        this(p.getX(), p.getY());
+        set(p);
     }
 
     /**
@@ -44,19 +44,9 @@ public class Point2D {
     }
 
     /** @brief copies the field values from the passed Point2D into this one (x,y) */
-    public void set(Point2D pos) {
+    private void set(Point2D pos) {
         this.x = pos.getX();
         this.y = pos.getY();
-    }
-
-    /** @brief setter for x */
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    /** @brief setter for y */
-    public void setY(int y) {
-        this.y = y;
     }
 
     @Override

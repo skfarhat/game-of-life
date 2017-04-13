@@ -7,5 +7,4 @@ public interface Positionable {
 
     Point2D getPos();
 
-    void setPos(Point2D pos);
 }

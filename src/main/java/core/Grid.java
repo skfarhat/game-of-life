@@ -134,10 +134,10 @@ public class Grid<T extends Cell> {
             if (agent == it.next())
                 it.remove();
 
-        // set new position
-        agent.setPos(dstCell.getPos());
+//        // set new position
+//        agent.setPos(dstCell.getPos());
 
-        // add to dst cell
+        // add to dst cell and changes the position of the agent to that of the cell
         return dstCell.addAgent(agent);
     }
 

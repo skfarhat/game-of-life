@@ -16,7 +16,7 @@ public abstract class Agent implements Positionable {
     private final String id;
 
     /** @brief agent's (x,y) position */
-    private final Point2D pos;
+    private Point2D pos;
 
     /** @brief default x position for a new agent */
     public static final int DEFAULT_X_POS = 0;
@@ -56,7 +56,7 @@ public abstract class Agent implements Positionable {
 
     /** @brief getter for position */
     public void setPos(Point2D pos) {
-        getPos().set(pos);
+        this.pos = new Point2D(pos);
     }
 
 }
