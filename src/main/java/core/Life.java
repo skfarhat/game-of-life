@@ -30,7 +30,7 @@ public class Life implements LifeGetter {
     public static final String KEY_E_WOLF_GAIN = "E_WOLF_GAIN";
     public static final String KEY_E_GRASS_GAIN = "KEY_E_GRASS_GAIN";
     public static final String KEY_E_STEP_DECREASE = "E_STEP_DECREASE";
-//    public static final String KEY_AGE_GRASS = "AGE_GRASS";
+    /* public static final String KEY_AGE_GRASS = "AGE_GRASS"; */ // Grass doesn't age in this implementation
     public static final String KEY_AGE_DEER = "AGE_DEER";
     public static final String KEY_AGE_WOLF = "AGE_WOLF";
     public static final String KEY_R_GRASS = "R_GRASS";
@@ -180,11 +180,11 @@ public class Life implements LifeGetter {
         grid = GridLifeCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
 
         // create all agents and distribute
-        agents = new ArrayList<Agent>(I_DEER+I_WOLF+I_GRASS);
+        agents = new ArrayList<>(I_DEER + I_WOLF + I_GRASS);
         for (int i = 0; i < I_DEER; i++) agents.add(new Deer(E_DEER_INITIAL));
         for (int i = 0; i < I_WOLF; i++) agents.add(new Wolf(E_WOLF_INITIAL));
         for (int i = 0; i < I_GRASS; i++) agents.add(new Grass(E_GRASS_INITIAL));
-        uniformlyDistribute(agents);
+        uniformlyDistribute(agents); // distributes agents and adds them to Cells' arrays
     }
 
     private List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, Agent agent) {
@@ -282,7 +282,6 @@ public class Life implements LifeGetter {
             System.out.println("totalRemoved: " + totalRemoved);
             System.out.println("AGENTS_COUNT: " + Agent.AGENTS_COUNT);
 
-
             // remove the agents from the life 'agents' array
             agents.removeAll(deadAgents);
 
@@ -307,15 +306,12 @@ public class Life implements LifeGetter {
             // ---------------
             // Increase Energy
             // ---------------
-//            chosen.changeEnergyBy(E_GRASS_GAIN);
-//            processActions(actions);
             Action energyGain = new EnergyChange(chosen, E_GRASS_GAIN);
             actions.add(energyGain);
             processAgeAction((EnergyChange) energyGain);
         }
 
         iteration++;
-//        System.out.println(actions);
         return actions;
     }
 

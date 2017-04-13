@@ -15,7 +15,6 @@ import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.Function;
 
 /**
  * @class RootController
@@ -31,7 +30,7 @@ public class RootController implements Initializable, LifeStarter {
     /** @brief period between calls to step() in milli-seconds */
     private final static int DEFAULT_PERIOD = 100;  // 100 milliseconds
     private final static int MIN_PERIOD = 10;       // 10 milliseconds
-    private final static int MAX_PERIOD = 200;
+    private final static int MAX_PERIOD = 200;      // 200 milliseconds
 
     // calculate the frequency ranges fom the (min, max) period
     private static final double MIN_FREQUENCY = calculateFrequencyFromPeriod(MAX_PERIOD);
@@ -183,29 +182,27 @@ public class RootController implements Initializable, LifeStarter {
         if (this.life == null || getState() == State.STARTED)
             return false;
 
-        // inner lambda function returning true if we have not exceeded the max number of iterations
-        // if maxIterations < 1, this always returns true
-        Function<Void, Boolean> checkIteration = (Void) -> {
-            if (life.getMaxIterations() < 1)
-                return true;
-
-            return life.getIteration() < life.getMaxIterations();
-        };
-
         // Consumer
         Thread t = new Thread(new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 while(RootController.this.getState() == gui.State.STARTED) {
                     Action action = queue.poll();
+
+                    // if we find an action, then there are likely more actions coming
+                    // we wait for 1msec (TODO(sami): should be configurable) and then try to get more actions
+                    // to send in batch to the draw function
                     if (action != null) {
+                        Thread.sleep(1);
+                        List<Action> actions = new ArrayList<>();
+                        actions.add(action);
+                        while(queue.peek()!=null) {
+                            actions.add(queue.poll());
+                        }
                         try {
                             Platform.runLater(() -> {
-                                try {
-                                    lifeViewController.draw(action);
-                                } catch (InvalidPositionException e) {
-                                    e.printStackTrace();
-                                }
+                                try { lifeViewController.draw(actions);}
+                                catch (InvalidPositionException e) {e.printStackTrace();}
                             });
                         }
                         catch(Exception exc) {
@@ -225,7 +222,7 @@ public class RootController implements Initializable, LifeStarter {
             public void run() {
                 try {
                     List<Action> actions = life.step();
-                    System.out.println("agents size: "  + life.getAgents().size());
+//                    System.out.println("agents size: "  + life.getAgents().size());
                     iterations.setValue(life.getIteration());
 
                     for (Action action : actions) {
@@ -267,10 +264,19 @@ public class RootController implements Initializable, LifeStarter {
     }
 
     /** @brief cancel all timers effectively stopping the drawing and logic in life */
-    private void cancelTimers() {
+    private void cancelTimers()  {
         if (getState() != State.STOPPED) {
             timer.cancel();
         }
+        try {
+            System.out.println("counted drawn agents: " + lifeViewController.countAgents());
+            lifeViewController.draw();
+            System.out.println("counted drawn agents: " + lifeViewController.countAgents());
+//            System.out.println("counted agents: " + life.getAgents().size());
+        } catch (InvalidPositionException e) {
+            e.printStackTrace();
+        }
+//        Platform.runLater(() -> lifeViewController.draw());
     }
 
 }

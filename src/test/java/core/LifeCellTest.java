@@ -55,8 +55,8 @@ public class LifeCellTest {
         }
 
         // verify
-        final int actuallyAlive = agentsAlive.size();
-        final int actuallyDead = agentsKilled.size();
+//        final int actuallyAlive = agentsAlive.size();
+//        final int actuallyDead = agentsKilled.size();
 
         List<LifeAgent> returnedList = cell.recycleDeadAgents();
 
