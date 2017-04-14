@@ -195,23 +195,38 @@ public class Life implements LifeGetter {
 
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     */
     public boolean addAgent(Agent a) {
-        if (false == grid.pointInBounds(a.getPos())) {
-            return false;
-        }
-        try {
-            return grid.get(a.getPos()).addAgent(a) && agents.add(a);
-        } catch (InvalidPositionException e) {
-            return false; // this shouldn't happen because we already checked
-        }
+        if (false == grid.pointInBounds(a.getPos())) return false;
+        try {return grid.get(a.getPos()).addAgent(a) && agents.add(a);}
+        catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked }
     }
 
+    /**
+     *
+     * @param agents
+     * @return
+     */
     public boolean addAgents(List<Agent> agents) {
         boolean success = true;
         for (Agent a : agents) {
             success &= addAgent(a);
         }
         return success;
+    }
+
+    /**
+     * @brief remove the passed Agent @param a from the local agents list and from the cell's agents list
+     * @return true if the removal was successful from both lists, false otherwise
+     */
+    public boolean removeAgent(Agent a)  {
+        if (false == grid.pointInBounds(a.getPos())) return false;
+        try { return grid.get(a.getPos()).removeAgent(a) && agents.remove(a);}
+        catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked
     }
 
     /**
@@ -225,21 +240,6 @@ public class Life implements LifeGetter {
             success &= removeAgent(a);
         }
         return success;
-    }
-
-    /**
-     * @brief remove the passed Agent @param a from the local agents list and from the cell's agents list
-     * @return true if the removal was successful from both lists, false otherwise
-     */
-    public boolean removeAgent(Agent a)  {
-        if (false == grid.pointInBounds(a.getPos())) {
-            return false;
-        }
-        try {
-            return grid.get(a.getPos()).removeAgent(a) && agents.remove(a);
-        } catch (InvalidPositionException e) {
-            return false; // this shouldn't happen because we already checked
-        }
     }
 
     /**
