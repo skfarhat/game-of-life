@@ -110,7 +110,10 @@ public class Life implements LifeGetter {
     public final int AGE_WOLF;
     public final int AGE_DEER;
 
-    /** @brief the maximum number of iterations - max number of times step is called, a negative means run indefinitely */
+    /**
+     * @brief the maximum number of iterations (stepCounts) - max number of times step can be called.
+     * A negative means run indefinitely
+     * */
     public final int maxIterations;
     private int iteration;
 
@@ -203,6 +206,31 @@ public class Life implements LifeGetter {
         // TODO(sami): check that the agent doesn't already exist there
         grid.get(agent.getPos()).addAgent(agent);
         agents.add(agent);
+    /** @brief removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
+     * @param agents list of agents to remove
+     * @return false if any one of the agents in the list could not be removed
+     */
+    public boolean removeAgents(List<Agent> agents) {
+        boolean success = true;
+        for (Agent a : agents) {
+            success &= removeAgent(a);
+        }
+        return success;
+    }
+
+    /**
+     * @brief remove the passed Agent @param a from the local agents list and from the cell's agents list
+     * @return true if the removal was successful from both lists, false otherwise
+     */
+    public boolean removeAgent(Agent a)  {
+        if (false == grid.pointInBounds(a.getPos())) {
+            return false;
+        }
+        try {
+            return grid.get(a.getPos()).removeAgent(a) && agents.remove(a);
+        } catch (InvalidPositionException e) {
+            return false; // this shouldn't happen because we already checked
+        }
     }
 
     /**
@@ -276,13 +304,14 @@ public class Life implements LifeGetter {
             actions.add(age);
             processAgeAction((EnergyChange) age);
 
-            // only in the dst cell can someone die - this will remove the agents from the cell's list
-            List<LifeAgent> deadAgents = ((LifeCell)nextCell).recycleDeadAgents();
-            totalRemoved += deadAgents.size();
+            // find the cell's dead agents
+            // double cast to change List<LifeAgent> to List<Agent>
+            List<Agent> deadAgents = (List<Agent>) (List) ((LifeCell)nextCell).findDeadAgents();
 
-            // remove the agents from the life 'agents' array
-            agents.removeAll(deadAgents);
-
+            // removes dead agents from the local agents list and from the cells' respective agents lists
+            if (false == removeAgents(deadAgents)) {
+                System.out.println("Failed to remove some agents.. ");
+            }
             // TODO(sami); consider sending events for all new dead agents,
         }
 

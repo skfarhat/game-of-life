@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class LifeCellTest {
 
     @Test
-    public void testRecycleDeadAgentsFromCell() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
+    public void testRemoveDeadAgentsFromCell() throws AgentIsDeadException, GridCreationException, InvalidPositionException {
 
         final int nAgents = 10 + Utils.randomPositiveInteger(91); // number of agents to create
         final int nKill = 1 + Utils.randomPositiveInteger(nAgents-1); // number of agents to kill
@@ -54,11 +54,7 @@ public class LifeCellTest {
             assertTrue(agentsKilled.add(agentToKill));
         }
 
-        // verify
-//        final int actuallyAlive = agentsAlive.size();
-//        final int actuallyDead = agentsKilled.size();
-
-        List<LifeAgent> returnedList = cell.recycleDeadAgents();
+        List<LifeAgent> returnedList = cell.removeDeadAgents();
 
         assertEquals("size of the returned list should be equal to the number of killed agents",
                 nKill, returnedList.size());

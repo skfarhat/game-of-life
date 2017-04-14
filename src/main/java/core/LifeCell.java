@@ -3,6 +3,7 @@ package core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -23,18 +24,16 @@ public class LifeCell extends Cell<LifeAgent> {
     /**
      * @return list of agents that were removed
      */
-    public List<LifeAgent> recycleDeadAgents() {
+    public List<LifeAgent> removeDeadAgents() {
 
-        ArrayList<LifeAgent> toRemove = new ArrayList<>();
-        Iterator<LifeAgent> it = agents.iterator();
-        while(it.hasNext()) {
-            LifeAgent agent = it.next();
-            if (!agent.isAlive()) {
-                toRemove.add(agent);
-                it.remove();
-            }
-        }
+        List<LifeAgent> toRemove = findDeadAgents();
+        agents.removeAll(toRemove);
         return toRemove;
+    }
+
+    /** @return list of dead agents in this cell */
+    public List<LifeAgent> findDeadAgents() {
+        return agents.stream().filter(a -> !a.isAlive()).collect(Collectors.toList());
     }
 
     public boolean addAgent(LifeAgent a) {

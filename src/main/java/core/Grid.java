@@ -134,9 +134,6 @@ public class Grid<T extends Cell> {
             if (agent == it.next())
                 it.remove();
 
-//        // set new position
-//        agent.setPos(dstCell.getPos());
-
         // add to dst cell and changes the position of the agent to that of the cell
         return dstCell.addAgent(agent);
     }
@@ -149,9 +146,14 @@ public class Grid<T extends Cell> {
         return rows;
     }
 
+    /** @return true if the point @param p passed is in the bounds of the grid */
+    public boolean pointInBounds(Point2D p) {
+        return xIsInBounds(p.getX()) && yIsInBounds(p.getY());
+    }
+
     /** return true if the @param x value passed is in the bounds */
-    private boolean xIsInBounds(int x) { return (x > -1 &&  x < rows); }
+    public boolean xIsInBounds(int x) { return (x > -1 &&  x < rows); }
 
     /** return true if the @param y value passed is in the bounds */
-    private boolean yIsInBounds(int y) { return (y > -1 &&  y < cols); }
+    public boolean yIsInBounds(int y) { return (y > -1 &&  y < cols); }
 }
