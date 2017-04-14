@@ -5,6 +5,7 @@ import core.exceptions.AgentIsDeadException;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.LifeException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -181,33 +182,40 @@ public class Life implements LifeGetter {
         // ---------------------
 
         // create grid
+
         grid = GridLifeCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
 
-        // create all agents and distribute
-        agents = new ArrayList<>(I_DEER + I_WOLF + I_GRASS);
-        for (int i = 0; i < I_DEER; i++) agents.add(new Deer(E_DEER_INITIAL));
-        for (int i = 0; i < I_WOLF; i++) agents.add(new Wolf(E_WOLF_INITIAL));
-        for (int i = 0; i < I_GRASS; i++) agents.add(new Grass(E_GRASS_INITIAL));
-        uniformlyDistribute(agents); // distributes agents and adds them to Cells' arrays
-    }
-
-    private List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, Agent agent) {
-        final List<Class> consumableClasses = CONSUME_RULES.get(agent.getClass()); // list of classes consumable by agent
-        List<Consumable> consumables = new ArrayList<>();
-        while(it.hasNext()){
-            Consumable c = it.next();
-            if (consumableClasses.contains(c.getClass()))
-                consumables.add(c);
+        final int nAgents = I_DEER + I_WOLF + I_GRASS;
+        agents = new ArrayList<>(nAgents);
+        int nCreated = createAndDistributeAgents();
+        if (nCreated != nAgents)  {
+            throw new LifeException(String.format("Created number of agents  (%d) does not match the number we expect (%d).\n",
+                    nCreated, nAgents));
         }
-        return consumables;
+
     }
 
-    // TODO(sami): create the equivalent removeAgent() method and remove ticket from Trello
-    private void addAgent(Agent agent) throws InvalidPositionException {
-        // TODO(sami): check that the agent doesn't already exist there
-        grid.get(agent.getPos()).addAgent(agent);
-        agents.add(agent);
-    /** @brief removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
+    public boolean addAgent(Agent a) {
+        if (false == grid.pointInBounds(a.getPos())) {
+            return false;
+        }
+        try {
+            return grid.get(a.getPos()).addAgent(a) && agents.add(a);
+        } catch (InvalidPositionException e) {
+            return false; // this shouldn't happen because we already checked
+        }
+    }
+
+    public boolean addAgents(List<Agent> agents) {
+        boolean success = true;
+        for (Agent a : agents) {
+            success &= addAgent(a);
+        }
+        return success;
+    }
+
+    /**
+     * @brief removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
      * @param agents list of agents to remove
      * @return false if any one of the agents in the list could not be removed
      */
@@ -343,6 +351,46 @@ public class Life implements LifeGetter {
         return actions;
     }
 
+    /**
+     * @return total number number of created agents
+     * @throws AgentIsDeadException if the initial energy given to any of the agents is negative
+     */
+    private int createAndDistributeAgents() throws LifeException {
+
+        // TODO(sami): improvement would be to generalise all of this so that we can easily extend with more (new) agents
+        // the number of different types of agents in the system
+        final Class<?extends Agent> TYPES[] = new Class[]{Deer.class, Wolf.class, Grass.class};
+        final int I_INITIAL[] = {I_DEER, I_WOLF, I_GRASS};
+        final int E_INITIAL[] = {E_DEER_INITIAL, E_WOLF_INITIAL, E_GRASS_INITIAL};
+
+        // check that there isn't anything fishy
+        if (TYPES.length != I_INITIAL.length || TYPES.length != E_INITIAL.length) {
+            throw new LifeException("Implementation error: array sizes are not matching with the number of agent types");
+        }
+
+        // Note: this method is so general and flexible, I have tears of happiness in my eyes
+
+        int nCreated = 0;
+        // for each type of agent
+        for (int type = 0 ; type < TYPES.length; type++) {
+
+            try {
+                // create however many agents of this type are needed
+                for (int i = 0; i < I_INITIAL[type]; i++) {
+                    // find a random point in the grid to place this agent instance
+                    Point2D p = Utils.randomPoint(this.GRID_ROWS, this.GRID_COLS); // TODO(sami): should this be the other way around ?
+                    Agent agent = TYPES[type].getConstructor(Point2D.class, Integer.class).newInstance(p, E_INITIAL[type]);
+                    addAgent(agent);
+                    nCreated++;
+                }
+            } catch (ReflectiveOperationException exc) {
+                exc.printStackTrace();;
+                throw new LifeException("Implementation error: could not create instance of Agent " + TYPES[type]);
+            }
+        }
+        return nCreated;
+    }
+
     private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
         for (Action action: actions) {
             if (action instanceof EnergyChange) {
@@ -382,14 +430,6 @@ public class Life implements LifeGetter {
         ((Consumes) action.getAgent()).consume(consumable);
     }
 
-    /** @brief uniformly distribute the agents on the grid */
-    private void uniformlyDistribute(List<Agent> agents) throws InvalidPositionException {
-        for (Agent a : agents) {
-            Point2D p = Utils.randomPoint(this.GRID_ROWS, this.GRID_COLS);
-            grid.get(p.getX(), p.getY()).addAgent(a);
-        }
-    }
-
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
         return grid.randomAdjacentPoint(p);
     }
@@ -409,6 +449,17 @@ public class Life implements LifeGetter {
     private void exceptionIfOutOfRange(double val) throws IllegalArgumentException {
         if (val < 0 || val > 1)
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
+    }
+
+    private List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, Agent agent) {
+        final List<Class> consumableClasses = CONSUME_RULES.get(agent.getClass()); // list of classes consumable by agent
+        List<Consumable> consumables = new ArrayList<>();
+        while(it.hasNext()){
+            Consumable c = it.next();
+            if (consumableClasses.contains(c.getClass()))
+                consumables.add(c);
+        }
+        return consumables;
     }
 
     /**
