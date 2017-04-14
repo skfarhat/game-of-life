@@ -6,8 +6,6 @@ package core;
 
 import core.exceptions.AgentIsDeadException;
 
-import java.awt.*;
-
 /**
  * @class Grass is a LifeAgent, it reproduces
  */

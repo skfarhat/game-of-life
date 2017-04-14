@@ -2,6 +2,7 @@ package core;
 
 import core.actions.*;
 import core.exceptions.AgentIsDeadException;
+import core.exceptions.ConsumableOutOfEnergy;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.LifeException;
 
@@ -29,6 +30,7 @@ public class Life implements LifeGetter {
     public static final String KEY_E_WOLF_INITIAL = "E_WOLF_INITIAL";
     public static final String KEY_E_DEER_GAIN = "E_DEER_GAIN";
     public static final String KEY_E_WOLF_GAIN = "E_WOLF_GAIN";
+    public static final String KEY_E_GRASS_LOSS = "E_GRASS_DECREASE";
     public static final String KEY_E_GRASS_GAIN = "KEY_E_GRASS_GAIN";
     public static final String KEY_E_STEP_DECREASE = "E_STEP_DECREASE";
     /* public static final String KEY_AGE_GRASS = "AGE_GRASS"; */ // Grass doesn't age in this implementation
@@ -84,6 +86,9 @@ public class Life implements LifeGetter {
     /** @brief default probability of reproducing for grass */
     public static final double DEFAULT_R_GRASS = 1.0;
 
+    /** @brief default energy lost by Grass when it is consumed */
+    public static final int DEFAULT_E_GRASS_LOSS = 5;
+
     // ===========================================================================================
     // Params
     // ===========================================================================================
@@ -110,6 +115,7 @@ public class Life implements LifeGetter {
     public final int I_WOLF;
     public final int AGE_WOLF;
     public final int AGE_DEER;
+    public final int E_GRASS_LOSS;
 
     /**
      * @brief the maximum number of iterations (stepCounts) - max number of times step can be called.
@@ -164,6 +170,11 @@ public class Life implements LifeGetter {
         exceptionIfNegative(E_DEER_GAIN = params.containsKey(KEY_E_DEER_GAIN)? params.get(KEY_E_DEER_GAIN).intValue() : DEFAULT_E_GAIN);
         exceptionIfNegative(E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : DEFAULT_E_GAIN);
 
+        // energy loss
+        exceptionIfNegative(E_GRASS_LOSS = params.containsKey(KEY_E_GRASS_LOSS)? params.get(KEY_E_GRASS_LOSS).intValue() : DEFAULT_E_GRASS_LOSS);
+        /*  Wolf dies when consumed. */
+        /*  Deer dies when consumed. */
+
         // initial count
         exceptionIfNegative(I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : DEFAULT_I_GRASS);
         exceptionIfNegative(I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : DEFAULT_I_DEER);
@@ -182,7 +193,6 @@ public class Life implements LifeGetter {
         // ---------------------
 
         // create grid
-
         grid = GridLifeCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
 
         final int nAgents = I_DEER + I_WOLF + I_GRASS;
@@ -192,11 +202,9 @@ public class Life implements LifeGetter {
             throw new LifeException(String.format("Created number of agents  (%d) does not match the number we expect (%d).\n",
                     nCreated, nAgents));
         }
-
     }
 
     /**
-     *
      * @param a
      * @return
      */
@@ -432,21 +440,22 @@ public class Life implements LifeGetter {
             return;
         }
 
+        final int choiceOfImplementation = 3;
         final int GAIN_CAP = 10;
+
         Consumable consumable = action.getConsumables().next();
-        Integer consumableEnergy = consumable.getEnergy();
         LifeAgent consumingAgent = action.getAgent();
 
         // defines the energy gained by the consuming agent
         int energyGain = 0;
-
-        int choiceOfImplementation = 3;
+        int consumableEnergy = consumable.getEnergy();
+        int energyLoss = consumableEnergy; // defaults to consumable's energy but isn't the case for everything (e.g. Grass)
 
         switch(choiceOfImplementation) {
             case 2:
                 // Implementation 2:
                 // the consuming agent gains the energy of the consumable
-                energyGain = consumableEnergy;
+                energyGain = energyLoss;
                 break;
             case 3:
                 // Implementation 3:
@@ -460,9 +469,16 @@ public class Life implements LifeGetter {
                 energyGain = (consumable instanceof Wolf)? E_WOLF_GAIN : (consumable instanceof Deer)? E_DEER_GAIN : E_GRASS_GAIN;
         }
 
+
+        if (consumable instanceof Grass)
+            energyLoss = Math.min(E_GRASS_LOSS, consumableEnergy);
+
         // consume the consumable and increase energy by 'energyGain'
-        ((Consumes)consumingAgent).consume(consumable);
-        consumingAgent.changeEnergyBy(energyGain); // this will change the energy of the consuming agent by that of its predator
+        // the try-catch is redundant we already tested for it
+        try { consumingAgent.consumeBy(consumable, energyLoss); }
+        catch (ConsumableOutOfEnergy exc) { exc.printStackTrace(); }
+
+        consumingAgent.changeEnergyBy(energyGain);
     }
 
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {

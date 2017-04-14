@@ -6,9 +6,11 @@ import java.util.List;
 /**
  * @classs Wolf
  */
-public class Wolf extends LifeAgent implements Consumes {
+public class Wolf extends LifeAgent {
 
-    /** @@brief default constructor */
+    /**
+     * @@brief default constructor
+     */
     public Wolf() throws AgentIsDeadException {
         super();
     }
@@ -30,33 +32,9 @@ public class Wolf extends LifeAgent implements Consumes {
         return babyWolf;
     }
 
-    // TODO(sami): replace with a new exception
-    @Override
-    public boolean consume(Consumable consumable) throws AgentIsDeadException {
-        if (consumable == this)
-            throw new IllegalArgumentException("Cannot consume myself!");
-        try {
-            consumable.die();
-            return true;
-        }
-        catch(AgentIsDeadException exc) {
-            return false;
-        }
-    }
-
-    @Override
-    public int consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
-        int count = 0;
-        for (Consumable consumable : consumables) {
-            // if consume succeeds increment count
-            if (consume(consumable))
-                count++;
-        }
-        return count;
-    }
-
     @Override
     public String toString() {
         return String.format("Wolf[%s]%s(e=%d)", getId().substring(0, 5), getPos(), getEnergy());
     }
 }
+

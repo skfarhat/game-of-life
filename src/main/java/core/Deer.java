@@ -30,32 +30,6 @@ public class Deer extends LifeAgent implements Consumes {
         super(p, energy);
     }
 
-    // TODO(sami): replace with a new exception
-    @Override
-    public boolean consume(Consumable consumable) throws AgentIsDeadException {
-        if (consumable == this)
-            throw new IllegalArgumentException("Cannot consume myself!");
-
-        try {
-            consumable.die();
-            return true;
-        }
-        catch(AgentIsDeadException exc) {
-            return false;
-        }
-    }
-
-    @Override
-    public int consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
-        int count = 0;
-        for (Consumable consumable : consumables) {
-            // if consume succeeds increment count
-            if (consume(consumable))
-                count++;
-        }
-        return count;
-    }
-
     public LifeAgent reproduce() throws AgentIsDeadException {
         return new Deer(getPos(), this.MY_INITIAL_ENERGY);
     }

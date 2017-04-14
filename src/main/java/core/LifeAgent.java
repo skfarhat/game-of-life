@@ -4,6 +4,9 @@
 package core;
 
 import core.exceptions.AgentIsDeadException;
+import core.exceptions.ConsumableOutOfEnergy;
+
+import java.util.List;
 
 /**
  * @class LifeAgent
@@ -14,7 +17,7 @@ import core.exceptions.AgentIsDeadException;
  *
  * Not every LifeAgent ages (think of Grass)
  */
-public abstract class LifeAgent extends Agent implements Reproduces, Consumable {
+public abstract class LifeAgent extends Agent implements Reproduces, Consumable, Consumes {
 
     /** @brief value by which we decrement the energy when decreaseEnergy is called */
     public static final int ENERGY_DECREMENT_VAL = 1;
@@ -57,8 +60,17 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
         setEnergy(MY_INITIAL_ENERGY = energy);
     }
 
+
     /** @return the energy of the LifeAgent */
+    @Override
     final public Integer getEnergy() { return energy; }
+
+    /**
+     * @param e the amount to decrease the energy by
+     * @throws AgentIsDeadException
+     */
+    @Override
+    final public void decreaseEnergy(int e) throws AgentIsDeadException { changeEnergyBy(-e); }
 
     /**
      * @brief sets the new energy on the LifeAgent
@@ -95,4 +107,43 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
     public boolean isAlive() { return !died; }
 
+
+    /**
+     * @brief decrease the consumable's energy by @param e
+     * @param consumable the consumable to be consumed
+     * @param e
+     * @return
+     */
+    @Override
+    public final void consumeBy(Consumable consumable, int e) throws ConsumableOutOfEnergy, AgentIsDeadException {
+        if (consumable.getEnergy() < e) {
+            throw new ConsumableOutOfEnergy();
+        }
+        consumable.decreaseEnergy(e);
+    }
+
+    // TODO(sami): replace with a new exception
+    @Override
+    public final boolean consume(Consumable consumable) throws AgentIsDeadException {
+        if (consumable == this)
+            throw new IllegalArgumentException("Cannot consume myself!");
+        try {
+            consumable.die();
+            return true;
+        }
+        catch(AgentIsDeadException exc) {
+            return false;
+        }
+    }
+
+    @Override
+    public final int consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
+        int count = 0;
+        for (Consumable consumable : consumables) {
+            // if consume succeeds increment count
+            if (consume(consumable))
+                count++;
+        }
+        return count;
+    }
 }

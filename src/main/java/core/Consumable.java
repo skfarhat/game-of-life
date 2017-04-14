@@ -10,6 +10,14 @@ import core.exceptions.AgentIsDeadException;
  */
 public interface Consumable {
 
+    /**
+     * @brief decrease the Consumable's energy by @param e
+     *
+     * @param e the amount to decrease the energy by
+     */
+    void decreaseEnergy(int e) throws AgentIsDeadException;
+
+    /** @brief decrease the Consumable's energy entirely */
     void die() throws AgentIsDeadException;
 
     Integer getEnergy();
