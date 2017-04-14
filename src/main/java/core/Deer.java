@@ -26,7 +26,7 @@ public class Deer extends LifeAgent implements Consumes {
         super(p);
     }
 
-    public Deer(Point2D p, int energy) throws AgentIsDeadException {
+    public Deer(Point2D p, Integer energy) throws AgentIsDeadException {
         super(p, energy);
     }
 

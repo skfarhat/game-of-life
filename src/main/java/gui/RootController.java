@@ -223,14 +223,14 @@ public class RootController implements Initializable, LifeStarter {
                 try {
                     List<Action> actions = life.step();
 //                    System.out.println("agents size: "  + life.getAgents().size());
-                    iterations.setValue(life.getIteration());
+                    iterations.setValue(life.getStepCount());
 
                     for (Action action : actions) {
                         queue.offer(action);
                     }
 
                     // cancel timer if max iterations exceeded
-                    if (life.getMaxIterations() > 0 &&  life.getIteration() >= life.getMaxIterations()) {
+                    if (life.getMaxIterations() > 0 &&  life.getStepCount() >= life.getMaxIterations()) {
                         cancelTimers();
                     }
 

@@ -50,7 +50,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable 
         setEnergy(MY_INITIAL_ENERGY = initialEnergy);
     }
 
-    public LifeAgent(Point2D p, int energy) throws AgentIsDeadException {
+    public LifeAgent(Point2D p, Integer energy) throws AgentIsDeadException {
         super(p);
         if (energy <= 0)
             throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");

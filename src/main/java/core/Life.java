@@ -115,7 +115,9 @@ public class Life implements LifeGetter {
      * A negative means run indefinitely
      * */
     public final int maxIterations;
-    private int iteration;
+
+    /** @brief the number of times step has been called and returned a non-empty list of Actions */
+    private int stepCount;
 
     // ===========================================================================================
     // MEMBER VARIABLES
@@ -126,7 +128,6 @@ public class Life implements LifeGetter {
 
     /** @brief list of all of the agents in Life */
     private final List<Agent> agents;
-    private int totalRemoved = 0;
 
     // ===========================================================================================
     // METHODS
@@ -237,7 +238,7 @@ public class Life implements LifeGetter {
      * @brief choose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentIsDeadException
-     * @return the iteration index or -1 if there was nothing to do
+     * @return the stepCount index or -1 if there was nothing to do
      */
     public List<Action> step() throws InvalidPositionException, AgentIsDeadException {
 
@@ -338,7 +339,7 @@ public class Life implements LifeGetter {
             processAgeAction((EnergyChange) energyGain);
         }
 
-        iteration++;
+        stepCount++;
         return actions;
     }
 
@@ -418,10 +419,9 @@ public class Life implements LifeGetter {
         return agents;
     }
 
-    /** @return the current iteration */
-    @Override
-    public int getIteration() {
-        return iteration;
+    /** @return the current stepCount */
+    public int getStepCount() {
+        return stepCount;
     }
 
     /** @return the maximum number of iterations that this simulation should run - this is not enforced in this class

@@ -1,7 +1,6 @@
 package gui;
 
 import core.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
@@ -99,23 +98,6 @@ public class CellView extends Pane {
                 }
                 else {
                     if (addedCount < 10) {
-                        if (!((LifeAgent)agent).isAlive()) {
-                            try {
-                                throw new Exception("Why is there a dead agent in this array?? ");
-                            } catch (Exception e) {
-                                System.out.println("----------------------------------------------------------");
-                                System.out.println("issue with Cell: " + cell.getPos() );
-                                System.out.println("agentsCount: " + agentsCount);
-                                System.out.println("agent: " + agent);
-                                System.out.println("rechecking [agentsCount]: " + cell.agentsCount());
-
-                                System.out.println("let's try to recycle again.. ");
-                                ((LifeCell)cell).recycleDeadAgents();
-                                System.out.println("[agentsCount]: " + cell.agentsCount());
-                                System.out.println("----------------------------------------------------------");
-//                                e.printStackTrace();
-                            }
-                        }
 
                         if(agent instanceof Wolf) {
                             pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);

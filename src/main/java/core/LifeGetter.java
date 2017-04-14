@@ -9,7 +9,7 @@ public interface LifeGetter {
 
     List<Agent> getAgents();
 
-    int getIteration();
+    int getStepCount();
 
     int getMaxIterations();
 

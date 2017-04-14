@@ -6,6 +6,8 @@ package core;
 
 import core.exceptions.AgentIsDeadException;
 
+import java.awt.*;
+
 /**
  * @class Grass is a LifeAgent, it reproduces
  */
@@ -15,10 +17,13 @@ public class Grass extends LifeAgent {
         super();
     }
 
-    public Grass(int initialE) throws AgentIsDeadException {
+    public Grass(Integer initialE) throws AgentIsDeadException {
         super(initialE);
     }
 
+    public Grass(Point2D p, Integer initialE) throws AgentIsDeadException {
+        super(p, initialE);
+    }
 
     public LifeAgent reproduce() throws AgentIsDeadException {
         return new Grass(this.MY_INITIAL_ENERGY);

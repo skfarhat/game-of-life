@@ -21,7 +21,7 @@ public class Wolf extends LifeAgent implements Consumes {
         super(p);
     }
 
-    public Wolf(Point2D p, int energy) throws AgentIsDeadException {
+    public Wolf(Point2D p, Integer energy) throws AgentIsDeadException {
         super(p, energy);
     }
 
