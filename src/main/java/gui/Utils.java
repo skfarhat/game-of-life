@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
  */
 public class Utils {
 
+    /** @return String representing the RGB code of the provided color */
     public static String toRGBCode( Color color )
     {
         return String.format( "#%02X%02X%02X",
