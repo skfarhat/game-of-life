@@ -3,8 +3,8 @@
 ## Agent
 Any agent in the system. An agent is characterised by:
   	
-  * by an identifier unique for the duration of the simluation
-  * a position 
+  * an ID (String) unique for the duration of the simluation
+  * a position (Point2D)
 
 
 ## LifeAgent
@@ -17,7 +17,18 @@ Interfaces implemented:
 
 AliveAgents can always die, but do not necessarily age, the implementer can choose to implement the interface **Age** or not. 
 
-## How consuming other LifeAgents works
+## Consumes/Consumable
+
+Implementations in Life: 
+
+1. **Fixed energy gain**: consuming agents will gain a fixed energy upon consuming a consumable. The value of this fixed energy is determined by Life and in general should be configurable by the user.  
+2. **Consumable's energy**: consuming agents will gain the energy of their consumable. 
+3. **Capped consumable's energy**: consuming agents will gain the energy of their consumable but only up to a certain cap that is defined by Life. The value of this cap should be made configurable by the user but at the time of writing is not (it's a local method constant). 
+4. **Not Implemented yet**   
+  Consumable type energy : the consuming agent will gain an energy determined by the type of the agent it consumes  
+e.g. wolf eats any deer and gains +5, wolf drinks water gains +1
+
+**Implementation detail** 
 
 We cannot trust the implementers of Consumer to follow proper logic and reasoning: Deer can be implemented such that the deer consumes ANY LifeAgent it is passed - including Wolves.
 

@@ -426,8 +426,43 @@ public class Life implements LifeGetter {
     }
 
     private void processConsume(Consume action) throws AgentIsDeadException {
+        if (false == action.getConsumables().hasNext()) {
+            // nothing to consume
+            // TODO(sami): put some DEBUG info here
+            return;
+        }
+
+        final int GAIN_CAP = 10;
         Consumable consumable = action.getConsumables().next();
-        ((Consumes) action.getAgent()).consume(consumable);
+        Integer consumableEnergy = consumable.getEnergy();
+        LifeAgent consumingAgent = action.getAgent();
+
+        // defines the energy gained by the consuming agent
+        int energyGain = 0;
+
+        int choiceOfImplementation = 3;
+
+        switch(choiceOfImplementation) {
+            case 2:
+                // Implementation 2:
+                // the consuming agent gains the energy of the consumable
+                energyGain = consumableEnergy;
+                break;
+            case 3:
+                // Implementation 3:
+                // the consuming agents gains energy of its consumable with a cap on the energy gained
+                energyGain = (consumableEnergy < GAIN_CAP)? consumableEnergy : GAIN_CAP;
+                break;
+            case 1:
+            default:
+                // Implementation 1 and the default :
+                // the consuming agent gains a fixed energy defined by E_{X}_GAIN
+                energyGain = (consumable instanceof Wolf)? E_WOLF_GAIN : (consumable instanceof Deer)? E_DEER_GAIN : E_GRASS_GAIN;
+        }
+
+        // consume the consumable and increase energy by 'energyGain'
+        ((Consumes)consumingAgent).consume(consumable);
+        consumingAgent.changeEnergyBy(energyGain); // this will change the energy of the consuming agent by that of its predator
     }
 
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {

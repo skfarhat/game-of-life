@@ -10,5 +10,8 @@ import core.exceptions.AgentIsDeadException;
  */
 public interface Consumable {
 
-    public void die() throws AgentIsDeadException;
+    void die() throws AgentIsDeadException;
+
+    Integer getEnergy();
+
 }
