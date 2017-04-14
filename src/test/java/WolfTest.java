@@ -1,16 +1,11 @@
+import core.*;
 import core.exceptions.AgentIsDeadException;
-import core.Consumable;
-import core.LifeAgent;
-import core.Wolf;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 28/03/2017.
- */
 public class WolfTest {
 
     @Test
@@ -33,14 +28,12 @@ public class WolfTest {
         assertTrue(agent instanceof Wolf);
     }
 
-//    @Test
-//    public void testWolfAgesCorrectly() throws AgentIsDeadException {
-//        final int initialEnergy = 100;
-//        final int ageBy = 10;
-//        Wolf wolf = new Wolf(initialEnergy);
-//        wolf.ageBy(ageBy);
-//        assertEquals(initialEnergy-ageBy, wolf.getEnergy().intValue());
-//    }
+    @Test
+    public void testDeerConstructorWithPoint() throws AgentIsDeadException {
+        Point2D p = Utils.randomPoint(100, 100);
+        Wolf wolf = new Wolf(p);
+        assertEquals(p, wolf.getPos());
+    }
 
     @Test
     public void testToString() throws AgentIsDeadException {

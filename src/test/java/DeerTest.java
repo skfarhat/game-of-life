@@ -1,7 +1,5 @@
+import core.*;
 import core.exceptions.AgentIsDeadException;
-import core.Consumable;
-import core.Deer;
-import core.LifeAgent;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -37,14 +35,12 @@ public class DeerTest {
         assertTrue(agent instanceof Deer);
     }
 
-//    @Test
-//    public void testDeerAgesCorrectly() throws AgentIsDeadException {
-//        final int initialEnergy = 100;
-//        final int ageBy = 10;
-//        Deer deer = new Deer(initialEnergy);
-//        deer.ageBy(ageBy);
-//        assertEquals(initialEnergy-ageBy, deer.getEnergy().intValue());
-//    }
+    @Test
+    public void testDeerConstructorWithPoint() throws AgentIsDeadException {
+        Point2D p = Utils.randomPoint(100, 100);
+        Deer deer = new Deer(p);
+        assertEquals(p, deer.getPos());
+    }
 
     @Test
     public void testToString() throws AgentIsDeadException {
