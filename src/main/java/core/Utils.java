@@ -94,6 +94,13 @@ public final class Utils {
         return true;
     }
 
+    /**
+     * @param val that must be non-negative
+     * @throws IllegalArgumentException if val is negative
+     */
+    public static void exceptionIfNegative(int val) throws IllegalArgumentException {
+        if (val < 0) throw new IllegalArgumentException();
+    }
 }
 
 

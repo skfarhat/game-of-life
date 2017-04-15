@@ -53,6 +53,11 @@ public class LifeAgentTest {
     }
 
     @Test
+    public void testCanUseReflectionOnStaticGetDefaultParams() throws NoSuchMethodException {
+        LifeAgent.class.getMethod(LifeAgent.METHOD_NAME_GET_DEFAULT_PARAMS).invoke();
+    }
+
+    @Test
     public void testAliveAgent() throws AgentIsDeadException {
         Random rand = new Random();
         int energy = 1 + Math.abs(rand.nextInt());

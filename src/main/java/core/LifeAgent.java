@@ -25,6 +25,19 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     /** @brief default value for the initial energy of a LifeAgent */
     private static final int DEFAULT_INITIAL_ENERGY = 10;
 
+
+    /** @brief this string must match the method name of getDefaultParams */
+    public static final String METHOD_NAME_GET_DEFAULT_PARAMS = "getDefaultParams";
+
+    /**
+     * it is not essential that subclasses to worry about implementing getDefaultParams
+     * so a default implementation returning null
+     * @return default parameters for the LifeAgent class to be used in Life. These may well be overridden by Life.
+     */
+    public static LifeAgentParams getDefaultParams() {
+        return null;
+    }
+
     /** @brief the energy with which this instance was created. This same value is used later when reproducing. */
     protected final Integer MY_INITIAL_ENERGY;
 
