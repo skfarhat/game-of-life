@@ -1,12 +1,10 @@
 package core;
 
 import core.actions.*;
-import core.exceptions.AgentIsDeadException;
-import core.exceptions.ConsumableOutOfEnergy;
-import core.exceptions.InvalidPositionException;
-import core.exceptions.LifeException;
+import core.exceptions.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -19,29 +17,17 @@ import java.util.*;
 public class Life implements LifeGetter {
 
     // ===========================================================================================
-    // List of keys in the params map
+    // List of keys in the options map
     // ===========================================================================================
 
-    public static final String KEY_MAX_ITERATIONS = "MAX_ITERATIONS";
-    public static final String KEY_GRID_COLS = "GRID_COLS";
-    public static final String KEY_GRID_ROWS = "GRID_ROWS";
-    public static final String KEY_E_GRASS_INITIAL = "E_GRASS_INITIAL";
-    public static final String KEY_E_DEER_INITIAL = "E_DEER_INITIAL";
-    public static final String KEY_E_WOLF_INITIAL = "E_WOLF_INITIAL";
-    public static final String KEY_E_DEER_GAIN = "E_DEER_GAIN";
-    public static final String KEY_E_WOLF_GAIN = "E_WOLF_GAIN";
-    public static final String KEY_E_GRASS_LOSS = "E_GRASS_DECREASE";
-    public static final String KEY_E_GRASS_GAIN = "KEY_E_GRASS_GAIN";
-    public static final String KEY_E_STEP_DECREASE = "E_STEP_DECREASE";
-    /* public static final String KEY_AGE_GRASS = "AGE_GRASS"; */ // Grass doesn't age in this implementation
-    public static final String KEY_AGE_DEER = "AGE_DEER";
-    public static final String KEY_AGE_WOLF = "AGE_WOLF";
-    public static final String KEY_R_GRASS = "R_GRASS";
-    public static final String KEY_R_DEER = "R_DEER";
-    public static final String KEY_R_WOLF = "R_WOLF";
-    public static final String KEY_I_GRASS = "I_GRASS";
-    public static final String KEY_I_DEER = "I_DEER";
-    public static final String KEY_I_WOLF = "I_WOLF";
+    /* keys used in the params Map passed in constructor */
+    public static final String KEY_LIFE_PARAMS = "LIFE_PARAMS";
+    public static final String KEY_LIFEAGENT_PARAMS = "LIFE_AGENT_PARAMS";
+
+    /* keys used in the Life params Map */
+    public static final String KEY_LIFE_MAX_ITERATIONS = "MAX_ITERATIONS";
+    public static final String KEY_LIFE_GRID_ROWS = "GRID_ROWS";
+    public static final String KEY_LIFE_GRID_COLS = "GRID_COLS";
 
     // ===========================================================================================
     // Defaults
@@ -53,45 +39,47 @@ public class Life implements LifeGetter {
     /** @brief default energy gained by wolf and deer when they consume other agents */
     public static final int DEFAULT_GRID_N = 5;
 
-    /** @brief default energy gained by wolf and deer when they consume other agents */
-    public static final int DEFAULT_GRASS_GAIN = 3;
+    /** @brief default initial energy for LifeAgents*/
+    public static final int DEFAULT_E0 = 5;
 
-    /** @brief default energy gained by grass during reproduction*/
+    /** @brief default initial number of instances of that LifeAgent */
+    public static final int DEFAULT_I0 = 5;
+
+    /** @brief default reproduction rate for LifeAgents */
+    private static final Double DEFAULT_R = 0.1;
+
+    /** @brief default energy lost by a LifeAgent when it is consumed - only applicable in some implementations of consume*/
+    private static final Integer DEFAULT_E_LOSS = 1;
+
+    /** @brief default energy gained when a LifeAgent consumes another */
     public static final int DEFAULT_E_GAIN = 2;
 
     /** @brief default energy decrease for Agents when they age */
     public static final int DEFAULT_AGE = 1;
 
-    /** @brief default initial deer energy */
-    public static final int DEFAULT_E_DEER = 5;
-
-    /** @brief default initial wolf energy */
-    public static final int DEFAULT_E_WOLF = 5;
-
-    /** @brief default initial number of wolves */
-    public static final int DEFAULT_I_WOLF = 5;
-
-    /** @brief default initial number of deers */
-    public static final int DEFAULT_I_DEER = 5;
-
-    /** @brief default initial number of deers */
-    public static final int DEFAULT_I_GRASS = 5;
-
-    /** @brief default probability of reproducing for a wolf */
-    public static final double DEFAULT_R_WOLF = 0.1;
-
-    /** @brief default probability of reproducing for a deer*/
-    public static final double DEFAULT_R_DEER = 0.15;
-
-    /** @brief default probability of reproducing for grass */
-    public static final double DEFAULT_R_GRASS = 1.0;
-
-    /** @brief default energy lost by Grass when it is consumed */
-    public static final int DEFAULT_E_GRASS_LOSS = 5;
-
     // ===========================================================================================
-    // Params
+    // MEMBER VARIABLES
     // ===========================================================================================
+
+    /**
+     * e.g.
+     *
+     * key 1:
+     * "LIFE" --> map{
+     *     "MAX_ITERATIONS": 20,
+     *     "GRID_COLS": 5,
+     *     "GRID_ROWS": 10
+     * }
+     *
+     * key 2:
+     * "LIFE_AGENT" --> map {
+     *     Wolf.class   : LifeAgentParams(Wolf.class, 10, 1, 0.1, 1, ... )
+     *     Deer.class   : LifeAgentParams(Deer.class, 5, 1, 0.1, 1, ... )
+     *     Grass.class  : LifeAgentParams(Grass.class, 5, 1, 1.0, 1, ... )
+     * }
+     *
+     */
+    Map<String, Map> options;
 
     /**
      * @brief map determining which typ of LifeAgent can consume which type,
@@ -99,36 +87,14 @@ public class Life implements LifeGetter {
      */
     private final Map<Class, List<Class>> CONSUME_RULES = new HashMap<Class, List<Class>>();
 
-    public final int GRID_COLS;
-    public final int GRID_ROWS;
-    public final int E_GRASS_INITIAL;
-    public final int E_DEER_INITIAL;
-    public final int E_WOLF_INITIAL;
-    public final int E_GRASS_GAIN;
-    public final int E_DEER_GAIN;
-    public final int E_WOLF_GAIN;
-    public final double R_GRASS;
-    public final double R_DEER;
-    public final double R_WOLF;
-    public final int I_GRASS;
-    public final int I_DEER;
-    public final int I_WOLF;
-    public final int AGE_WOLF;
-    public final int AGE_DEER;
-    public final int E_GRASS_LOSS;
+    /** @brief array of classes supported by this implementation of life */
+    private final Class<?extends LifeAgent>[] SUPPORTED_AGENTS = new Class[]{Grass.class, Wolf.class, Deer.class};
 
-    /**
-     * @brief the maximum number of iterations (stepCounts) - max number of times step can be called.
-     * A negative means run indefinitely
-     * */
-    public final int maxIterations;
+//    public final Map<Class<?extends LifeAgent>, LifeAgentParams> configOptions = new HashMap<>();
 
     /** @brief the number of times step has been called and returned a non-empty list of Actions */
     private int stepCount;
 
-    // ===========================================================================================
-    // MEMBER VARIABLES
-    // ===========================================================================================
 
     /** @brief the grid containing all cells on which the agents will be placed */
     private final Grid<LifeCell> grid;
@@ -146,62 +112,103 @@ public class Life implements LifeGetter {
     // AgentIsDeadException --> invalid initial energy
     // InvalidPositionException --> distribution of the agents failed.
     /** @brief constructor taking in a params map specifying the input parameters */
-    public Life(Map<String, Number> params) throws LifeException, IllegalArgumentException {
+    public Life(Map<String, Map> opts) throws LifeException, IllegalArgumentException {
 
-        // Consume Rules: dictate who is allowed to consume whom
+        if (opts == null)
+            opts = new HashMap<>();
+        this.options = opts;
+
+        // -------------------------------------------------------------------------------------------------------------
+        // Constructor overview:
+        // [1] handle consume rules
+        // [2] handle LifeAgent parameters
+        // [3] handle Life parameters
+        // [4] create grid
+        // [5] create agents and distribute them on the grid
+        // -------------------------------------------------------------------------------------------------------------
+
+        // [1] Consume Rules: dictate who is allowed to consume whom
         CONSUME_RULES.put(Wolf.class, new ArrayList<Class>(){{add(Deer.class );}}); // Wolf eats Deer
         CONSUME_RULES.put(Deer.class, new ArrayList<Class>(){{add(Grass.class);}}); // Deer eats Grass
 
-        // if the params map passed is null, we assume the user has no input parameters, we create an empty map
-        // and the below code will step and set all fields to their defaults
-        if (params == null) params= new HashMap<>();
+        // [2] LifeAgent params
+        try {
+            Map<Class<?extends LifeAgent>, LifeAgentParams> lifeAgentParams = opts.get(KEY_LIFEAGENT_PARAMS);
 
-        maxIterations = params.containsKey(KEY_MAX_ITERATIONS)? params.get(KEY_MAX_ITERATIONS).intValue() : DEFAULT_MAX_ITERATIONS;
-        exceptionIfNegative(GRID_COLS = params.containsKey(KEY_GRID_COLS)? params.get(KEY_GRID_COLS).intValue() : DEFAULT_GRID_N);
-        exceptionIfNegative(GRID_ROWS = params.containsKey(KEY_GRID_ROWS)? params.get(KEY_GRID_ROWS).intValue() : DEFAULT_GRID_N);
+            for (Class<? extends LifeAgent> agentType : SUPPORTED_AGENTS) {
 
-        // initial energy
-        exceptionIfNegative(E_GRASS_INITIAL = params.containsKey(KEY_E_GRASS_INITIAL)? params.get(KEY_E_GRASS_INITIAL).intValue() : DEFAULT_E_DEER);
-        exceptionIfNegative(E_DEER_INITIAL = params.containsKey(KEY_E_DEER_INITIAL)? params.get(KEY_E_DEER_INITIAL).intValue() : DEFAULT_E_DEER);
-        exceptionIfNegative(E_WOLF_INITIAL = params.containsKey(KEY_E_WOLF_INITIAL)? params.get(KEY_E_WOLF_INITIAL).intValue() : DEFAULT_E_WOLF);
+                // LifeAgentParams are taken from whichever of the below occurs first:
+                // 1 - user defined LifeAgentParams are used
+                // 2 - subclass defined default LifeAgentParams are used
+                // 3 - Life defined LifeAgentParams are used
 
-        // energy gain
-        exceptionIfNegative(E_GRASS_GAIN = params.containsKey(KEY_E_GRASS_GAIN)? params.get(KEY_E_GRASS_GAIN).intValue() : DEFAULT_GRASS_GAIN);
-        exceptionIfNegative(E_DEER_GAIN = params.containsKey(KEY_E_DEER_GAIN)? params.get(KEY_E_DEER_GAIN).intValue() : DEFAULT_E_GAIN);
-        exceptionIfNegative(E_WOLF_GAIN = params.containsKey(KEY_E_WOLF_GAIN)? params.get(KEY_E_WOLF_GAIN).intValue() : DEFAULT_E_GAIN);
+                if (lifeAgentParams == null)
+                    lifeAgentParams = new HashMap<>();
 
-        // energy loss
-        exceptionIfNegative(E_GRASS_LOSS = params.containsKey(KEY_E_GRASS_LOSS)? params.get(KEY_E_GRASS_LOSS).intValue() : DEFAULT_E_GRASS_LOSS);
-        /*  Wolf dies when consumed. */
-        /*  Deer dies when consumed. */
+                LifeAgentParams typeParams = null;
+                Method methodGetDefaultParams = null;
 
-        // initial count
-        exceptionIfNegative(I_GRASS = params.containsKey(KEY_I_GRASS)? params.get(KEY_I_GRASS).intValue() : DEFAULT_I_GRASS);
-        exceptionIfNegative(I_DEER = params.containsKey(KEY_I_DEER)? params.get(KEY_I_DEER).intValue() : DEFAULT_I_DEER);
-        exceptionIfNegative(I_WOLF = params.containsKey(KEY_I_WOLF)? params.get(KEY_I_WOLF).intValue() : DEFAULT_I_WOLF);
+                // (2) get the method to be used by reflection
+                try { methodGetDefaultParams = agentType.getMethod(LifeAgent.METHOD_NAME_GET_DEFAULT_PARAMS);}
+                catch (NoSuchMethodException e) { }
 
-        // age
-        exceptionIfNegative(AGE_DEER = params.containsKey(KEY_AGE_DEER)? params.get(KEY_AGE_DEER).intValue() : DEFAULT_AGE);
-        exceptionIfNegative(AGE_WOLF = params.containsKey(KEY_AGE_WOLF)? params.get(KEY_AGE_WOLF).intValue() : DEFAULT_AGE);
+                // (1) user defined
+                if (lifeAgentParams.containsKey(agentType)) {
+                    typeParams = lifeAgentParams.get(agentType);
+                }
+                // (2) LifeAgent subclass defined
+                else if (null != methodGetDefaultParams) {
+                    typeParams = (LifeAgentParams) methodGetDefaultParams.invoke(null);
+                }
+                // (3) Life class defined
+                else {
+                    typeParams = new LifeAgentParams(agentType, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0, DEFAULT_E_GAIN, DEFAULT_E_LOSS);
+                }
+                lifeAgentParams.put(agentType, typeParams);
+            }
+            options.put(KEY_LIFE_PARAMS, lifeAgentParams);
+        } catch (IllegalAccessException e) {
+            // if we don't have right access to the method invoked (e.g. the method is private)
+            e.printStackTrace();
+            throw new LifeImplementationException(e.getMessage());
+        } catch (InvocationTargetException e) {
+            // if the underlying method throws an exception
+            e.printStackTrace();
+            throw new LifeImplementationException(e.getMessage());
+        }
 
-        // reproduction (the doubles must be in range [0-1])
-        exceptionIfOutOfRange(R_DEER = params.containsKey(KEY_R_DEER)? params.get(KEY_R_DEER).doubleValue() : DEFAULT_R_DEER);
-        exceptionIfOutOfRange(R_WOLF = params.containsKey(KEY_R_WOLF)? params.get(KEY_R_WOLF).doubleValue() : DEFAULT_R_WOLF);
-        R_GRASS = DEFAULT_R_GRASS; // at the time of writing this should not be variable and has thus been hardcoded
+        // [3] handle Life params
+        Map<String, Number> lifeParams = (Map<String, Number>) opts.get(KEY_LIFE_PARAMS);
+        if (lifeParams == null)
+            lifeParams = new HashMap<>();
+
+        // check the sanity of the params in lifeParams
+        if (false == lifeParams.containsKey(KEY_LIFE_MAX_ITERATIONS))
+            lifeParams.put(KEY_LIFE_MAX_ITERATIONS, DEFAULT_MAX_ITERATIONS);
+
+        if (lifeParams.containsKey(KEY_LIFE_GRID_COLS))
+            exceptionIfNegative(lifeParams.get(KEY_LIFE_GRID_COLS).intValue());
+        else
+            lifeParams.put(KEY_LIFE_GRID_COLS, DEFAULT_GRID_N);
+
+        if (lifeParams.containsKey(KEY_LIFE_GRID_ROWS))
+            exceptionIfNegative(lifeParams.get(KEY_LIFE_GRID_ROWS).intValue());
+        else
+            lifeParams.put(KEY_LIFE_GRID_COLS, DEFAULT_GRID_N);
+
 
         // Create Life in 7 days
         // ---------------------
 
-        // create grid
-        grid = GridLifeCellFactory.createGridCell(this.GRID_ROWS, this.GRID_COLS); // create a square Grid
+        // [4] create grid
+        int gridRows = lifeParams.get(KEY_LIFE_GRID_ROWS).intValue();
+        int gridCols = lifeParams.get(KEY_LIFE_GRID_COLS).intValue();
+        grid = GridLifeCellFactory.createGridCell(gridRows, gridCols); // create a square Grid
 
-        final int nAgents = I_DEER + I_WOLF + I_GRASS;
-        agents = new ArrayList<>(nAgents);
-        int nCreated = createAndDistributeAgents();
-        if (nCreated != nAgents)  {
-            throw new LifeException(String.format("Created number of agents  (%d) does not match the number we expect (%d).\n",
-                    nCreated, nAgents));
-        }
+        // [5] create agents and distribute
+        agents = new ArrayList<>();
+        createAndDistributeAgents(gridRows, gridCols);
+
     }
 
     /**
@@ -303,7 +310,9 @@ public class Life implements LifeGetter {
             // Reproduce
             // ---------
 
-            double rAgent = (chosen instanceof Wolf)? R_WOLF : R_DEER;
+            double rWolf = lifeAgentOpts().get(Wolf.class).getReproductionRate();
+            double rDeer = lifeAgentOpts().get(Deer.class).getReproductionRate();
+            double rAgent = (chosen instanceof Wolf)? rWolf : rDeer;
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
                 LifeAgent baby = chosen.reproduce();
@@ -316,7 +325,9 @@ public class Life implements LifeGetter {
             // EnergyChange
             // ------------
 
-            int ageBy = (chosen instanceof Wolf)? AGE_WOLF: AGE_DEER;
+            int ageWolf = lifeAgentOpts().get(Wolf.class).getAgeBy();
+            int ageDeer = lifeAgentOpts().get(Deer.class).getAgeBy();
+            int ageBy = (chosen instanceof Wolf)? ageWolf: ageDeer;
             Action age = new EnergyChange(chosen, -ageBy);
             actions.add(age);
             processAgeAction((EnergyChange) age);
@@ -347,10 +358,11 @@ public class Life implements LifeGetter {
                 processReproduce((Reproduce) reproduce);
             }
 
-            // ---------------
-            // Increase Energy
-            // ---------------
-            Action energyGain = new EnergyChange(chosen, E_GRASS_GAIN);
+            // -----------------
+            // Age (gain energy)
+            // -----------------
+            int ageGrass = lifeAgentOpts().get(Grass.class).getAgeBy();
+            Action energyGain = new EnergyChange(chosen, ageGrass);
             actions.add(energyGain);
             processAgeAction((EnergyChange) energyGain);
         }
@@ -363,37 +375,31 @@ public class Life implements LifeGetter {
      * @return total number number of created agents
      * @throws AgentIsDeadException if the initial energy given to any of the agents is negative
      */
-    private int createAndDistributeAgents() throws LifeException {
-
-        // TODO(sami): improvement would be to generalise all of this so that we can easily extend with more (new) agents
-        // the number of different types of agents in the system
-        final Class<?extends Agent> TYPES[] = new Class[]{Deer.class, Wolf.class, Grass.class};
-        final int I_INITIAL[] = {I_DEER, I_WOLF, I_GRASS};
-        final int E_INITIAL[] = {E_DEER_INITIAL, E_WOLF_INITIAL, E_GRASS_INITIAL};
-
-        // check that there isn't anything fishy
-        if (TYPES.length != I_INITIAL.length || TYPES.length != E_INITIAL.length) {
-            throw new LifeException("Implementation error: array sizes are not matching with the number of agent types");
-        }
-
-        // Note: this method is so general and flexible, I have tears of happiness in my eyes
+    private int createAndDistributeAgents(int rows, int columns) throws LifeException {
 
         int nCreated = 0;
-        // for each type of agent
-        for (int type = 0 ; type < TYPES.length; type++) {
+        for (Class<? extends LifeAgent> agentType : SUPPORTED_AGENTS) {
+            // get the initial energy
+            // get the initial number
 
+            LifeAgentParams lifeAgentParams = (LifeAgentParams) lifeAgentOpts().get(agentType);
+            int I0 = lifeAgentParams.getInitialCount(); // number of instances
+            int E0 = lifeAgentParams.getInitialEnergy(); // initial energy
+
+            // for each type of agent
             try {
                 // create however many agents of this type are needed
-                for (int i = 0; i < I_INITIAL[type]; i++) {
+                for (int i = 0; i < I0; i++) {
                     // find a random point in the grid to place this agent instance
-                    Point2D p = Utils.randomPoint(this.GRID_ROWS, this.GRID_COLS); // TODO(sami): should this be the other way around ?
-                    Agent agent = TYPES[type].getConstructor(Point2D.class, Integer.class).newInstance(p, E_INITIAL[type]);
+                    Point2D p = Utils.randomPoint(rows, columns); // TODO(sami): should this be the other way around ?
+                    Agent agent = agentType.getConstructor(Point2D.class, Integer.class).newInstance(p, E0);
                     addAgent(agent);
                     nCreated++;
                 }
             } catch (ReflectiveOperationException exc) {
-                exc.printStackTrace();;
-                throw new LifeException("Implementation error: could not create instance of Agent " + TYPES[type]);
+                exc.printStackTrace();
+                throw new LifeException("Implementation error: could not create instance of Agent " + agentType.getName() +  "\n"
+                        + exc.getMessage());
             }
         }
         return nCreated;
@@ -466,12 +472,17 @@ public class Life implements LifeGetter {
             default:
                 // Implementation 1 and the default :
                 // the consuming agent gains a fixed energy defined by E_{X}_GAIN
-                energyGain = (consumable instanceof Wolf)? E_WOLF_GAIN : (consumable instanceof Deer)? E_DEER_GAIN : E_GRASS_GAIN;
+                int eWolfGain = lifeAgentOpts().get(Wolf.class).getEnergyGained();
+                int eDeerGain = lifeAgentOpts().get(Deer.class).getEnergyGained();
+                int eGrassGain = lifeAgentOpts().get(Grass.class).getEnergyGained();
+                energyGain = (consumable instanceof Wolf)? eWolfGain : (consumable instanceof Deer)? eDeerGain: eGrassGain;
         }
 
 
-        if (consumable instanceof Grass)
-            energyLoss = Math.min(E_GRASS_LOSS, consumableEnergy);
+        if (consumable instanceof Grass) {
+            int eGrassLost = lifeAgentOpts().get(Grass.class).getEnergyLost();
+            energyLoss = Math.min(eGrassLost, consumableEnergy);
+        }
 
         // consume the consumable and increase energy by 'energyGain'
         // the try-catch is redundant we already tested for it
@@ -514,6 +525,16 @@ public class Life implements LifeGetter {
     }
 
     /**
+     * @return map containing life options
+     */
+    private Map<String, Number> lifeOpts() { return (Map<String, Number>) options.get(KEY_LIFE_PARAMS); }
+
+    /**
+     * @return map containing life options
+     */
+    private Map<Class, LifeAgentParams> lifeAgentOpts() { return options.get(KEY_LIFEAGENT_PARAMS); }
+
+    /**
      * @return
      */
     @Override
@@ -530,7 +551,7 @@ public class Life implements LifeGetter {
      * but the member variable is set when parsing the options */
     @Override
     public int getMaxIterations() {
-        return maxIterations;
+        return lifeOpts().get(KEY_LIFE_MAX_ITERATIONS).intValue();
     }
 
     @Override
@@ -542,13 +563,13 @@ public class Life implements LifeGetter {
      * @return number of rows in the grid
      */
     @Override
-    public int getGridRows() { return grid.getRows(); }
+    public int getGridRows() { return lifeOpts().get(KEY_LIFE_GRID_ROWS).intValue(); }
 
     /**
      * @return number of columns in the grid
      */
     @Override
-    public int getGridCols() { return grid.getCols(); }
+    public int getGridCols() { return lifeOpts().get(KEY_LIFE_GRID_COLS).intValue();  }
 
     public static void main(String []args) throws LifeException {
         Life life = new Life();
