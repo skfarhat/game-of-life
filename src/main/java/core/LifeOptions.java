@@ -250,4 +250,11 @@ public class LifeOptions {
         return consumables;
     }
 
+    public void setGridCols(int gridCols) {
+        this.gridCols = gridCols;
+    }
+
+    public void setGridRows(int gridRows) {
+        this.gridRows = gridRows;
+    }
 }

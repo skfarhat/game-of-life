@@ -22,7 +22,6 @@ public class Life implements LifeGetter {
     /** @brief the number of times step has been called and returned a non-empty list of Actions */
     private int stepCount;
 
-
     /** @brief the grid containing all cells on which the agents will be placed */
     private final Grid<LifeCell> grid;
 

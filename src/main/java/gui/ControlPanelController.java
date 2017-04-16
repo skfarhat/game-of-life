@@ -27,16 +27,6 @@ public class ControlPanelController implements Initializable {
     @FXML private Button startButton;
     @FXML private Button stopButton;
     @FXML private TextField maxIterationsTextField;
-    @FXML private TextField rGrassTextField;
-    @FXML private TextField rDeerTextField;
-    @FXML private TextField rWolfTextField;
-    @FXML private TextField iGrassTextField;
-    @FXML private TextField iDeerTextField;
-    @FXML private TextField iWolfTextField;
-    @FXML private TextField gWolfTextField;
-    @FXML private TextField gDeerTextField;
-    @FXML private TextField gGrassTextField;
-    @FXML private TextField stepDecreaseTextField;
     @FXML private TextField colsTextField;
     @FXML private TextField rowsTextField;
     @FXML private Slider frequencySlider;
@@ -47,9 +37,7 @@ public class ControlPanelController implements Initializable {
     /**
      *
      */
-    public ControlPanelController() {
-
-    }
+    public ControlPanelController() {}
 
     /**
      *
@@ -65,22 +53,16 @@ public class ControlPanelController implements Initializable {
         try { lifeOptions = LifeOptions.createDefaultLifeOptions();}
         catch (LifeException e) {e.printStackTrace();}
 
+        // General Tab
         tabPane.getTabs().get(0).setText("General");
+//        maxIterationsTextField.textProperty().addListener((observableValue, oldVal, newVal) -> {
+//
+//        });
+
+        // Agents Tab
         tabPane.getTabs().get(1).setText("Agents");
-
-
         StackedTitledPanes agentsCtrlPane = new StackedTitledPanes(lifeOptions);
         tabPane.getTabs().get(1).setContent(agentsCtrlPane);
-
-
-
-//        // take the default values from those in Life
-//        rDeerTextField.setText(new Double(Life.DEFAULT_R_DEER).toString());
-//        rWolfTextField.setText(new Double(Life.DEFAULT_R_WOLF).toString());
-//        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
-//        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
-//        iDeerTextField.setText(new Integer(Life.DEFAULT_I_DEER).toString());
-//        iGrassTextField.setText(new Integer(Life.DEFAULT_I_GRASS).toString());
 
         updateSpeedLabelText();
     }
@@ -90,12 +72,18 @@ public class ControlPanelController implements Initializable {
      */
     public void startButtonPressed(ActionEvent actionEvent) {
         try {
-            //TODO(sami): check
-            Map<String, Number> options = null; //getOptions();
+
+            Integer maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
+            Integer gridRows = validateInput(rowsTextField, Integer.class).intValue();
+            Integer gridCols = validateInput(colsTextField, Integer.class).intValue();
+
+            lifeOptions.setMaximumIterations(maxIterations);
+            lifeOptions.setGridCols(gridCols);
+            lifeOptions.setGridRows(gridRows);
 
             // user wants to start a new simulation
             if (State.STOPPED == lifeStarter.getState()) {
-                Life life = new Life(/* options */ );
+                Life life = new Life(lifeOptions);
 
                 if (lifeStarter.start(life))
                     setStartedState();
@@ -124,58 +112,6 @@ public class ControlPanelController implements Initializable {
     public void stopButtonPressed(ActionEvent actionEvent) {
         if (lifeStarter.stop())
             setStoppedState();
-    }
-
-    /**
-     *
-     * @return
-     * @throws NumberFormatException
-     */
-    public Map<String, Number> getOptions() throws NumberFormatException {
-        Map<String, Number> options = new HashMap<>();
-
-        try {
-            double frequency = getSpeedVal();
-            lifeStarter.setFrequency(frequency);
-
-            // general params
-//            int cols = validateInput(colsTextField, Integer.class).intValue();
-//            int rows = validateInput(rowsTextField, Integer.class).intValue();
-//            int maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
-//            int stepDecrease = validateInput(stepDecreaseTextField, Integer.class).intValue();
-//            options.put(Life.KEY_MAX_ITERATIONS, maxIterations);
-//            options.put(Life.KEY_GRID_COLS, cols);
-//            options.put(Life.KEY_GRID_ROWS, rows);
-//            options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
-//
-//            // initial count params
-//            int iWolf = validateInput(iWolfTextField, Integer.class).intValue();
-//            int iDeer = validateInput(iDeerTextField, Integer.class).intValue();
-//            int iGrass = validateInput(iGrassTextField, Integer.class).intValue();
-//            options.put(Life.KEY_I_WOLF, iWolf);
-//            options.put(Life.KEY_I_DEER, iDeer);
-//            options.put(Life.KEY_I_GRASS, iGrass);
-//
-//            // reproduction params
-//            double rWolf = validateInput(rWolfTextField, Double.class).doubleValue();
-//            double rDeer = validateInput(rDeerTextField, Double.class).doubleValue();
-//            double rGrass = validateInput(rGrassTextField, Double.class).doubleValue();
-//            options.put(Life.KEY_R_WOLF, rWolf);
-//            options.put(Life.KEY_R_DEER, rDeer);
-//            options.put(Life.KEY_R_GRASS, rGrass);
-//
-//            // gain params
-//            int gDeer = validateInput(gDeerTextField, Integer.class).intValue();
-//            int gWolf = validateInput(gWolfTextField, Integer.class).intValue();
-//            // int gGrass = validateInput(gGrassTextField, Integer.class).intValue();
-//            options.put(Life.KEY_E_DEER_GAIN, gDeer);
-//            options.put(Life.KEY_E_WOLF_GAIN, gWolf);
-
-            return options;
-        } catch (IllegalArgumentException exc) {
-            System.out.println(exc.getMessage());
-            throw exc;
-        }
     }
 
     public void setLifeStarter(LifeStarter lifeStarter) {

@@ -19,9 +19,6 @@ import java.util.List;
  */
 public abstract class LifeAgent extends Agent implements Reproduces, Consumable, Consumes {
 
-    /** @brief default value for the initial energy of a LifeAgent */
-    private static final int DEFAULT_INITIAL_ENERGY = 10;
-
     /** @brief this string must match the method name of getDefaultParams */
     public static final String METHOD_NAME_GET_DEFAULT_PARAMS = "getDefaultParams";
 
@@ -47,11 +44,11 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
     /** @brief default constructor */
     public LifeAgent() throws AgentIsDeadException {
-        this(null, DEFAULT_INITIAL_ENERGY);
+        this(null, LifeAgentOptions.DEFAULT_E0);
     }
 
     public LifeAgent(Point2D p) throws AgentIsDeadException {
-        this(p, DEFAULT_INITIAL_ENERGY);
+        this(p, LifeAgentOptions.DEFAULT_E0);
     }
 
     /** @brief constructor with initial energy - records the instance's initial energy */
