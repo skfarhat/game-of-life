@@ -17,7 +17,7 @@ public class ParamField extends HBox {
     @FXML private Label paramLabel;
 
 
-    public ParamField(String paramName) {
+    public ParamField(String paramName, Number nb) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFilename));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -28,9 +28,10 @@ public class ParamField extends HBox {
             throw new RuntimeException(exception);
         }
         paramLabel.setText(paramName);
+        inputTextField.setText(nb.toString());
     }
 
-//
+
 //    public String getText() {
 //        return textProperty().get();
 //    }

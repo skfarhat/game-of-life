@@ -43,6 +43,17 @@ public class LifeOptions {
     // METHODS
     // =================================================================================================================
 
+    /**
+     * factory method returning a defaultLifeOptions instance with Wolf, Deer and Grass
+     * @return
+     */
+    public static LifeOptions createDefaultLifeOptions() throws LifeException {
+        LifeOptions options = new LifeOptions(Wolf.class, Deer.class, Grass.class);
+        options.addConsumeRule(Wolf.class, Deer.class);
+        options.addConsumeRule(Deer.class, Grass.class);
+        return options;
+    }
+
     public LifeOptions() throws LifeImplementationException { this((Class<? extends LifeAgent>[]) null); }
 
     /**

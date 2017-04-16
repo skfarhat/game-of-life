@@ -36,6 +36,22 @@ public class Life implements LifeGetter {
     // METHODS
     // ===========================================================================================
 
+    /**
+     * factory method to create a default life
+     * @return
+     * @throws LifeException
+     */
+    public static Life createDefaultLife() throws LifeException {
+        List<LifeAgentOptions> agentOptions = new ArrayList<>();
+        agentOptions.add(new LifeAgentOptions(Wolf.class));
+        agentOptions.add(new LifeAgentOptions(Deer.class));
+        agentOptions.add(new LifeAgentOptions(Grass.class));
+        LifeOptions options = new LifeOptions(agentOptions);
+
+        Life life = new Life(options);
+        return life;
+    }
+
     /** @brief default constructor, calls other constructor and initialises fields to their defaults */
     public Life() throws LifeException, IllegalArgumentException { this(null); }
 

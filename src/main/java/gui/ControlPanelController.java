@@ -42,6 +42,8 @@ public class ControlPanelController implements Initializable {
     @FXML private Slider frequencySlider;
     @FXML private Label iterationsLabel;
 
+    private LifeOptions lifeOptions;
+
     /**
      *
      */
@@ -60,16 +62,17 @@ public class ControlPanelController implements Initializable {
             frequencySliderDone();
         });
 
+        try { lifeOptions = LifeOptions.createDefaultLifeOptions();}
+        catch (LifeException e) {e.printStackTrace();}
+
         tabPane.getTabs().get(0).setText("General");
         tabPane.getTabs().get(1).setText("Agents");
 
-        List<LifeAgentOptions> paramsList = new ArrayList<>();
-        paramsList.add(Wolf.getDefaultParams());
-        paramsList.add(Deer.getDefaultParams());
-        paramsList.add(Grass.getDefaultParams());
 
-        StackedTitledPanes agentsCtrlPane = new StackedTitledPanes(paramsList);
+        StackedTitledPanes agentsCtrlPane = new StackedTitledPanes(lifeOptions);
         tabPane.getTabs().get(1).setContent(agentsCtrlPane);
+
+
 
 //        // take the default values from those in Life
 //        rDeerTextField.setText(new Double(Life.DEFAULT_R_DEER).toString());
