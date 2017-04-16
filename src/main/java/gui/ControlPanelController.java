@@ -1,9 +1,6 @@
 package gui;
 
-import core.exceptions.AgentIsDeadException;
-import core.exceptions.GridCreationException;
-import core.exceptions.InvalidPositionException;
-import core.Life;
+import core.*;
 import core.exceptions.LifeException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,9 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -27,6 +22,7 @@ public class ControlPanelController implements Initializable {
     public Label speedLabel;
 
     private LifeStarter lifeStarter;
+    @FXML private TabPane tabPane;
 
     @FXML private Button startButton;
     @FXML private Button stopButton;
@@ -64,13 +60,24 @@ public class ControlPanelController implements Initializable {
             frequencySliderDone();
         });
 
-        // take the default values from those in Life
-        rDeerTextField.setText(new Double(Life.DEFAULT_R_DEER).toString());
-        rWolfTextField.setText(new Double(Life.DEFAULT_R_WOLF).toString());
-        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
-        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
-        iDeerTextField.setText(new Integer(Life.DEFAULT_I_DEER).toString());
-        iGrassTextField.setText(new Integer(Life.DEFAULT_I_GRASS).toString());
+        tabPane.getTabs().get(0).setText("General");
+        tabPane.getTabs().get(1).setText("Agents");
+
+        List<LifeAgentOptions> paramsList = new ArrayList<>();
+        paramsList.add(Wolf.getDefaultParams());
+        paramsList.add(Deer.getDefaultParams());
+        paramsList.add(Grass.getDefaultParams());
+
+        StackedTitledPanes agentsCtrlPane = new StackedTitledPanes(paramsList);
+        tabPane.getTabs().get(1).setContent(agentsCtrlPane);
+
+//        // take the default values from those in Life
+//        rDeerTextField.setText(new Double(Life.DEFAULT_R_DEER).toString());
+//        rWolfTextField.setText(new Double(Life.DEFAULT_R_WOLF).toString());
+//        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
+//        iWolfTextField.setText(new Integer(Life.DEFAULT_I_WOLF).toString());
+//        iDeerTextField.setText(new Integer(Life.DEFAULT_I_DEER).toString());
+//        iGrassTextField.setText(new Integer(Life.DEFAULT_I_GRASS).toString());
 
         updateSpeedLabelText();
     }
@@ -80,11 +87,12 @@ public class ControlPanelController implements Initializable {
      */
     public void startButtonPressed(ActionEvent actionEvent) {
         try {
-            Map<String, Number> options = getOptions();
+            //TODO(sami): check
+            Map<String, Number> options = null; //getOptions();
 
             // user wants to start a new simulation
             if (State.STOPPED == lifeStarter.getState()) {
-                Life life = new Life(options);
+                Life life = new Life(/* options */ );
 
                 if (lifeStarter.start(life))
                     setStartedState();
@@ -128,37 +136,37 @@ public class ControlPanelController implements Initializable {
             lifeStarter.setFrequency(frequency);
 
             // general params
-            int cols = validateInput(colsTextField, Integer.class).intValue();
-            int rows = validateInput(rowsTextField, Integer.class).intValue();
-            int maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
-            int stepDecrease = validateInput(stepDecreaseTextField, Integer.class).intValue();
-            options.put(Life.KEY_MAX_ITERATIONS, maxIterations);
-            options.put(Life.KEY_GRID_COLS, cols);
-            options.put(Life.KEY_GRID_ROWS, rows);
-            options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
-
-            // initial count params
-            int iWolf = validateInput(iWolfTextField, Integer.class).intValue();
-            int iDeer = validateInput(iDeerTextField, Integer.class).intValue();
-            int iGrass = validateInput(iGrassTextField, Integer.class).intValue();
-            options.put(Life.KEY_I_WOLF, iWolf);
-            options.put(Life.KEY_I_DEER, iDeer);
-            options.put(Life.KEY_I_GRASS, iGrass);
-
-            // reproduction params
-            double rWolf = validateInput(rWolfTextField, Double.class).doubleValue();
-            double rDeer = validateInput(rDeerTextField, Double.class).doubleValue();
-            double rGrass = validateInput(rGrassTextField, Double.class).doubleValue();
-            options.put(Life.KEY_R_WOLF, rWolf);
-            options.put(Life.KEY_R_DEER, rDeer);
-            options.put(Life.KEY_R_GRASS, rGrass);
-
-            // gain params
-            int gDeer = validateInput(gDeerTextField, Integer.class).intValue();
-            int gWolf = validateInput(gWolfTextField, Integer.class).intValue();
-            // int gGrass = validateInput(gGrassTextField, Integer.class).intValue();
-            options.put(Life.KEY_E_DEER_GAIN, gDeer);
-            options.put(Life.KEY_E_WOLF_GAIN, gWolf);
+//            int cols = validateInput(colsTextField, Integer.class).intValue();
+//            int rows = validateInput(rowsTextField, Integer.class).intValue();
+//            int maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
+//            int stepDecrease = validateInput(stepDecreaseTextField, Integer.class).intValue();
+//            options.put(Life.KEY_MAX_ITERATIONS, maxIterations);
+//            options.put(Life.KEY_GRID_COLS, cols);
+//            options.put(Life.KEY_GRID_ROWS, rows);
+//            options.put(Life.KEY_E_STEP_DECREASE, stepDecrease);
+//
+//            // initial count params
+//            int iWolf = validateInput(iWolfTextField, Integer.class).intValue();
+//            int iDeer = validateInput(iDeerTextField, Integer.class).intValue();
+//            int iGrass = validateInput(iGrassTextField, Integer.class).intValue();
+//            options.put(Life.KEY_I_WOLF, iWolf);
+//            options.put(Life.KEY_I_DEER, iDeer);
+//            options.put(Life.KEY_I_GRASS, iGrass);
+//
+//            // reproduction params
+//            double rWolf = validateInput(rWolfTextField, Double.class).doubleValue();
+//            double rDeer = validateInput(rDeerTextField, Double.class).doubleValue();
+//            double rGrass = validateInput(rGrassTextField, Double.class).doubleValue();
+//            options.put(Life.KEY_R_WOLF, rWolf);
+//            options.put(Life.KEY_R_DEER, rDeer);
+//            options.put(Life.KEY_R_GRASS, rGrass);
+//
+//            // gain params
+//            int gDeer = validateInput(gDeerTextField, Integer.class).intValue();
+//            int gWolf = validateInput(gWolfTextField, Integer.class).intValue();
+//            // int gGrass = validateInput(gGrassTextField, Integer.class).intValue();
+//            options.put(Life.KEY_E_DEER_GAIN, gDeer);
+//            options.put(Life.KEY_E_WOLF_GAIN, gWolf);
 
             return options;
         } catch (IllegalArgumentException exc) {

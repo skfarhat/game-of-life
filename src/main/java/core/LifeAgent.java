@@ -19,12 +19,8 @@ import java.util.List;
  */
 public abstract class LifeAgent extends Agent implements Reproduces, Consumable, Consumes {
 
-    /** @brief value by which we decrement the energy when decreaseEnergy is called */
-    public static final int ENERGY_DECREMENT_VAL = 1;
-
     /** @brief default value for the initial energy of a LifeAgent */
     private static final int DEFAULT_INITIAL_ENERGY = 10;
-
 
     /** @brief this string must match the method name of getDefaultParams */
     public static final String METHOD_NAME_GET_DEFAULT_PARAMS = "getDefaultParams";
@@ -34,7 +30,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
      * so a default implementation returning null
      * @return default parameters for the LifeAgent class to be used in Life. These may well be overridden by Life.
      */
-    public static LifeAgentParams getDefaultParams() {
+    public static LifeAgentOptions getDefaultParams() {
         return null;
     }
 

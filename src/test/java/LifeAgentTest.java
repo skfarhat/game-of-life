@@ -2,8 +2,11 @@ import core.Point2D;
 import core.Utils;
 import core.exceptions.AgentIsDeadException;
 import core.LifeAgent;
+import core.exceptions.LifeException;
+import core.exceptions.LifeImplementationException;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -53,8 +56,16 @@ public class LifeAgentTest {
     }
 
     @Test
-    public void testCanUseReflectionOnStaticGetDefaultParams() throws NoSuchMethodException {
-        LifeAgent.class.getMethod(LifeAgent.METHOD_NAME_GET_DEFAULT_PARAMS).invoke();
+    public void testCanUseReflectionOnStaticGetDefaultParams() throws NoSuchMethodException, LifeImplementationException {
+        try {
+            LifeAgent.class.getMethod(LifeAgent.METHOD_NAME_GET_DEFAULT_PARAMS).invoke(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new LifeImplementationException();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            throw new LifeImplementationException();
+        }
     }
 
     @Test

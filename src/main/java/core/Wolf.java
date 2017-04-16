@@ -1,10 +1,6 @@
 package core;
 import core.exceptions.AgentIsDeadException;
 
-import java.util.List;
-
-import static core.Life.DEFAULT_E_GAIN;
-
 /**
  * @classs Wolf
  */
@@ -25,9 +21,8 @@ public class Wolf extends LifeAgent {
     /** @brief default gain value when wolves consume consumables */
     public static final Integer DEFAULT_E_GAIN = 2;
 
-    //TODO(sami);
     /** @brief default amount by which a wolf's energy is decreased when the wolf is consumed */
-    private static final Integer DEFAULT_E_LOSS = 10;
+    public static final Integer DEFAULT_E_LOSS = 10;
 
 
     /**
@@ -59,8 +54,8 @@ public class Wolf extends LifeAgent {
         return String.format("Wolf[%s]%s(e=%d)", getId().substring(0, 5), getPos(), getEnergy());
     }
 
-    public static LifeAgentParams getDefaultParams() {
-        return new LifeAgentParams(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
+    public static LifeAgentOptions getDefaultParams() {
+        return new LifeAgentOptions(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
                 DEFAULT_E_GAIN, DEFAULT_E_LOSS);
     }
 }

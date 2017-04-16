@@ -6,8 +6,6 @@ package core;
 
 import core.exceptions.AgentIsDeadException;
 
-import java.util.List;
-
 public class Deer extends LifeAgent implements Consumes {
 
     /** @brief default value by which a deer's energy decreases when they age */
@@ -27,11 +25,11 @@ public class Deer extends LifeAgent implements Consumes {
 
     //TODO(sami);
     /** @brief default amount by which a deer's energy is decreased when the deer is consumed */
-    private static final Integer DEFAULT_E_LOSS = 10;
+    public static final Integer DEFAULT_E_LOSS = 10;
 
     /** @brief decide what the default parameters for this class should be */
-    public static LifeAgentParams getDefaultParams() {
-        return new LifeAgentParams(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
+    public static LifeAgentOptions getDefaultParams() {
+        return new LifeAgentOptions(Deer.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
                 DEFAULT_E_GAIN, DEFAULT_E_LOSS);
     }
 

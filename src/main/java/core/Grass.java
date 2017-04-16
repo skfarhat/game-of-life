@@ -27,11 +27,11 @@ public class Grass extends LifeAgent {
     public static final Integer DEFAULT_E_GAIN = 0;
 
     /** @brief default amount by which grass's energy is decreased when it is consumed */
-    private static final Integer DEFAULT_E_LOSS = 10;
+    public static final Integer DEFAULT_E_LOSS = 10;
 
     /** @brief decide what the default parameters for this class should be */
-    public static LifeAgentParams getDefaultParams() {
-        return new LifeAgentParams(Grass.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
+    public static LifeAgentOptions getDefaultParams() {
+        return new LifeAgentOptions(Grass.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
                 DEFAULT_E_GAIN, DEFAULT_E_LOSS);
     }
 

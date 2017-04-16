@@ -1,38 +1,15 @@
 package core;
 
+import core.exceptions.LifeException;
+import core.exceptions.LifeImplementationException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
-///**
-// * e.g.
-// *
-// * key 1:
-// * "LIFE_PARAMS" --> map{
-// *     "MAX_ITERATIONS": 20,
-// *     "GRID_COLS": 5,
-// *     "GRID_ROWS": 10
-// * }
-// *
-// * key 2:
-// * "LIFE_AGENT_PARAMS" --> map {
-// *     Wolf.class   : LifeAgentParams(Wolf.class, 10, 1, 0.1, 1, ... )
-// *     Deer.class   : LifeAgentParams(Deer.class, 5, 1, 0.1, 1, ... )
-// *     Grass.class  : null
-// * }
-// * In the LIFE_AGENT_PARAMS map, if the key for a LifeAgent class is set to null, then the defaults for that LifeAgent
-// * subclass will be loaded (from the subclass getDefaultParams() method, or from the Life class defaults if the former
-// * is not implemented. If a class key is omitted from the params list it is considered to be unsupported.
-// *
-// */
+/**
+ *
+ */
 public class LifeOptions {
-
-    /* Level 1 keys */
-    /* keys used in the params Map passed in constructor */
-    public static final String KEY_LIFE_PARAMS = "LIFE_PARAMS";
-    public static final String KEY_LIFEAGENT_PARAMS = "LIFE_AGENT_PARAMS";
-
-    private Map<String, Map> root = new HashMap<>();
-    private Map<Class, LifeAgentParams> lifeAgentParams = new HashMap<>();
 
     // =================================================================================================================
     // DEFAULTS
@@ -48,36 +25,71 @@ public class LifeOptions {
     // FIELDS
     // =================================================================================================================
 
+    /**
+     * @brief map determining which typ of LifeAgent can consume which type,
+     * e.g.  Wolf.class -->  [Deer.class, Sheep.class...]
+     */
+    private final Map<Class<?extends LifeAgent>, List<Class<?extends LifeAgent>>> consumeRules = new HashMap<>();
+
+    private Map<Class<?extends LifeAgent>, LifeAgentOptions> lifeAgentParams = new HashMap<>();
+
     private int maximumIterations = DEFAULT_MAX_ITERATIONS;
 
     private int gridRows = DEFAULT_GRID_N;
 
     private int gridCols = DEFAULT_GRID_N;
 
-    public LifeOptions() { this(null); }
+    // =================================================================================================================
+    // METHODS
+    // =================================================================================================================
 
-    public LifeOptions(List<LifeAgentParams> agentParams) {
-        root.put(KEY_LIFEAGENT_PARAMS, lifeAgentParams);
-        if (agentParams != null) {
-            for (LifeAgentParams param : agentParams) {
-                lifeAgentParams.put(param.getAgentType(), param);
-            }
+    public LifeOptions() throws LifeImplementationException { this((Class<? extends LifeAgent>[]) null); }
+
+    /**
+     * @brief constructor called by all others
+     * @param opts
+     * @throws LifeImplementationException
+     */
+    public LifeOptions(List<LifeAgentOptions> opts) throws LifeImplementationException {
+        init(opts);
+    }
+
+    public LifeOptions(LifeAgentOptions... opts) throws LifeImplementationException {
+        init(Arrays.stream(opts).collect(Collectors.toList()));
+    }
+
+    public LifeOptions(Class<?extends LifeAgent>... cls) throws LifeImplementationException {
+        if (null == cls)
+            return;
+        List<LifeAgentOptions> opts = new ArrayList<>();
+        for (Class<?extends LifeAgent> c : cls) {
+            opts.add(new LifeAgentOptions(c));
         }
+        init(opts);
     }
 
     /**
-     * @return read-only list of supported agents
+     * @brief called by constructors for initialisation (more flexible than calling another constructor with 'this')
+     * because init can be called anywhere in the constructor (beginning, end) as opposed to calling this(..) which must
+     * be the first thing.
+     * @param opts
      */
-    public List<Class<? extends LifeAgent>> getSupportedAgents() {
-        List<Class<? extends LifeAgent>> list = (List<Class<? extends LifeAgent>>) root.get(KEY_LIFEAGENT_PARAMS)
-                .keySet()
-                .stream()
-                .collect(Collectors.toList());
-        return Collections.unmodifiableList(list);
+    private final void init(List<LifeAgentOptions> opts) {
+        if (null == opts)
+            return;
+
+        for (LifeAgentOptions opt : opts) {
+            Class<?extends LifeAgent> lifeAgentClass = opt.getAgentType();
+            lifeAgentParams.put(lifeAgentClass, opt);
+
+            consumeRules.put(lifeAgentClass, new ArrayList<>());
+        }
     }
 
-    public Map<Class<?extends LifeAgent>, LifeAgentParams> getLifeAgentParams() {
-        return root.get(KEY_LIFEAGENT_PARAMS);
+    /** @return read-only list of supported agents */
+    public List<Class<? extends LifeAgent>> getSupportedAgents() {
+        List<Class<? extends LifeAgent>> list = lifeAgentParams.keySet().stream().collect(Collectors.toList());
+        return Collections.unmodifiableList(list);
     }
 
     public int getMaximumIterations() {
@@ -96,7 +108,135 @@ public class LifeOptions {
         return gridCols;
     }
 
-    public LifeAgentParams getOptionsForAgent(Class<?extends LifeAgent> type) {
+    public LifeAgentOptions getOptionsForAgent(Class<?extends LifeAgent> type) {
         return lifeAgentParams.get(type);
     }
+
+    /**
+     * @brief we cannot insert a new class, we can only
+     * @param type
+     * @param params
+     */
+    public boolean setOptionsForAgent(Class<?extends LifeAgent> type, LifeAgentOptions params) {
+        if (false == lifeAgentParams.containsKey(type) &&
+                null == lifeAgentParams.get(type))
+            return false;
+
+        lifeAgentParams.put(type, params);
+        return true;
+    }
+
+    /**
+     * @return unmodifiable map of "Consumes Class" --> "List of Consumables"
+     */
+    public Map<Class<?extends LifeAgent>, List<Class<?extends LifeAgent>>> getConsumeRules() {
+        return Collections.unmodifiableMap(consumeRules);
+    }
+
+    /**
+     *
+     * @param cls consuming class
+     * @param consumableClass consumableclass
+     * @return
+     * @throws LifeException
+     */
+    public boolean addConsumeRule(Class<?extends LifeAgent> cls, Class<?extends LifeAgent> consumableClass) throws LifeException {
+        if (false == agentTypeIsSupported(cls)
+                || false == agentTypeIsSupported(consumableClass)) {
+            // the consumes class is not supported..
+            Class unsupportedClass = (true == agentTypeIsSupported(cls)) ? consumableClass : cls;
+            throw new LifeException(String.format("Agent %s type not supported!", unsupportedClass.getName()));
+        }
+
+        // prevent consuming oneself
+        if (cls.equals(consumableClass)) {
+            throw new LifeException("Cannot add rule where LifeAgent can consume itself");
+        }
+        // don't re-add a consumable class if it is already there
+        else if (false == consumeRules.get(cls).contains(consumableClass)) {
+            return consumeRules.get(cls).add(consumableClass);
+        }
+        else
+            return false;
+    }
+
+    /**
+     *
+     * @param cls consuming class
+     * @param list list of consumable classes
+     * @return true if the addition fo the list of consume rules was successful
+     * @throws LifeException if any of the classes in @param list or @param cls are unsupported in LifeOptions. If they have
+     * no LifeAgentOptions entry.
+     */
+    public boolean addConsumeRules(Class<?extends LifeAgent> cls, List<Class<?extends LifeAgent>>  list) throws LifeException {
+        return addConsumeRules(cls, (Class<? extends LifeAgent>[]) list.toArray());
+    }
+
+    /**
+     *
+     * @param cls consuming class
+     * @param list list of consumable classes
+     * @return true if the addition fo the list of consume rules was successful
+     * @throws LifeException if any of the classes in @param list or @param cls are unsupported in LifeOptions. If they have
+     * no LifeAgentOptions entry.
+     */
+    public boolean addConsumeRules(Class<?extends LifeAgent> cls, Class<?extends LifeAgent>...list) throws LifeException {
+        boolean success = true;
+        for (Class<?extends LifeAgent> c :  list) {
+            success &= addConsumeRule(cls, c);
+        }
+        return success;
+    }
+
+
+    /**
+     * @param cls consuming class
+     * @param consumableClass
+     * @return true if the removal of the consume rule was successful
+     * @throws LifeException
+     */
+    public boolean removeConsumeRule(Class<?extends LifeAgent> cls, Class<?extends LifeAgent> consumableClass) throws LifeException {
+        if (false == agentTypeIsSupported(cls)
+                || false == agentTypeIsSupported(consumableClass)) {
+            Class unsupportedClass = (true == agentTypeIsSupported(cls)) ? consumableClass : cls;
+            throw new LifeException(String.format("Agent %s type not supported!", unsupportedClass.getName()));
+        }
+
+        // if the rule to remove doesn't exist
+        if (true == consumeRules.get(cls).contains(consumableClass)) {
+            return consumeRules.get(cls).remove(consumableClass);
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param cls consuming class
+     * @param list list of consumable classes
+     * @return true if the removal of the list of consume rules was successful
+     * @throws LifeException
+     */
+    public boolean removeConsumeRules(Class<?extends LifeAgent> cls, List<Class<?extends LifeAgent>> list) throws LifeException {
+        boolean success = true;
+        for (Class<?extends LifeAgent> c : list) {
+            success &= removeConsumeRule(cls, c);
+        }
+        return success;
+    }
+
+    public boolean agentTypeIsSupported(Class c) {
+        return lifeAgentParams.containsKey(c);
+    }
+
+    public List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, LifeAgent agent) {
+        final List<Class<? extends LifeAgent>> consumableClasses = getConsumeRules().get(agent.getClass()); // list of classes consumable by agent
+        List<Consumable> consumables = new ArrayList<>();
+        while(it.hasNext()){
+            Consumable c = it.next();
+            if (consumableClasses.contains(c.getClass()))
+                consumables.add(c);
+        }
+        return consumables;
+    }
+
 }
