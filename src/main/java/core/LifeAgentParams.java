@@ -1,10 +1,36 @@
 package core;
 
-
 /**
  * @class LifeAgentParams encapsulates the user configuration parameters describing a type of class
  */
 public class LifeAgentParams {
+
+    // ===========================================================================================
+    // Defaults
+    // ===========================================================================================
+
+    /** @brief default initial energy for LifeAgents*/
+    public static final Integer DEFAULT_E0 = 5;
+
+    /** @brief default initial number of instances of that LifeAgent */
+    public static final Integer DEFAULT_I0 = 5;
+
+    /** @brief default reproduction rate for LifeAgents */
+    public static final Double DEFAULT_R = 0.1;
+
+    /** @brief default energy lost by a LifeAgent when it is consumed - only applicable in some implementations of consume*/
+    public static final Integer DEFAULT_E_LOSS = 1;
+
+    /** @brief default energy gained when a LifeAgent consumes another */
+    public static final Integer DEFAULT_E_GAIN = 2;
+
+    /** @brief default energy decrease for Agents when they age */
+    public static final Integer DEFAULT_AGE = 1;
+
+
+    // ===========================================================================================
+    // Members
+    // ===========================================================================================
 
     private final Class<?extends LifeAgent> agentType;
 
@@ -45,6 +71,21 @@ public class LifeAgentParams {
         this.initialCount = initialCount;
         this.energyGained = energyGained;
         this.energyLost = energyLost;
+    }
+
+    /** @brief constructor with all values */
+    public LifeAgentParams(Class<? extends LifeAgent> agentType) {
+
+        /* note: ageBy can be negative, as in the case with Grass where the energy increasess at each step */
+
+        this.agentType = agentType;
+
+        this.ageBy = DEFAULT_AGE;
+        Utils.exceptionIfNegative(this.initialEnergy = DEFAULT_E0);
+        Utils.exceptionIfNegative(this.initialCount = DEFAULT_I0);
+        Utils.exceptionIfNegative(this.energyGained = DEFAULT_E_GAIN);
+        Utils.exceptionIfNegative(this.energyLost = DEFAULT_E_LOSS);
+        Utils.exceptionIfOutOfRange(this.reproductionRate = DEFAULT_R);
     }
 
     public Class<? extends LifeAgent> getAgentType() {
