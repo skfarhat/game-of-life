@@ -18,14 +18,14 @@ public class GridTest {
     public void testGridConstructor() throws GridCreationException, InvalidPositionException {
         Random rand = Utils.getRand();
         final int bound = 50;
-        int rows = 5 + rand.nextInt(bound);
-        int cols = 5 + rand.nextInt(bound);
+        int rows = Utils.randomIntegerInRange(5, 50);
+        int cols = Utils.randomIntegerInRange(5, 50);
         Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                Point2D p = grid.get(i, j).getPos();
-                assertEquals(i, p.getX());
-                assertEquals(j, p.getY());
+                Point2D p = grid.get(j, i).getPos();
+                assertEquals(j, p.getX());
+                assertEquals(i, p.getY());
             }
         }
     }
@@ -33,19 +33,19 @@ public class GridTest {
     @Test(expected = InvalidPositionException.class)
     public void invalidExceptionThrownWhenXTooHigh() throws GridCreationException, InvalidPositionException {
         final int rows = 5;
-        final int cols = 5;
+        final int cols = 10;
         Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
 
-        grid.get(rows, 0);
+        grid.get(0, rows);
     }
 
     @Test(expected = InvalidPositionException.class)
     public void invalidExceptionThrownWhenYTooHigh() throws GridCreationException, InvalidPositionException {
-        final int rows = 5;
+        final int rows = 10;
         final int cols = 5;
         Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
 
-        grid.get(0, cols);
+        grid.get(cols, 0);
     }
     @Test(expected = InvalidPositionException.class)
     public void invalidExceptionThrownWhenXTooLow() throws GridCreationException, InvalidPositionException {
@@ -70,14 +70,14 @@ public class GridTest {
         final int tries = 20;
         for (int i = 0; i < tries; i++) {
 
-            final int rows = 5 + Utils.randomPositiveInteger(46); // rows between (5,50)
-            final int cols = 5 + Utils.randomPositiveInteger(46); // rows between (5,50)
+            final int rows = Utils.randomIntegerInRange(5, 50);
+            final int cols = Utils.randomIntegerInRange(5, 50);
             Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
 
-            Point2D p = Utils.randomPoint(rows, cols);
+            Point2D p = Utils.randomPoint(cols, rows);
             Point2D adjacent = grid.randomAdjacentPoint(p);
 
-            // (xdiff == 1) XOR (yDiff == 1)
+            // (xDiff == 1) XOR (yDiff == 1)
             boolean valid = 1 == Math.abs((adjacent.getX() - p.getX())) ^ 1 == Math.abs((adjacent.getY() - p.getY()));
             assertTrue(valid);
 
@@ -90,10 +90,10 @@ public class GridTest {
 
     @Test
     public void testMoveAgentToCell() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
-        final int rows = 5 + Utils.randomPositiveInteger(10);
-        final int cols = 5 + Utils.randomPositiveInteger(10);
+        final int rows = Utils.randomIntegerInRange(5, 15);
+        final int cols = Utils.randomIntegerInRange(5, 15);
         Grid<Cell> grid = new Grid<>(Cell.class, rows, cols);
-        Cell srcCell = grid.get(Utils.randomPoint(rows, cols));
+        Cell srcCell = grid.get(Utils.randomPoint(cols, rows));
         Cell dstCell = grid.get(grid.randomAdjacentPoint(srcCell.getPos()));
         Agent a = new LifeAgent(100) {
             @Override

@@ -1,4 +1,5 @@
 import core.GridLifeCellFactory;
+import core.Utils;
 import core.exceptions.GridCreationException;
 import org.junit.Test;
 
@@ -27,10 +28,8 @@ public class GridLifeCellFactoryTest {
 
     @Test
     public void testCreateGridCell() throws GridCreationException {
-        Random rand = new Random(System.currentTimeMillis());
-        final int bound = 100;
-        final int rows = rand.nextInt(bound);
-        final int cols = rand.nextInt(bound);
+        final int rows = Utils.randomIntegerInRange(5, 100);
+        final int cols = Utils.randomIntegerInRange(5, 100);
 
         // if no exception is thrown we consider the test to have succeeded
         GridLifeCellFactory.createGridCell(rows, cols);

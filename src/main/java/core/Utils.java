@@ -57,6 +57,16 @@ public final class Utils {
         return new LifeRandom().randomPositiveInteger() % bound;
     }
 
+    /**
+     * @brief returns a random  integer in the provided range with the edges inclusive
+     * @param min
+     * @param max
+     * @return
+     */
+    public static Integer randomIntegerInRange(int min, int max) {
+        return min + new LifeRandom().nextInt(max-min+1);
+    }
+
     /** @return random string */
     public static String randomString() {
         return new LifeRandom().randomString();

@@ -31,6 +31,46 @@ public class UtilsTest {
     }
 
     @Test
+    public void testRandomPositiveIntegerInRange1() {
+        final Integer nb = 10;
+        assertEquals(nb, Utils.randomIntegerInRange(nb, nb));
+    }
+
+    @Test
+    public void testRandomPositiveIntegerInRange2() {
+        final Integer min = 10;
+        final Integer max = 20;
+        // generate 100 numbers and ensure they are all between min and max
+        final int n = 100;
+        for (int i = 0; i < n; i++) {
+            Integer rand = Utils.randomIntegerInRange(min, max);
+            assertTrue(rand <= max);
+            assertTrue(rand >= min);
+        }
+    }
+
+    @Test
+    public void testRandomPositiveIntegerInRange3() {
+        final Integer min = 10;
+        final Integer max = 20;
+        // generate 100 numbers and ensure they are all between min and max
+        final int n = 100;
+        // we want to make sure that in 100 tries the min and the max value are generated.
+        // There is always a chance that they may not, but with 100 tries they should and we want to know if they don't anyway.
+        boolean maxGenerated = false;
+        boolean minGenerated = false;
+        for (int i = 0; i < n; i++) {
+            Integer rand = Utils.randomIntegerInRange(min, max);
+            if (rand == min)
+                minGenerated = true;
+            if (rand == max)
+                maxGenerated = true;
+        }
+        assertTrue(minGenerated);
+        assertTrue(maxGenerated);
+    }
+
+    @Test
     public void testRandomPointsAreDifferent() {
         int x = 32, y = 32;
         Point2D p1 = Utils.randomPoint(x, y);

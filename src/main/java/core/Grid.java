@@ -31,13 +31,12 @@ public class Grid<T extends Cell> {
         this.cols = cols;
 
         // creating an 2d array of generics is fiddly
-        grid = (T[][]) Array.newInstance(c, rows, cols);
         grid = new Cell[rows][cols];
 
         // set all the correct positions
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                grid[i][j] = createNewCellSubclass(c, new Point2D(i, j));
+                grid[i][j] = createNewCellSubclass(c, new Point2D(j, i));
             }
         }
     }
@@ -62,7 +61,7 @@ public class Grid<T extends Cell> {
         if (!xIsInBounds(x) || !yIsInBounds(y))
             throw new InvalidPositionException("The position (" + x + ", " + y + ") is out of bounds.");
 
-        return grid[x][y];
+        return grid[y][x];
     }
 
     /**
@@ -152,8 +151,8 @@ public class Grid<T extends Cell> {
     }
 
     /** return true if the @param x value passed is in the bounds */
-    public boolean xIsInBounds(int x) { return (x > -1 &&  x < rows); }
+    public boolean xIsInBounds(int x) { return (x > -1 &&  x < cols); }
 
     /** return true if the @param y value passed is in the bounds */
-    public boolean yIsInBounds(int y) { return (y > -1 &&  y < cols); }
+    public boolean yIsInBounds(int y) { return (y > -1 &&  y < rows); }
 }

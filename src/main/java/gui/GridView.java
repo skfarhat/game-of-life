@@ -40,8 +40,9 @@ public class GridView extends Pane {
 
         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
-        for (int i = 0; i < grid.getCols(); i++) {
-            for (int j = 0; j < grid.getRows(); j++) {
+        for (int j = 0; j < grid.getRows(); j++) {
+            for (int i = 0; i < grid.getCols(); i++) {
+
 
                 Point2D p = new Point2D(i, j);
 
