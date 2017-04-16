@@ -115,7 +115,6 @@ public class Life implements LifeGetter {
         boolean success = true;
         for (Agent a : agents) {
             success &= removeAgent(a);
-
         }
         return success;
     }
@@ -140,7 +139,7 @@ public class Life implements LifeGetter {
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
         if (!chosen.isAlive())
-            System.out.println("We chose a non-alive agent!"); // TODO(sami): throw an exception
+            System.out.println("We chose a non-alive agent! " + chosen); // TODO(sami): throw an exception
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
@@ -225,7 +224,7 @@ public class Life implements LifeGetter {
             // Age (gain energy)
             // -----------------
             int ageGrass = options.getOptionsForAgent(Grass.class).getAgeBy();
-            Action energyGain = new EnergyChange(chosen, ageGrass);
+            Action energyGain = new EnergyChange(chosen, -ageGrass);
             actions.add(energyGain);
             processAgeAction((EnergyChange) energyGain);
         }
