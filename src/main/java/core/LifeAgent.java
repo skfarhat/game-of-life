@@ -155,4 +155,9 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         }
         return count;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]%s(e=%d)", getClass().getSimpleName(), getId().substring(0, 5), getPos(), getEnergy());
+    }
 }

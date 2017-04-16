@@ -49,11 +49,6 @@ public class Wolf extends LifeAgent {
         return babyWolf;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Wolf[%s]%s(e=%d)", getId().substring(0, 5), getPos(), getEnergy());
-    }
-
     public static LifeAgentOptions getDefaultParams() {
         return new LifeAgentOptions(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
                 DEFAULT_E_GAIN, DEFAULT_E_LOSS);

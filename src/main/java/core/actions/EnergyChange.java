@@ -17,6 +17,6 @@ public class EnergyChange extends Action<LifeAgent> {
 
     @Override
     public String toString() {
-        return String.format("[EnergyChange(%s)]", getAgent());
+        return String.format("[EnergyChange(%s) = %d]", getAgent(), energyDelta);
     }
 }

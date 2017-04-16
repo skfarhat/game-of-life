@@ -57,10 +57,4 @@ public class Deer extends LifeAgent implements Consumes {
     public LifeAgent reproduce() throws AgentIsDeadException {
         return new Deer(getPos(), this.MY_INITIAL_ENERGY);
     }
-
-    @Override
-    public String toString() {
-        return String.format("Deer[%s](e=%d)", getId().substring(0, 5), getEnergy());
-    }
-
 }

@@ -51,9 +51,4 @@ public class Grass extends LifeAgent {
         return new Grass(this.MY_INITIAL_ENERGY);
     }
 
-    @Override
-    public String toString() {
-        return String.format("Grass[%s](e=%d)", getId().substring(0, 5), getEnergy());
-    }
-
 }
