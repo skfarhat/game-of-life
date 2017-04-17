@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root prefWidth="200.0" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="27.0" prefWidth="200.0" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="paramLabel" prefHeight="27.0" prefWidth="100.0" text="Label">
+      <ImageView fx:id="imageView" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="paramLabel" minWidth="100.0" prefHeight="27.0" prefWidth="125.0" text="Label" HBox.hgrow="ALWAYS">
          <font>
             <Font size="11.0" />
-         </font></Label>
-      <Separator prefWidth="30.0" />
-      <TextField fx:id="inputTextField" prefHeight="27.0" prefWidth="46.0">
+         </font>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin></Label>
+      <TextField fx:id="inputTextField" prefHeight="27.0" prefWidth="45.0">
          <font>
             <Font size="11.0" />
          </font></TextField>
-      <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </fx:root>
