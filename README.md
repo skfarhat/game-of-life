@@ -1,4 +1,29 @@
-# Welcome to the Jungle (v0.1)
+# Welcome to the Jungle
+
+## Configuration options
+
+#### LifeOptions
+* maxIterations
+* grid dimensions (columns/rows)
+* consumeRules 
+	* Wolf.class -> [Deer.class]
+	* Deer.class -> [Grass.class] 
+* map (key=Class\<LifeAgent\> => value=LifeAgentOptions)	
+
+#### LifeAgentOptions
+
+|                  | type   | range       | description |
+|------------------|--------|-------------|-------------|
+| ageBy            | int    | ]-inf; inf[ |             |
+| initialEnergy    | int    | [0; inf[    |             |
+| reproductionRate | double | [0; 1]      |             |
+| energyGained     | int    | [0; inf[    |             |
+| energyLost       | int    | [0; inf[    |             |
+Example: 
+
+	Wolf.class  -> { ageBy:1, initialCount:5, initialEnergy:10, reproductionRate:0.1, energyGain:3, energyLoss:2 }
+	Deer.class  -> { ageBy:1, initialCount:15, initialEnergy:5, reproductionRate:0.15, energyGain:2, energyLoss:2 }
+	Grass.class -> { ageBy:-5, initialCount:15, initialEnergy:5, reproductionRate:1.0, energyGain:3, energyLoss:5 }
 
 ## Agent
 Any agent in the system. An agent is characterised by:
@@ -8,14 +33,23 @@ Any agent in the system. An agent is characterised by:
 
 
 ## LifeAgent
-LifeAgent: anything that has a life and has energy. 
 
-Interfaces implemented: 
+Interfaces: 
 
-  * Reproducable :
-  * Consumable : can be consumed, every lifeagent is prone to being consumed
+* Reprdoduce 
+* Consumes 
+* Consumable 
 
-AliveAgents can always die, but do not necessarily age, the implementer can choose to implement the interface **Age** or not. 
+### Configuration parameters 
+
+
+Example: 
+
+|       |     ageBy    | initialEnergy | reproductionRate | initialCount | energyGained | energyLost |
+|-------|:------------:|:-------------:|:----------------:|:------------:|:------------:|:----------:|
+| Grass | grassAge < 0 |    grassE0    |      1           |    grassI0   |  grassEGain  | grassELost |
+| Deer  |    deerAge   |     deerE0    |       deerR      |    deerI0    |   deerEGain  |  deerELost |
+| Wolf  |    wolfAge   |     wolfE0    |       wolfR      |    wolfI0    |   wolfEGain  |  wolfELost |
 
 ## Consumes/Consumable
 
@@ -44,3 +78,8 @@ Whichever class calls
 
 ### Implementation
  This means that in the implementation of the reproduce method in Grass, the grass has to increase its own energy first, then choose a new cell to form another agent.
+
+
+## Development 
+
+
