@@ -3,6 +3,8 @@ package core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,11 @@ import java.util.stream.Collectors;
  * @class
  */
 public class LifeCell extends Cell<LifeAgent> {
+
+    /**
+     * @brief logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     private boolean containsGrass = false;
 
@@ -42,8 +49,7 @@ public class LifeCell extends Cell<LifeAgent> {
                 containsGrass = true;
             }
             else {
-                // TODO(sami): remove
-                System.out.println("FYI: addAgent returning false");
+                LOGGER.log(Level.SEVERE, "addAgent() failed: returning false");
                 // we're trying to add grass to a cell but it is already there..
                 return false;
             }

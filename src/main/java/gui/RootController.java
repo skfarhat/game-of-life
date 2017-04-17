@@ -15,6 +15,8 @@ import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @class RootController
@@ -22,6 +24,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * handles only one life at a time
  */
 public class RootController implements Initializable, LifeStarter {
+
+    /**
+     * @brief logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     // ===========================================================================================
     // CONSTANTS
@@ -215,7 +222,7 @@ public class RootController implements Initializable, LifeStarter {
             }
         });
 
-        System.out.println("runTimers with period: " + period);
+        LOGGER.log(Level.FINEST, "runTimers with period: {0}", period);
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

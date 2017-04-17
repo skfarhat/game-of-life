@@ -7,6 +7,8 @@ import core.exceptions.AgentIsDeadException;
 import core.exceptions.ConsumableOutOfEnergy;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @class LifeAgent
@@ -18,6 +20,11 @@ import java.util.List;
  * Not every LifeAgent ages (think of Grass)
  */
 public abstract class LifeAgent extends Agent implements Reproduces, Consumable, Consumes {
+
+    /**
+     * @brief logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     /** @brief this string must match the method name of getDefaultParams */
     public static final String METHOD_NAME_GET_DEFAULT_PARAMS = "getDefaultParams";
@@ -101,7 +108,8 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         }
         died = true;
         energy = 0;
-        System.out.println(toString() + "died. ");
+
+        LOGGER.log(Level.FINE, toString() + "died. ");
     }
 
     /**

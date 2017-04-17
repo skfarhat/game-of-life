@@ -10,12 +10,20 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
  * Created by Sami on 04/04/2017.
  */
 public class ControlPanelController implements Initializable {
+
+    /**
+     * @brief logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
+
 
     public final String START_BUTTON_TEXT1 = "Start";
     public final String START_BUTTON_TEXT2 = "Pause";
@@ -100,9 +108,10 @@ public class ControlPanelController implements Initializable {
             }
         }
         catch(IllegalArgumentException exc) {
-            System.out.println("Invalid user input");
+            LOGGER.log(Level.WARNING, "Invalid user input");
+            LOGGER.log(Level.FINER, exc.toString(), exc);
         } catch (LifeException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 

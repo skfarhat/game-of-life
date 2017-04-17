@@ -8,7 +8,6 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 
-
 public class ParamField extends HBox {
 
     private static final String fxmlFilename = "/ParamField.fxml";
@@ -30,22 +29,4 @@ public class ParamField extends HBox {
         paramLabel.setText(paramName);
         inputTextField.setText(nb.toString());
     }
-
-
-//    public String getText() {
-//        return textProperty().get();
-//    }
-//
-//    public void setText(String value) {
-//        textProperty().set(value);
-//    }
-
-//    public StringProperty textProperty() {
-//        return textField.textProperty();
-//    }
-
-//    @FXML
-//    protected void doSomething() {
-//        System.out.println("The button was clicked!");
-//    }
 }

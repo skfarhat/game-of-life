@@ -5,11 +5,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @class CellView
  */
 public class CellView extends Pane {
+
+    /**
+     * @brief logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     // TODO(sami): clean
     public final static int MINICELL_ROWS = 3;
@@ -106,7 +113,7 @@ public class CellView extends Pane {
                             pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
                         }
                         else {
-                            System.out.println("unknown agent instance.. ");
+                            LOGGER.log(Level.SEVERE, "unknown agent {0} in CellView.. ", agent.getClass().getName());
                         }
 
                         if (pane != null) {
@@ -118,13 +125,6 @@ public class CellView extends Pane {
                     }
                 }
             }
-
-            // If at the end of the loop no grass was found, then we remove it.
-            // We could have removed it before the loop (had it been there or not) and then re-added it
-            // in the loop when it was encountered. However, this will likely make cells blink a lot, and
-            // so it's better to just remove it when we are sure it is no longer there.
-//            if (!grassThere)
-//                removeGrass();
         }
 
     }

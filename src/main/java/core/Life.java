@@ -4,6 +4,8 @@ import core.actions.*;
 import core.exceptions.*;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @class Life class created for each simulation to step. The class captures user input and configures the system parameters.
@@ -14,6 +16,8 @@ import java.util.*;
  */
 public class Life implements LifeGetter {
 
+    /** @brief logger */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     // ===========================================================================================
     // MEMBER VARIABLES
@@ -130,7 +134,7 @@ public class Life implements LifeGetter {
 
         // guard - nothing to do
         if (agents.size() < 1) {
-//            System.out.println("nothing to do ");
+            LOGGER.log(Level.FINE, "step() nothing to do");
             return actions;
         }
 
@@ -138,7 +142,7 @@ public class Life implements LifeGetter {
         int randI = Utils.randomPositiveInteger(agents.size());
         LifeAgent chosen = (LifeAgent) agents.get(randI);
         if (!chosen.isAlive())
-            System.out.println("We chose a non-alive agent! " + chosen); // TODO(sami): throw an exception
+            LOGGER.log(Level.SEVERE, "We chose a dead agent!");
 
         // Wolves and Deers
         if ((chosen instanceof Wolf) || (chosen instanceof Deer)) {
@@ -199,7 +203,7 @@ public class Life implements LifeGetter {
 
             // removes dead agents from the local agents list and from the cells' respective agents lists
             if (false == removeAgents(deadAgents)) {
-                System.out.println("Failed to remove some agents.. ");
+                LOGGER.log(Level.SEVERE, "Failed to remove some agents!");
             }
             // TODO(sami); consider sending events for all new dead agents,
         }
@@ -257,42 +261,28 @@ public class Life implements LifeGetter {
                     addAgent(agent);
                     nCreated++;
                 }
-            } catch (ReflectiveOperationException exc) {
-                exc.printStackTrace();
+            } catch (ReflectiveOperationException e) {
+                LOGGER.log(Level.SEVERE, e.toString(), e);
                 throw new LifeException("Implementation error: could not create instance of Agent " + agentType.getName() +  "\n"
-                        + exc.getMessage());
+                        + e.getMessage());
             }
         }
         return nCreated;
     }
 
-    private void processActions(List<Action> actions) throws InvalidPositionException, AgentIsDeadException {
-        for (Action action: actions) {
-            if (action instanceof EnergyChange) {
-                processAgeAction((EnergyChange) action);
-            }
-            else if (action instanceof Consume) {
-                processConsume((Consume) action);
-            }
-            else if (action instanceof Reproduce) {
-                processReproduce((Reproduce) action);
-            }
-            else if (action instanceof  Move) {
-                processMoveAction((Move) action);
-            }
-        }
-    }
-
-    private void processAgeAction(EnergyChange age) throws AgentIsDeadException {
-        age.getAgent().changeEnergyBy(age.getEnergyDelta());
+    private void processAgeAction(EnergyChange action) throws AgentIsDeadException {
+        LOGGER.log(Level.INFO, action.toString());
+        action.getAgent().changeEnergyBy(action.getEnergyDelta());
     }
 
     private void processMoveAction(Move action) throws InvalidPositionException {
+        LOGGER.log(Level.INFO, action.toString());
         Cell nextCell = grid.get(action.getTo());
         grid.moveAgentToCell(action.getAgent(), nextCell);
     }
 
     private void processReproduce(Reproduce action) throws InvalidPositionException {
+        LOGGER.log(Level.INFO, action.toString());
         Iterator<LifeAgent> babies = action.getBabies();
         while(babies.hasNext()) {
             LifeAgent baby = babies.next();
@@ -301,6 +291,7 @@ public class Life implements LifeGetter {
     }
 
     private void processConsume(Consume action) throws AgentIsDeadException {
+        LOGGER.log(Level.INFO, action.toString());
         if (false == action.getConsumables().hasNext()) {
             // nothing to consume
             // TODO(sami): put some DEBUG info here
