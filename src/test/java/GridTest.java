@@ -89,6 +89,46 @@ public class GridTest {
     }
 
     @Test
+    public void randomAdjacentPoint1CellReturnsItself() throws GridCreationException, InvalidPositionException {
+        final int rows = 1;
+        final int cols = 1;
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        Point2D p = Utils.randomPoint(cols, rows);
+        Point2D adjacent = grid.randomAdjacentPoint(p);
+        assertEquals(p, adjacent);
+    }
+
+    @Test
+    public void randomAdjacentPointRowsIs1() throws GridCreationException, InvalidPositionException {
+        final int rows = 1;
+        final int cols = Utils.randomIntegerInRange(2, 10);
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        Point2D p = Utils.randomPoint(cols, rows);
+        Point2D adjacent = grid.randomAdjacentPoint(p);
+
+        // the difference in the x valus between source and adjacent is 1
+        int xDiff = Math.abs((adjacent.getX() - p.getX()));
+        assertEquals(1, xDiff);
+    }
+
+    @Test
+    public void randomAdjacentPointColsIs1() throws GridCreationException, InvalidPositionException {
+        final int rows = Utils.randomIntegerInRange(2, 10);
+        final int cols = 1;
+        Grid<Cell> grid = new Grid<Cell>(Cell.class, rows, cols);
+
+        Point2D p = Utils.randomPoint(cols, rows);
+        Point2D adjacent = grid.randomAdjacentPoint(p);
+
+        // the difference in the x valus between source and adjacent is 1
+        int yDiff = Math.abs((adjacent.getY() - p.getY()));
+        assertEquals(1, yDiff);
+    }
+
+
+    @Test
     public void testMoveAgentToCell() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
         final int rows = Utils.randomIntegerInRange(5, 15);
         final int cols = Utils.randomIntegerInRange(5, 15);

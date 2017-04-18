@@ -90,7 +90,8 @@ public class Grid<T extends Cell> {
         }
     }
 
-    /**  find an adjacent cell to this one, adjacent cells mean one square to the left, right, up or down.
+    /**
+     * find an adjacent cell to this one, adjacent cells mean one square to the left, right, up or down.
      * No diagonals.
      *  @param p
      * @return
@@ -100,7 +101,22 @@ public class Grid<T extends Cell> {
 
         get(p); // called to ensure the point is in bounds
 
-        boolean isX = Utils.getRand().nextBoolean();
+        // 1 cell
+        if (1 == cols && 1 == rows)
+            return new Point2D(p);
+
+        boolean isX;
+
+        // 1 row only
+        if (1 == rows)
+            isX = true;
+        // 1 column only
+        else if (1 == cols)
+            isX = false;
+        // many rows and columns, pick randomly along which access we should move
+        else
+            isX = Utils.getRand().nextBoolean();
+
         boolean positive = Utils.getRand().nextBoolean();
         int nextX = p.getX(), nextY = p.getY();
 
