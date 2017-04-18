@@ -14,9 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**
- * Created by Sami on 04/04/2017.
- */
 public class ControlPanelController implements Initializable {
 
     /**
@@ -40,6 +37,7 @@ public class ControlPanelController implements Initializable {
     @FXML private Slider frequencySlider;
     @FXML private Label iterationsLabel;
 
+    private StackedTitledPanes agentsCtrlPane;
     private LifeOptions lifeOptions;
 
     /**
@@ -63,16 +61,62 @@ public class ControlPanelController implements Initializable {
 
         // General Tab
         tabPane.getTabs().get(0).setText("General");
-//        maxIterationsTextField.textProperty().addListener((observableValue, oldVal, newVal) -> {
-//
-//        });
 
         // Agents Tab
         tabPane.getTabs().get(1).setText("Agents");
-        StackedTitledPanes agentsCtrlPane = new StackedTitledPanes(lifeOptions);
+        agentsCtrlPane = new StackedTitledPanes(lifeOptions);
+        agentsCtrlPane.setChangeListener( (a,b) -> update(a,b));
         tabPane.getTabs().get(1).setContent(agentsCtrlPane);
 
         updateSpeedLabelText();
+    }
+
+    private void update(ParamField pf, LifeAgentOptions lap) {
+        System.out.println("update called with " + pf + " " + lap);
+        if (pf.getName().equals("age")) {
+            try {
+                int age = validateInteger(pf.getTextField());
+                lap.setAgeBy(age);
+                pf.setUpdated();
+            }
+            catch(IllegalArgumentException e) {
+                pf.setInvalid();
+            }
+        }
+        else if (pf.getName().equals("reproduction")) {
+            try {
+                double repro = validateDouble(pf.getTextField());
+                lap.setReproductionRate(repro);
+                pf.setUpdated();
+            }
+            catch(IllegalArgumentException e) {
+                pf.setInvalid();
+            }
+        }
+        else if (pf.getName().equals("i0")) {
+            try {
+                int i0 = validatePositiveInteger(pf.getTextField());
+                lap.setInitialCount(i0);
+                pf.setUpdated();
+            }
+            catch(IllegalArgumentException e) {
+                pf.setInvalid();
+            }
+        }
+        else if (pf.getName().equals("e0")) {
+            try {
+                int e0 = validatePositiveInteger(pf.getTextField());
+                lap.setInitialEnergy(e0);
+                pf.setUpdated();
+            }
+            catch(IllegalArgumentException e) {
+                pf.setInvalid();
+            }
+        }
+        else {
+            // not handled..
+        }
+
     }
 
     /**
@@ -88,6 +132,9 @@ public class ControlPanelController implements Initializable {
             lifeOptions.setMaximumIterations(maxIterations);
             lifeOptions.setGridCols(gridCols);
             lifeOptions.setGridRows(gridRows);
+
+            // reset all the status images next to the textfields
+            agentsCtrlPane.resetStatusImages();
 
             // user wants to start a new simulation
             if (State.STOPPED == lifeStarter.getState()) {
@@ -166,6 +213,70 @@ public class ControlPanelController implements Initializable {
     private void updateSpeedLabelText() {
         double val = getSpeedVal();
         speedLabel.setText(String.format("%.1f%%", val*100));
+    }
+
+    private Integer validateInteger(TextField t) throws IllegalArgumentException {
+        int val;
+        try {
+            val = Integer.parseInt(t.getText());
+            return val;
+        }
+        catch(NumberFormatException exc) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            // alert.setTitle("Error Dialog");
+            alert.setHeaderText("Invalid input");
+
+            // extract the name of the textfield from the id
+            String fieldName = t.getId().toLowerCase().replaceAll("textfield", "");
+
+            alert.setContentText(String.format("%s: Error parsing input.\n", fieldName));
+
+            t.requestFocus();
+            alert.showAndWait();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private Integer validatePositiveInteger(TextField t) throws IllegalArgumentException {
+        int val = validateInteger(t);
+        if (val < 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            // alert.setTitle("Error Dialog");
+            alert.setHeaderText("Invalid input");
+
+            // extract the name of the textfield from the id
+            String fieldName = t.getId().toLowerCase().replaceAll("textfield", "");
+
+            alert.setContentText(String.format("%s: Input cannot be negative.\n", fieldName));
+
+            t.requestFocus();
+            alert.showAndWait();
+            throw new IllegalArgumentException();
+        }
+        return val;
+    }
+
+    private Double validateDouble(TextField t) throws IllegalArgumentException {
+        double val;
+        try {
+            val = Double.parseDouble(t.getText());
+        }
+        catch(NumberFormatException exc) {
+            throw new IllegalArgumentException();
+        }
+        if (val < 0 || val > 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            //            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Invalid input");
+
+            // strip the string
+            String fieldName = t.getId().toLowerCase().replaceAll("textfield", "");
+
+            alert.setContentText(String.format("%s (%d) cannot be negative.\n", fieldName, val));
+            alert.showAndWait();
+            throw new IllegalArgumentException();
+        }
+        return val;
     }
 
     /**

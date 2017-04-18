@@ -58,7 +58,6 @@ public class RootController implements Initializable, LifeStarter {
     // FXML
     // ===========================================================================================
 
-    @FXML private ScrollPane controlPane;
     @FXML private ControlPanelController controlPaneController;
 
     @FXML private Pane lifeView;

@@ -1,5 +1,8 @@
 package gui;
 
+import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -16,15 +19,38 @@ public class ParamField extends HBox {
 
     private static final String xSign = "/images/x-sign.png";
 
-    @FXML private TextField inputTextField;
-    @FXML private Label paramLabel;
-    @FXML private ImageView imageView;
+    private static final String updateSign = "/images/update.png";
 
-    public ParamField(String paramName, Number nb) {
+    private static final String checkPath= "/images/check.png";
+
+    private final Image invalidImage = new Image(xSign);
+    private final Image changingImage = new Image(updateSign);
+    private final Image checkImage = new Image(checkPath);
+
+
+    enum State {
+        CHANGING,
+        UPDATED,
+        INVALID
+    };
+
+    private State state;
+
+    @FXML
+    private TextField inputTextField;
+    @FXML
+    private Label paramLabel;
+    @FXML
+    private ImageView imageView;
+
+    private final StringProperty textProperty;
+    private String name;
+
+    public ParamField(String name, String paramName, Number nb) {
+        this.name = name;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFilename));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
-        Image img = new Image(xSign);
 
         try {
             fxmlLoader.load();
@@ -32,20 +58,62 @@ public class ParamField extends HBox {
             throw new RuntimeException(exception);
         }
 
-        imageView.setImage(img);
-        imageView.setVisible(false);
+        imageView.setImage(null);
         paramLabel.setText(paramName);
         inputTextField.setText(nb.toString());
+        textProperty = inputTextField.textProperty();
+
+        inputTextField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (false == newVal.equals(oldVal)) {
+                setChanging();
+            }
+        });
     }
 
     public void setInvalid() {
-        imageView.setVisible(true);
+        imageView.setImage(invalidImage);
     }
+
     public void setValid() {
         imageView.setVisible(false);
     }
+
     public boolean isValid() {
         return !imageView.isVisible();
     }
 
+    public TextField getTextField() {
+        return inputTextField;
+    }
+
+    public String getText() {
+        return textProperty.get();
+    }
+
+    public void setChanging() {
+        if (State.CHANGING != state) {
+            state = State.CHANGING;
+            imageView.setImage(changingImage);
+        }
+    }
+
+    public void setUpdated() {
+        if (State.UPDATED!= state) {
+            state = State.UPDATED;
+            imageView.setImage(checkImage);
+        }
+    }
+
+    public void setOnAction(EventHandler<ActionEvent> ev) {
+        inputTextField.setOnAction(ev);
+    }
+
+    /** @brief set the image in imageView to null */
+    public void resetStatusImage() {
+        imageView.setImage(null);
+    }
+
+    public String getName() {
+        return name;
+    }
 }

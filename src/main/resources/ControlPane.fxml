@@ -14,81 +14,77 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<ScrollPane hbarPolicy="NEVER" prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControlPanelController">
-    <content>
-        <Pane focusTraversable="true" prefHeight="768.0" prefWidth="200.0">
-            <children>
+<Pane focusTraversable="true" prefHeight="768.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControlPanelController">
+      <children>
 
 
-                <TabPane fx:id="tabPane" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                        <Tab text="General">
-                            <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0">
-                                   <children>
-                                  <Button fx:id="startButton" layoutY="300.0" mnemonicParsing="false" onAction="#startButtonPressed" prefHeight="27.0" prefWidth="108.0" text="Start" />
-                                  <Button fx:id="stopButton" disable="true" layoutX="115.0" layoutY="300.0" mnemonicParsing="false" onAction="#stopButtonPressed" prefHeight="27.0" prefWidth="56.0" text="Stop" />
-                                       <Label layoutX="11.0" layoutY="167.0" text="Speed">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                                       </Label>
-                                       <Slider fx:id="frequencySlider" blockIncrement="1.0" layoutX="10.0" layoutY="199.0" majorTickUnit="10.0" minorTickCount="0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" showTickLabels="true" showTickMarks="true" value="50.0" />
-                                       <Label layoutX="11.0" layoutY="129.0" text="Iterations">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                                       </Label>
-                                       <Label layoutX="10.0" layoutY="57.0" text="Rows">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                              </Label>
-                                       <Label layoutX="10.0" layoutY="92.0" text="Columns">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                              </Label>
-                                       <Label fx:id="speedLabel" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="165.0" prefHeight="17.0" prefWidth="68.0" text="50%" textAlignment="RIGHT">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                                       </Label>
-                                       <Label fx:id="iterationsLabel" layoutX="12.0" layoutY="699.0" prefHeight="17.0" prefWidth="164.0" text="Iterations: 0/1">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                                       </Label>
-                                       <TextField fx:id="rowsTextField" layoutX="100.0" layoutY="50.0" prefHeight="27.0" prefWidth="70.0" promptText="rows" text="10">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                              </TextField>
-                                       <TextField fx:id="colsTextField" layoutX="100.0" layoutY="87.0" prefHeight="27.0" prefWidth="70.0" promptText="cols" text="10">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                              </TextField>
-                                       <TextField fx:id="maxIterationsTextField" layoutX="101.0" layoutY="124.0" prefHeight="27.0" prefWidth="70.0" promptText="max iterations" text="0">
-                                           <font>
-                                               <Font size="11.0" />
-                                           </font>
-                              </TextField>
-                                   </children>
-                                </AnchorPane>
-                            </content>
-                        </Tab>
-                        <Tab text="Agents">
-                            <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                            </content>
-                        </Tab>
-                    </tabs>
-                </TabPane>
-            </children>
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-        </Pane>
-    </content>
-</ScrollPane>
+          <TabPane fx:id="tabPane" layoutY="33.0" prefHeight="716.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                  <Tab text="General">
+                      <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0">
+                             <children>
+                                 <Label layoutX="11.0" layoutY="167.0" text="Speed">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                                 </Label>
+                                 <Slider fx:id="frequencySlider" blockIncrement="1.0" layoutX="10.0" layoutY="199.0" majorTickUnit="10.0" minorTickCount="0" onDragDetected="#frequencySliderDone" onDragDone="#frequencySliderDone" prefHeight="15.0" prefWidth="160.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                                 <Label layoutX="11.0" layoutY="129.0" text="Iterations">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                                 </Label>
+                                 <Label layoutX="10.0" layoutY="57.0" text="Rows">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                        </Label>
+                                 <Label layoutX="10.0" layoutY="92.0" text="Columns">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                        </Label>
+                                 <Label fx:id="speedLabel" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="165.0" prefHeight="17.0" prefWidth="68.0" text="50%" textAlignment="RIGHT">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                                 </Label>
+                                 <Label fx:id="iterationsLabel" layoutX="12.0" layoutY="699.0" prefHeight="17.0" prefWidth="164.0" text="Iterations: 0/1">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                                 </Label>
+                                 <TextField fx:id="rowsTextField" layoutX="100.0" layoutY="50.0" prefHeight="27.0" prefWidth="70.0" promptText="rows" text="10">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                        </TextField>
+                                 <TextField fx:id="colsTextField" layoutX="100.0" layoutY="87.0" prefHeight="27.0" prefWidth="70.0" promptText="cols" text="10">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                        </TextField>
+                                 <TextField fx:id="maxIterationsTextField" layoutX="101.0" layoutY="124.0" prefHeight="27.0" prefWidth="70.0" promptText="max iterations" text="0">
+                                     <font>
+                                         <Font size="11.0" />
+                                     </font>
+                        </TextField>
+                             </children>
+                          </AnchorPane>
+                      </content>
+                  </Tab>
+                  <Tab text="Agents">
+                      <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      </content>
+                  </Tab>
+              </tabs>
+          </TabPane>
+          <Button fx:id="startButton" layoutX="2.0" layoutY="2.0" mnemonicParsing="false" onAction="#startButtonPressed" prefHeight="27.0" prefWidth="108.0" text="Start" />
+          <Button fx:id="stopButton" disable="true" layoutX="141.0" layoutY="2.0" mnemonicParsing="false" onAction="#stopButtonPressed" prefHeight="27.0" prefWidth="56.0" text="Stop" />
+      </children>
+      <opaqueInsets>
+          <Insets />
+      </opaqueInsets>
+  </Pane>
