@@ -16,7 +16,7 @@ public class Wolf extends LifeAgent {
     public static final Integer DEFAULT_I0 = 5;
 
     /** @brief default initial wolf energy */
-    public static final Integer DEFAULT_E0 = 5;
+    public static final Integer DEFAULT_E0 = 10;
 
     /** @brief default gain value when wolves consume consumables */
     public static final Integer DEFAULT_E_GAIN = 2;

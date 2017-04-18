@@ -210,12 +210,16 @@ public class Life implements LifeGetter {
 
         else if (chosen instanceof Grass) {
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
+            LifeCell currCell = (LifeCell) grid.get(chosen.getPos());
 
             // ---------
             // Reproduce
             // ---------
 
-            if (!((LifeCell)grid.get(nextPoint)).isContainsGrass()) {
+            double rGrass = options.getOptionsForAgent(Grass.class).getReproductionRate();
+            boolean willReproduce = Utils.getRand().nextDouble() < rGrass;
+
+            if (willReproduce && !((LifeCell)grid.get(nextPoint)).isContainsGrass()) {
                 LifeAgent babyGrass = chosen.reproduce();
                 babyGrass.setPos(nextPoint);
                 Action reproduce = new Reproduce(chosen, babyGrass);
@@ -223,13 +227,18 @@ public class Life implements LifeGetter {
                 processReproduce((Reproduce) reproduce);
             }
 
-            // -----------------
-            // Age (gain energy)
-            // -----------------
+            // ---
+            // Age
+            // ---
             int ageGrass = options.getOptionsForAgent(Grass.class).getAgeBy();
             Action energyGain = new EnergyChange(chosen, -ageGrass);
             actions.add(energyGain);
             processAgeAction((EnergyChange) energyGain);
+
+            List<Agent> deadAgents = (List<Agent>) (List) currCell.findDeadAgents();
+            if (false == removeAgents(deadAgents)) {
+                LOGGER.log(Level.SEVERE, "Failed to remove some agents!");
+            }
         }
 
         stepCount++;
