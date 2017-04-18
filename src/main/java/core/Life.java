@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @class Life class created for each simulation to step. The class captures user input and configures the system parameters.
+ *  Life class created for each simulation to step. The class captures user input and configures the system parameters.
  *
  * Initially Life was designed to be a singleton class, since intuitively only one life should exist.
  * But it was later noted that we may want to simulate multiple lives at the same time concurrently, which
@@ -16,23 +16,23 @@ import java.util.logging.Logger;
  */
 public class Life implements LifeGetter {
 
-    /** @brief logger */
+    /**  logger */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     // ===========================================================================================
     // MEMBER VARIABLES
     // ===========================================================================================
 
-    /** @brief the number of times step has been called and returned a non-empty list of Actions */
+    /**  the number of times step has been called and returned a non-empty list of Actions */
     private int stepCount;
 
-    /** @brief the grid containing all cells on which the agents will be placed */
+    /**  the grid containing all cells on which the agents will be placed */
     private final Grid<LifeCell> grid;
 
-    /** @brief list of all of the agents in Life */
+    /**  list of all of the agents in Life */
     private final List<Agent> agents;
 
-    /** @brief */
+    /**  */
     private final LifeOptions options;
 
     // ===========================================================================================
@@ -55,7 +55,7 @@ public class Life implements LifeGetter {
         return life;
     }
 
-    /** @brief default constructor, calls other constructor and initialises fields to their defaults */
+    /**  default constructor, calls other constructor and initialises fields to their defaults */
     public Life() throws LifeException, IllegalArgumentException { this(null); }
 
     public Life(LifeOptions options) throws LifeException, IllegalArgumentException {
@@ -100,7 +100,7 @@ public class Life implements LifeGetter {
     }
 
     /**
-     * @brief remove the passed Agent @param a from the local agents list and from the cell's agents list
+     *  remove the passed Agent @param a from the local agents list and from the cell's agents list
      * @return true if the removal was successful from both lists, false otherwise
      */
     public boolean removeAgent(Agent a)  {
@@ -110,7 +110,7 @@ public class Life implements LifeGetter {
     }
 
     /**
-     * @brief removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
+     *  removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
      * @param agents list of agents to remove
      * @return false if any one of the agents in the list could not be removed
      */
@@ -123,7 +123,7 @@ public class Life implements LifeGetter {
     }
 
     /**
-     * @brief choose an agent at random to act
+     *  choose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentIsDeadException
      * @return the stepCount index or -1 if there was nothing to do

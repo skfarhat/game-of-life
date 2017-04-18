@@ -19,14 +19,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @class RootController
+ *  RootController
  *
  * handles only one life at a time
  */
 public class RootController implements Initializable, LifeStarter {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
@@ -34,7 +34,7 @@ public class RootController implements Initializable, LifeStarter {
     // CONSTANTS
     // ===========================================================================================
 
-    /** @brief period between calls to step() in milli-seconds */
+    /**  period between calls to step() in milli-seconds */
     private final static int DEFAULT_PERIOD = 100;  // 100 milliseconds
     private final static int MIN_PERIOD = 10;       // 10 milliseconds
     private final static int MAX_PERIOD = 200;      // 200 milliseconds
@@ -135,7 +135,7 @@ public class RootController implements Initializable, LifeStarter {
     }
 
     /**
-     * @brief cancel all the timers but don't nullify the lifeViewController
+     *  cancel all the timers but don't nullify the lifeViewController
      */
     @Override
     public boolean pause() {
@@ -152,8 +152,8 @@ public class RootController implements Initializable, LifeStarter {
     }
 
     /**
-     * @brief sets the wait period between calls to life.step().
-     * If an invalid value is passed (hz <= 0), the period will be set to default.
+     *  sets the wait period between calls to life.step().
+     * If an invalid value is passed (hz &lt;= 0), the period will be set to default.
      *
      * @param freqPercent must be in [0,1]
      */
@@ -179,7 +179,7 @@ public class RootController implements Initializable, LifeStarter {
         return iterations;
     }
 
-    /** @brief: run the timers to step through life
+    /** : run the timers to step through life
      *
      * does not change state
      * @return
@@ -268,7 +268,7 @@ public class RootController implements Initializable, LifeStarter {
         return life;
     }
 
-    /** @brief cancel all timers effectively stopping the drawing and logic in life */
+    /**  cancel all timers effectively stopping the drawing and logic in life */
     private void cancelTimers()  {
         if (getState() != State.STOPPED) {
             timer.cancel();

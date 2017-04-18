@@ -9,12 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @class CellView
+ *  CellView
  */
 public class CellView extends Pane {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
@@ -22,19 +22,19 @@ public class CellView extends Pane {
     public final static int MINICELL_ROWS = 3;
     public final static int MINICELL_COLS = 3;
 
-    /** @brief the width of the cell sides' width */
+    /**  the width of the cell sides' width */
     public final static double LINE_WIDTH = 1;
 
-    /** @brief the default side value in px */
+    /**  the default side value in px */
     private final static double DEFAULT_SIDE_PX = 128;
 
-    /** @brief the minimum accpetable value for side */
+    /**  the minimum accpetable value for side */
     private final static double MIN_SIDE_PX = 16;
 
-    /** @brief the maximum accpetable value for side */
+    /**  the maximum accpetable value for side */
     private final static double MAX_SIDE_PX = 320;
 
-    /** @brief the value of this CellView's side */
+    /**  the value of this CellView's side */
     private final double side;
 
     private final Line topLine;

@@ -108,7 +108,7 @@ public class ParamField extends HBox {
         inputTextField.setOnAction(ev);
     }
 
-    /** @brief set the image in imageView to null */
+    /**  set the image in imageView to null */
     public void resetStatusImage() {
         imageView.setImage(null);
     }

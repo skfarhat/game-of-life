@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @class LifeAgent
+ *  LifeAgent
  *
  * Every LifeAgent is an Agent
  * Every LifeAgent has energy
@@ -22,11 +22,11 @@ import java.util.logging.Logger;
 public abstract class LifeAgent extends Agent implements Reproduces, Consumable, Consumes {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
-    /** @brief this string must match the method name of getDefaultParams */
+    /**  this string must match the method name of getDefaultParams */
     public static final String METHOD_NAME_GET_DEFAULT_PARAMS = "getDefaultParams";
 
     /**
@@ -38,18 +38,18 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         return null;
     }
 
-    /** @brief the energy with which this instance was created. This same value is used later when reproducing. */
+    /**  the energy with which this instance was created. This same value is used later when reproducing. */
     protected final Integer MY_INITIAL_ENERGY;
 
-    /** @brief the energy of the LifeAgent */
+    /**  the energy of the LifeAgent */
     private Integer energy = 0;
 
-    /** @brief is set to true when the Agent dies and prevents further changes to the energy after it death,
+    /**  is set to true when the Agent dies and prevents further changes to the energy after it death,
      * zombies are not allowed :)
      */
     private boolean died = false;
 
-    /** @brief default constructor */
+    /**  default constructor */
     public LifeAgent() throws AgentIsDeadException {
         this(null, LifeAgentOptions.DEFAULT_E0);
     }
@@ -58,7 +58,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         this(p, LifeAgentOptions.DEFAULT_E0);
     }
 
-    /** @brief constructor with initial energy - records the instance's initial energy */
+    /**  constructor with initial energy - records the instance's initial energy */
     public LifeAgent(int initialEnergy) throws AgentIsDeadException {
         super();
         if (initialEnergy <= 0)
@@ -86,7 +86,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     final public void decreaseEnergy(int e) throws AgentIsDeadException { changeEnergyBy(-e); }
 
     /**
-     * @brief sets the new energy on the LifeAgent
+     *  sets the new energy on the LifeAgent
      * @param energy
      * @throws AgentIsDeadException
      */
@@ -100,7 +100,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
             die();
     }
 
-    /** @brief kill the poor LifeAgent, there's no coming back after this. The energy is set to 0. */
+    /**  kill the poor LifeAgent, there's no coming back after this. The energy is set to 0. */
     @Override
     final public void die() throws AgentIsDeadException {
         if (!isAlive()) {
@@ -113,7 +113,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     }
 
     /**
-     * @brief is a convenience method to change the energy by @param val which can be positive (for energy gain) and negative
+     *  is a convenience method to change the energy by @param val which can be positive (for energy gain) and negative
      * (for energy loss)
      * */
     public void changeEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() + val); }
@@ -123,10 +123,9 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
 
     /**
-     * @brief decrease the consumable's energy by @param e
+     *  decrease the consumable's energy by @param e
      * @param consumable the consumable to be consumed
      * @param e
-     * @return
      */
     @Override
     public final void consumeBy(Consumable consumable, int e) throws ConsumableOutOfEnergy, AgentIsDeadException {

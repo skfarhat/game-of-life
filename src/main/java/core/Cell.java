@@ -5,33 +5,33 @@ import java.util.*;
 import static java.util.Collections.copy;
 
 /**
- * @class Cell
+ *  Cell
  *
  * Cell in a grid with a position (Point2D) containing Agents
  */
 public class Cell<T extends Agent> implements Positionable {
 
     /**
-     * @brief the cell's position
+     *  the cell's position
      */
     private Point2D pos;
 
     /**
-     * @brief list of agents that this cell contains
+     *  list of agents that this cell contains
      */
     protected List<T> agents = new Vector<>();
 
     /**
      * @param x coordinate of this cell's position
      * @param y coordinate of this cell's position
-     * @brief constructor with x,y passed instead of Point2D
+     *  constructor with x,y passed instead of Point2D
      */
     public Cell(Integer x, Integer y) {
         this(new Point2D(x, y));
     }
 
     /**
-     * @brief constructor with Point2D position
+     *  constructor with Point2D position
      */
     public Cell(Point2D pos1) {
         pos = new Point2D(pos1.getX(), pos1.getY());
@@ -45,7 +45,7 @@ public class Cell<T extends Agent> implements Positionable {
     }
 
     /**
-     * @brief add agent to the agents list
+     *  add agent to the agents list
      * @return true if an agent was added, false if not. If the Cell already contains a Grass Agent,
      * not another will be added and false will be returned.
      * */
@@ -55,7 +55,7 @@ public class Cell<T extends Agent> implements Positionable {
     }
 
     /**
-     * @brief remove agent from the agents lisst
+     *  remove agent from the agents lisst
      * @param t agent to remove
      * @return true if remove succeeded
      */

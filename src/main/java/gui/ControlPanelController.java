@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class ControlPanelController implements Initializable {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
@@ -191,7 +191,7 @@ public class ControlPanelController implements Initializable {
         updateSpeedLabelText();
     }
 
-    /** @brief change the name (and other properties?) appearing on the start button */
+    /**  change the name (and other properties?) appearing on the start button */
     private void changeButtonsState(State state) {
         switch(state) {
             case STOPPED:
@@ -208,7 +208,7 @@ public class ControlPanelController implements Initializable {
     }
 
     /**
-     * @brief get the speed for the slider (0-1) and adjust the speed label in percent terms
+     *  get the speed for the slider (0-1) and adjust the speed label in percent terms
      */
     private void updateSpeedLabelText() {
         double val = getSpeedVal();

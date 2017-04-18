@@ -11,17 +11,17 @@ import java.util.Random;
  */
 
 /**
- * @class Utils class contains only static utility methods
+ *  Utils class contains only static utility methods
  */
 public final class Utils {
 
     /**
-     * @class subclass of Random
+     *  subclass of Random
      * motivation behind using this is to expose the next() method and allow for easy random positive integer generation
      */
     public static class LifeRandom extends Random {
 
-        /** @brief default constructor */
+        /**  default constructor */
         LifeRandom() { super(); }
 
         /** @return random string */
@@ -29,7 +29,7 @@ public final class Utils {
             return new BigInteger(130, this).toString(32);
         }
 
-        /** @brief return a random positive integer */
+        /**  return a random positive integer */
         public Integer randomPositiveInteger() {
             return next(Integer.SIZE - 1);
         }
@@ -39,7 +39,7 @@ public final class Utils {
         }
     }
 
-    /** @brief private constructor to prevent instantiation of this class */
+    /**  private constructor to prevent instantiation of this class */
     private Utils() {}
 
     /** @return Random instance */
@@ -58,7 +58,7 @@ public final class Utils {
     }
 
     /**
-     * @brief returns a random  integer in the provided range with the edges inclusive
+     *  returns a random  integer in the provided range with the edges inclusive
      * @param min
      * @param max
      * @return

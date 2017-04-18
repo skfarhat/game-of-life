@@ -5,15 +5,15 @@
 package core.exceptions;
 
 /**
- * @class Exception class thrown when the creation of Grid object fails
+ *  Exception class thrown when the creation of Grid object fails
  */
 public class GridCreationException extends LifeException {
 
-    /** @brief default constructor */
+    /**  default constructor */
     public GridCreationException() { super(); }
 
     /**
-     * @brief exception constructor with msg
+     *  exception constructor with msg
      * @param msg exception message
      * */
     public GridCreationException(String msg) { super(msg); }

@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 public class LifeTest {
 
-    /** @brief used in double comparisons - check IEEE Floating Point standard for details */
+    /**  used in double comparisons - check IEEE Floating Point standard for details */
     private static final double DELTA = 0.0000001;
 
     @Test

@@ -15,10 +15,10 @@ public class LifeOptions {
     // DEFAULTS
     // =================================================================================================================
 
-    /** @brief default maximum number of iterations, a negative value means run indefinitely */
+    /**  default maximum number of iterations, a negative value means run indefinitely */
     public static final int DEFAULT_MAX_ITERATIONS = -1;
 
-    /** @brief default energy gained by wolf and deer when they consume other agents */
+    /**  default energy gained by wolf and deer when they consume other agents */
     public static final int DEFAULT_GRID_N = 5;
 
     // =================================================================================================================
@@ -26,8 +26,8 @@ public class LifeOptions {
     // =================================================================================================================
 
     /**
-     * @brief map determining which typ of LifeAgent can consume which type,
-     * e.g.  Wolf.class -->  [Deer.class, Sheep.class...]
+     *  map determining which typ of LifeAgent can consume which type,
+     * e.g.  Wolf.class --&gt; [Deer.class, Sheep.class...]
      */
     private final Map<Class<?extends LifeAgent>, List<Class<?extends LifeAgent>>> consumeRules = new HashMap<>();
 
@@ -57,7 +57,7 @@ public class LifeOptions {
     public LifeOptions() throws LifeImplementationException { this((Class<? extends LifeAgent>[]) null); }
 
     /**
-     * @brief constructor called by all others
+     *  constructor called by all others
      * @param opts
      * @throws LifeImplementationException
      */
@@ -80,7 +80,7 @@ public class LifeOptions {
     }
 
     /**
-     * @brief called by constructors for initialisation (more flexible than calling another constructor with 'this')
+     *  called by constructors for initialisation (more flexible than calling another constructor with 'this')
      * because init can be called anywhere in the constructor (beginning, end) as opposed to calling this(..) which must
      * be the first thing.
      * @param opts
@@ -124,7 +124,7 @@ public class LifeOptions {
     }
 
     /**
-     * @brief we cannot insert a new class, we can only
+     *  we cannot insert a new class, we can only
      * @param type
      * @param params
      */
@@ -138,7 +138,7 @@ public class LifeOptions {
     }
 
     /**
-     * @return unmodifiable map of "Consumes Class" --> "List of Consumables"
+     * @return unmodifiable map of "Consumes Class" --&gt; "List of Consumables"
      */
     public Map<Class<?extends LifeAgent>, List<Class<?extends LifeAgent>>> getConsumeRules() {
         return Collections.unmodifiableMap(consumeRules);

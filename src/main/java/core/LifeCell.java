@@ -9,12 +9,12 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
- * @class
+ *
  */
 public class LifeCell extends Cell<LifeAgent> {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 

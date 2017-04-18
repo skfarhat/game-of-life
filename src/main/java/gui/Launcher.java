@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class Launcher extends Application {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 

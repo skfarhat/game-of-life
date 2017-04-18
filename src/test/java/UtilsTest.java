@@ -85,7 +85,7 @@ public class UtilsTest {
     }
 
     /**
-     * @brief a hack to call the private constructor
+     *  a hack to call the private constructor
      * mostly for code coverage completeness
      */
     @Test

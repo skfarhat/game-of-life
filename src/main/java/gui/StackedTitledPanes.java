@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class StackedTitledPanes extends VBox {
 
     /**
-     * @brief logger
+     *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
     private LifeOptions options;
@@ -52,7 +52,7 @@ public class StackedTitledPanes extends VBox {
     }
 
     /**
-     * @brief set the change listener on each ParamField created and call the BiConsumer parameter passed
+     *  set the change listener on each ParamField created and call the BiConsumer parameter passed
      * @param b functional interface accepting two arguments: (1) ParamField and (2) LifeAgentOptions allowing the
      *          functional implementation to set the correct value to LifeAgentOptions.
      */
@@ -75,7 +75,7 @@ public class StackedTitledPanes extends VBox {
         }
     }
 
-    /** @brief set to null all the ParamField images */
+    /**  set to null all the ParamField images */
     public void resetStatusImages() {
         fieldsMap.entrySet().stream().forEach(e -> Arrays.stream(e.getValue()).forEach(pf -> pf.resetStatusImage()));
     }

@@ -6,11 +6,11 @@ package core;
 import core.exceptions.GridCreationException;
 
 /**
- * @class Factory class to construct a Grid of Cells
+ *  Factory class to construct a Grid of Cells
  */
 public class GridLifeCellFactory {
 
-    /** @brief private constructor */
+    /**  private constructor */
     private GridLifeCellFactory() {}
 
     /**

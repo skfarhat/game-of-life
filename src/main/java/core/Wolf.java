@@ -2,31 +2,31 @@ package core;
 import core.exceptions.AgentIsDeadException;
 
 /**
- * @classs Wolf
+ *
  */
 public class Wolf extends LifeAgent {
 
-    /** @brief default value by which a wolf's energy decreases when they age */
+    /**  default value by which a wolf's energy decreases when they age */
     public static final Integer DEFAULT_AGE = 1;
 
-    /** @brief default probability of reproducing */
+    /**  default probability of reproducing */
     public static final Double DEFAULT_R = 0.1;
 
-    /** @brief default initial number wolf instances*/
+    /**  default initial number wolf instances*/
     public static final Integer DEFAULT_I0 = 5;
 
-    /** @brief default initial wolf energy */
+    /**  default initial wolf energy */
     public static final Integer DEFAULT_E0 = 10;
 
-    /** @brief default gain value when wolves consume consumables */
+    /**  default gain value when wolves consume consumables */
     public static final Integer DEFAULT_E_GAIN = 2;
 
-    /** @brief default amount by which a wolf's energy is decreased when the wolf is consumed */
+    /**  default amount by which a wolf's energy is decreased when the wolf is consumed */
     public static final Integer DEFAULT_E_LOSS = 10;
 
 
     /**
-     * @@brief default constructor
+     * default constructor
      */
     public Wolf() throws AgentIsDeadException {
         super();

@@ -3,7 +3,7 @@ package core;
 import java.util.List;
 
 /**
- * @interface to expose some getter methods in Life without allowing full control
+ * to expose some getter methods in Life without allowing full control
  */
 public interface LifeGetter {
 

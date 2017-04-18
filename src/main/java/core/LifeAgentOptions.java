@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @class LifeAgentOptions encapsulates the user configuration parameters describing a type of class
+ *  LifeAgentOptions encapsulates the user configuration parameters describing a type of class
  */
 public class LifeAgentOptions {
 
@@ -14,22 +14,22 @@ public class LifeAgentOptions {
     // Defaults
     // ===========================================================================================
 
-    /** @brief default initial energy for LifeAgents*/
+    /**  default initial energy for LifeAgents*/
     public static final Integer DEFAULT_E0 = 5;
 
-    /** @brief default initial number of instances of that LifeAgent */
+    /**  default initial number of instances of that LifeAgent */
     public static final Integer DEFAULT_I0 = 5;
 
-    /** @brief default reproduction rate for LifeAgents */
+    /**  default reproduction rate for LifeAgents */
     public static final Double DEFAULT_R = 0.1;
 
-    /** @brief default energy lost by a LifeAgent when it is consumed - only applicable in some implementations of consume*/
+    /**  default energy lost by a LifeAgent when it is consumed - only applicable in some implementations of consume*/
     public static final Integer DEFAULT_E_LOSS = 1;
 
-    /** @brief default energy gained when a LifeAgent consumes another */
+    /**  default energy gained when a LifeAgent consumes another */
     public static final Integer DEFAULT_E_GAIN = 2;
 
-    /** @brief default energy decrease for Agents when they age */
+    /**  default energy decrease for Agents when they age */
     public static final Integer DEFAULT_AGE = 1;
 
     // ===========================================================================================
@@ -38,25 +38,25 @@ public class LifeAgentOptions {
 
     private Class<?extends LifeAgent> agentType;
 
-    /** @brief value by which the LifeAgent ages each step it is chosen */
+    /**  value by which the LifeAgent ages each step it is chosen */
     private Integer ageBy = DEFAULT_AGE;
 
-    /** @brief initial energy of LifeAgents of this type */
+    /**  initial energy of LifeAgents of this type */
     private Integer initialEnergy = DEFAULT_E0;
 
-    /** @brief probability of reproduction of the LifeAgent when it is chosen, value must be in [0;1] */
+    /**  probability of reproduction of the LifeAgent when it is chosen, value must be in [0;1] */
     private Double reproductionRate = DEFAULT_R;
 
-    /** @brief the initial number of such agents on start of Life (simulation) */
+    /**  the initial number of such agents on start of Life (simulation) */
     private Integer initialCount = DEFAULT_I0;
 
-    /** @brief the energy gained by the LifeAgent when it consumes other LifeAgents - only for implementation 1 */
+    /**  the energy gained by the LifeAgent when it consumes other LifeAgents - only for implementation 1 */
     private Integer energyGained = DEFAULT_E_GAIN;
 
     /** @bief the energy lost by the LifeAgent when it is consumed by other LifeAgents, value cannot exceed the LifeAgent's own energy */
     private Integer energyLost = DEFAULT_E_LOSS;
 
-    /** @brief constructor with all values */
+    /**  constructor with all values */
     public LifeAgentOptions(Class<? extends LifeAgent> agentType, Integer ageBy, Integer initialEnergy, Double reproductionRate,
                             Integer initialCount, Integer energyGained, Integer energyLost) {
 
@@ -78,14 +78,14 @@ public class LifeAgentOptions {
     }
 
     /**
-     * @brief copy constructor
+     *  copy constructor
      * @param opts
      */
     public LifeAgentOptions(LifeAgentOptions opts) {
         copyFrom(opts);
     }
 
-    /** @brief constructor with all values */
+    /**  constructor with all values */
     public LifeAgentOptions(Class<? extends LifeAgent> agentType) throws LifeImplementationException {
         try {
             // get the method to be used by reflection

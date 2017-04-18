@@ -2,9 +2,9 @@ package core.exceptions;
 
 public class InvalidPositionException extends LifeException {
 
-    /** @brief default constructor */
+    /**  default constructor */
     public InvalidPositionException() {super(); };
 
-    /** @brief constructor with String message */
+    /**  constructor with String message */
     public InvalidPositionException(String e) { super(e); };
 }

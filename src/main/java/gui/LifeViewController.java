@@ -9,7 +9,7 @@ import javafx.scene.layout.Pane;
 import java.util.List;
 
 /**
- * @class LifeViewController
+ *  LifeViewController
  */
 public class LifeViewController {
 
@@ -52,7 +52,7 @@ public class LifeViewController {
     }
 
     // Uncomment and make GridView.countAgents public
-//    /** @brief counts the number of agents drawn on the grid - useful for debugging */
+//    /**  counts the number of agents drawn on the grid - useful for debugging */
 //    private int countAgents() throws InvalidPositionException {
 //        return this.gridView.countAgents();
 //    }

@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class GridLifeCellFactoryTest {
 
     /**
-     * @brief a hack to call the private constructor
+     *  a hack to call the private constructor
      * mostly for code coverage completeness
      */
     @Test

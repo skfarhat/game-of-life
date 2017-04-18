@@ -5,6 +5,6 @@ package core;
  */
 public interface Moveable {
 
-    /** @brief move to new position */
+    /**  move to new position */
     public void moveTo(Point2D pos);
 }

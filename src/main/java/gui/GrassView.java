@@ -11,25 +11,25 @@ import java.util.List;
  */
 public class GrassView extends Pane {
 
-    /** @brief value of energy that will have the lightest shade of color */
+    /**  value of energy that will have the lightest shade of color */
     public static int ENERGY_VALUE_LOWER = 1;
 
-    /** @brief value of energy that will have the darkest shade of color */
+    /**  value of energy that will have the darkest shade of color */
     public static int ENERGY_VALUE_UPPER = 99;
 
-    /** @brief the range in which energies have the same color [0, 10[ have the same color and [10, 20[ have the next shade */
+    /**  the range in which energies have the same color [0, 10[ have the same color and [10, 20[ have the next shade */
     public static int ENERGY_INTERVAL = 1;
 
-    /** @brief the first color from which all the others will derive */
+    /**  the first color from which all the others will derive */
     private static final Color firstColor = Color.LIGHTGREEN;
     /**
-     * @brief the number of different shades
+     *  the number of different shades
      * e.g. when upper = 1000, and lower = 0 and interval = 10
      * we would have (1000 - 0) / 10 = 100 shades of color
      * */
     public static int COLOR_SHADE_COUNT = (ENERGY_VALUE_UPPER - ENERGY_VALUE_LOWER + 1) / ENERGY_INTERVAL;
 
-    /** @brief list holding all the different shades of color. The array is initialised statically and cannot be modified. */
+    /**  list holding all the different shades of color. The array is initialised statically and cannot be modified. */
     private final static List<Color> colorShades;
 
     static {
@@ -48,13 +48,13 @@ public class GrassView extends Pane {
         return copyList;
     }
 
-    /** @brief the color with which this Pane is painted */
+    /**  the color with which this Pane is painted */
     public Color color;
 
     private Grass grass;
 
     /**
-     * @brief constructor
+     *  constructor
      *
      * sets the background of the pane based on the energy level of the grass. When the grass' energy level exceeds
      * ENERGY_VALUE_UPPER then the last (darkest) shade of color is drawn. If the grass' energy level is under ENERGY_VALUE_LOWER

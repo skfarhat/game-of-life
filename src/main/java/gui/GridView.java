@@ -60,7 +60,7 @@ public class GridView extends Pane {
         }
     }
 
-    /** @brief draw all cells */
+    /**  draw all cells */
     public void drawAll() {
         getChildren().stream().forEach(cellView -> {
             if(cellView instanceof CellView)
@@ -68,13 +68,13 @@ public class GridView extends Pane {
         });
     }
 
-    /** @brief redraw all cells affected by any one of the actions in the @param actions list */
+    /**  redraw all cells affected by any one of the actions in the @param actions list */
     public void draw(List<Action> actions)  {
         for (Action action : actions)
             draw(action);
     }
 
-    /** @brief redraw the cells affected by @param action. This depends on what the action is exactly. */
+    /**  redraw the cells affected by @param action. This depends on what the action is exactly. */
     public void draw(Action action)  {
         if (action instanceof EnergyChange) {
             EnergyChange age = (EnergyChange) action;
@@ -115,7 +115,7 @@ public class GridView extends Pane {
         }
     }
 
-    /** @brief counts the number of agents added to GridView - useful for debugging */
+    /**  counts the number of agents added to GridView - useful for debugging */
     private int countAgents() throws InvalidPositionException {
         int total = 0;
         for (Node node: getChildren()) {

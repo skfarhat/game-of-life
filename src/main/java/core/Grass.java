@@ -7,29 +7,29 @@ package core;
 import core.exceptions.AgentIsDeadException;
 
 /**
- * @class Grass is a LifeAgent, it reproduces
+ *  Grass is a LifeAgent, it reproduces
  */
 public class Grass extends LifeAgent {
 
-    /** @brief default value by which a deer's energy decreases when they age */
+    /**  default value by which a deer's energy decreases when they age */
     public static final Integer DEFAULT_AGE = -5;
 
-    /** @brief default probability of reproducing - all the time */
+    /**  default probability of reproducing - all the time */
     public static final Double DEFAULT_R = 1.0;
 
-    /** @brief default initial number grass instances*/
+    /**  default initial number grass instances*/
     public static final Integer DEFAULT_I0 = 5;
 
-    /** @brief default initial grass energy */
+    /**  default initial grass energy */
     public static final Integer DEFAULT_E0 = 5;
 
-    /** @brief default gain value when grass consumes consumables */
+    /**  default gain value when grass consumes consumables */
     public static final Integer DEFAULT_E_GAIN = 0;
 
-    /** @brief default amount by which grass's energy is decreased when it is consumed */
+    /**  default amount by which grass's energy is decreased when it is consumed */
     public static final Integer DEFAULT_E_LOSS = 10;
 
-    /** @brief decide what the default parameters for this class should be */
+    /**  decide what the default parameters for this class should be */
     public static LifeAgentOptions getDefaultParams() {
         return new LifeAgentOptions(Grass.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
                 DEFAULT_E_GAIN, DEFAULT_E_LOSS);

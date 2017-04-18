@@ -66,7 +66,7 @@ public class Grid<T extends Cell> {
 
     /**
      *
-     * @brief creates a new cell from @param Class<T>.
+     *  creates a new cell from @param Class<T>.
      * Exceptions are caught and GridCreationException is thrown with the correct message.
      *
      * @param c class type to return an  instance of
@@ -90,7 +90,7 @@ public class Grid<T extends Cell> {
         }
     }
 
-    /** @brief find an adjacent cell to this one, adjacent cells mean one square to the left, right, up or down.
+    /**  find an adjacent cell to this one, adjacent cells mean one square to the left, right, up or down.
      * No diagonals.
      *  @param p
      * @return
@@ -119,7 +119,7 @@ public class Grid<T extends Cell> {
     }
 
     /**
-     * @brief moves an agent from its source cell to the @param dstCell
+     *  moves an agent from its source cell to the @param dstCell
      * @param agent
      * @param dstCell
      */

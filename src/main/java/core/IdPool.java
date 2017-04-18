@@ -9,25 +9,25 @@ import java.util.HashMap;
 
 public class IdPool {
 
-    /** @brief reference to singleton IdPool, kept private of course */
+    /**  reference to singleton IdPool, kept private of course */
     private final static  IdPool pool = new IdPool();
 
-    /** @brief used to generate the random id strings */
+    /**  used to generate the random id strings */
     private final static SecureRandom random = new SecureRandom();
 
-    /** @brief map used to store the generated ids to avoid creating duplicates */
+    /**  map used to store the generated ids to avoid creating duplicates */
     HashMap<String, Boolean> ids = new HashMap<String, Boolean>();
 
-    /** @brief private constructor */
+    /**  private constructor */
     private IdPool() { }
 
-    /** @brief returns singleton instance of IdPool */
+    /**  returns singleton instance of IdPool */
     public static IdPool getInstance() {
         return pool;
     }
 
     /**
-     * @brief generate a new id
+     *  generate a new id
      * @return geneerated id
      * */
     public String newId() {
