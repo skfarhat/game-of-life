@@ -265,7 +265,7 @@ public class Life implements LifeGetter {
                 // create however many agents of this type are needed
                 for (int i = 0; i < I0; i++) {
                     // find a random point in the grid to place this agent instance
-                    Point2D p = Utils.randomPoint(options.getGridRows(), options.getGridCols()); // TODO(sami): should this be the other way around ?
+                    Point2D p = Utils.randomPoint(options.getGridCols(), options.getGridRows());
                     Agent agent = agentType.getConstructor(Point2D.class, Integer.class).newInstance(p, E0);
                     addAgent(agent);
                     nCreated++;
