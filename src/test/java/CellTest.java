@@ -1,5 +1,5 @@
 import core.*;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class CellTest {
         Cell cell = new Cell(p);
         Agent a = new LifeAgent() {
             @Override
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -57,7 +57,7 @@ public class CellTest {
         for (int i = 0; i < N; i++) {
             Agent agent = new LifeAgent() {
                 @Override
-                public LifeAgent reproduce() throws AgentIsDeadException {
+                public LifeAgent reproduce() throws AgentAlreadyDeadException {
                     return null;
                 }
             };
@@ -71,11 +71,11 @@ public class CellTest {
     }
 
     @Test
-    public void testRemoveAgent() throws AgentIsDeadException {
+    public void testRemoveAgent() throws AgentAlreadyDeadException {
         Cell cell = new Cell(Utils.randomPoint(30, 30));
         Agent a = new LifeAgent() {
             @Override
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };

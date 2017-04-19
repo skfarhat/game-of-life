@@ -1,5 +1,5 @@
 import core.*;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.LifeException;
 import org.junit.Test;
@@ -141,7 +141,7 @@ public class LifeTest {
                 life.step();
             } catch (InvalidPositionException e) {
                 e.printStackTrace();
-            } catch (AgentIsDeadException e) {
+            } catch (AgentAlreadyDeadException e) {
                 e.printStackTrace();
             }
         }

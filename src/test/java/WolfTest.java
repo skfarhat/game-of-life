@@ -1,5 +1,5 @@
 import core.*;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.interfaces.Consumable;
 import org.junit.Test;
 
@@ -10,34 +10,34 @@ import static org.junit.Assert.*;
 public class WolfTest {
 
     @Test
-    public void testWolfIsAlive() throws AgentIsDeadException {
+    public void testWolfIsAlive() throws AgentAlreadyDeadException {
         Wolf wolf = new Wolf();
         assertTrue(wolf.isAlive());
     }
 
     @Test
-    public void testWolfHasCorrectInitialEnergy() throws AgentIsDeadException {
+    public void testWolfHasCorrectInitialEnergy() throws AgentAlreadyDeadException {
         final int initialEnergy = 100;
         Wolf wolf = new Wolf(initialEnergy);
         assertEquals(initialEnergy, wolf.getEnergy().intValue());
     }
 
     @Test
-    public void testWolfReproductionCreatesNewWolf() throws AgentIsDeadException {
+    public void testWolfReproductionCreatesNewWolf() throws AgentAlreadyDeadException {
         Wolf wolf = new Wolf();
         LifeAgent agent = wolf.reproduce();
         assertTrue(agent instanceof Wolf);
     }
 
     @Test
-    public void testDeerConstructorWithPoint() throws AgentIsDeadException {
+    public void testDeerConstructorWithPoint() throws AgentAlreadyDeadException {
         Point2D p = Utils.randomPoint(100, 100);
         Wolf wolf = new Wolf(p);
         assertEquals(p, wolf.getPos());
     }
 
     @Test
-    public void testToString() throws AgentIsDeadException {
+    public void testToString() throws AgentAlreadyDeadException {
         Wolf wolf = new Wolf();
         String str = wolf.toString();
         // make sure the to String contains the wolf wolf
@@ -45,11 +45,11 @@ public class WolfTest {
     }
 
     @Test
-    public void testConsume() throws AgentIsDeadException {
+    public void testConsume() throws AgentAlreadyDeadException {
         Wolf wolf = new Wolf();
         LifeAgent agent = new LifeAgent() {
             @Override
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -61,7 +61,7 @@ public class WolfTest {
     }
 
     @Test
-    public void testConsumeAll() throws AgentIsDeadException {
+    public void testConsumeAll() throws AgentAlreadyDeadException {
         Wolf wolf = new Wolf();
 
         // setup
@@ -70,7 +70,7 @@ public class WolfTest {
         for (int i = 0; i < N; i++) {
             LifeAgent agent = new LifeAgent() {
                 @Override
-                public LifeAgent reproduce() throws AgentIsDeadException {
+                public LifeAgent reproduce() throws AgentAlreadyDeadException {
                     return null;
                 }
             };

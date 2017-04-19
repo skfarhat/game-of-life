@@ -3,7 +3,7 @@
  */
 
 package core.interfaces;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.ConsumableOutOfEnergy;
 
 import java.util.List;
@@ -20,11 +20,11 @@ public interface Consumes {
      * @param e
      * @throws ConsumableOutOfEnergy
      */
-    void consumeBy(Consumable consumable, int e) throws ConsumableOutOfEnergy, AgentIsDeadException;
+    void consumeBy(Consumable consumable, int e) throws ConsumableOutOfEnergy, AgentAlreadyDeadException;
 
     /**  LifeAgent can only consume other LifeAgents (they cannot consume an Agent with no energy) */
-    boolean consume(Consumable consumable) throws AgentIsDeadException;
+    boolean consume(Consumable consumable) throws AgentAlreadyDeadException;
 
     /**  LifeAgent can only consume other LifeAgents (they cannot consume an Agent with no energy) */
-    int consumeAll(List<Consumable> consumables) throws AgentIsDeadException;
+    int consumeAll(List<Consumable> consumables) throws AgentAlreadyDeadException;
 }

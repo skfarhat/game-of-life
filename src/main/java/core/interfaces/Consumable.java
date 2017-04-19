@@ -3,7 +3,7 @@
  */
 package core.interfaces;
 
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 
 /**
  * something that can be consumed and die
@@ -15,10 +15,10 @@ public interface Consumable {
      *
      * @param e the amount to decrease the energy by
      */
-    void decreaseEnergy(int e) throws AgentIsDeadException;
+    void decreaseEnergy(int e) throws AgentAlreadyDeadException;
 
     /**  decrease the Consumable's energy entirely */
-    void die() throws AgentIsDeadException;
+    void die() throws AgentAlreadyDeadException;
 
     Integer getEnergy();
 

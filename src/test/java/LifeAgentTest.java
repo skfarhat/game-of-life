@@ -1,8 +1,7 @@
 import core.Point2D;
 import core.Utils;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.LifeAgent;
-import core.exceptions.LifeException;
 import core.exceptions.LifeImplementationException;
 import org.junit.Test;
 
@@ -17,9 +16,9 @@ import static org.junit.Assert.*;
 public class LifeAgentTest {
 
     /** @return a subclass of core.LifeAgent  - reproduce method is not implemented */
-    private LifeAgent lifeAgentSubclass() throws AgentIsDeadException {
+    private LifeAgent lifeAgentSubclass() throws AgentAlreadyDeadException {
         LifeAgent agent = new LifeAgent(){
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -27,9 +26,9 @@ public class LifeAgentTest {
     }
 
     /** @return a subclass of core.LifeAgent with position (Point2D) passed - reproduce method is not implemented  */
-    private LifeAgent lifeAgentSubclass(Point2D p) throws AgentIsDeadException {
+    private LifeAgent lifeAgentSubclass(Point2D p) throws AgentAlreadyDeadException {
         LifeAgent agent = new LifeAgent(p){
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -37,18 +36,18 @@ public class LifeAgentTest {
     }
 
     /** @return a subclass of core.LifeAgent with energy passed - reproduce method is not implemented  */
-    private LifeAgent lifeAgentSubclass(int energy) throws AgentIsDeadException {
+    private LifeAgent lifeAgentSubclass(int energy) throws AgentAlreadyDeadException {
         LifeAgent agent = new LifeAgent(energy){
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
         return agent;
     }
     /** @return a subclass of core.LifeAgent with position and energy passed - reproduce method is not implemented  */
-    private LifeAgent lifeAgentSubclass(Point2D p, int energy) throws AgentIsDeadException {
+    private LifeAgent lifeAgentSubclass(Point2D p, int energy) throws AgentAlreadyDeadException {
         LifeAgent agent = new LifeAgent(p, energy){
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -69,7 +68,7 @@ public class LifeAgentTest {
     }
 
     @Test
-    public void testAliveAgent() throws AgentIsDeadException {
+    public void testAliveAgent() throws AgentAlreadyDeadException {
         Random rand = new Random();
         int energy = 1 + Math.abs(rand.nextInt());
         LifeAgent agent = lifeAgentSubclass(energy);
@@ -77,44 +76,44 @@ public class LifeAgentTest {
     }
 
     @Test
-    public void testConstructor1Param() throws AgentIsDeadException {
+    public void testConstructor1Param() throws AgentAlreadyDeadException {
         Point2D p =  Utils.randomPoint(100,100);
         LifeAgent agent = lifeAgentSubclass(p);
         assertEquals(p, agent.getPos());
     }
 
     @Test
-    public void testCanCreateAliveAgentWithoutInitialEnergy() throws AgentIsDeadException {
+    public void testCanCreateAliveAgentWithoutInitialEnergy() throws AgentAlreadyDeadException {
         LifeAgent agent = lifeAgentSubclass();
         agent.getEnergy();
     }
 
     @Test
-    public void testAgentDiesWithNonPositiveEnergy() throws AgentIsDeadException {
+    public void testAgentDiesWithNonPositiveEnergy() throws AgentAlreadyDeadException {
         LifeAgent agent = lifeAgentSubclass();
         assertTrue(agent.isAlive());
         agent.setEnergy(-1);
         assertFalse(agent.isAlive());
     }
 
-    @Test(expected = AgentIsDeadException.class)
-    public void testExceptionThrownWhenCreatingLifeAgentWithNegativeInitialEnergy() throws AgentIsDeadException {
+    @Test(expected = AgentAlreadyDeadException.class)
+    public void testExceptionThrownWhenCreatingLifeAgentWithNegativeInitialEnergy() throws AgentAlreadyDeadException {
         lifeAgentSubclass(-1);
     }
 
-    @Test(expected = AgentIsDeadException.class)
-    public void testExceptionThrownWhenCreatingLifeAgentWithNegativeInitialEnergy2() throws AgentIsDeadException {
+    @Test(expected = AgentAlreadyDeadException.class)
+    public void testExceptionThrownWhenCreatingLifeAgentWithNegativeInitialEnergy2() throws AgentAlreadyDeadException {
         lifeAgentSubclass(new Point2D(0, 0), -Utils.randomPositiveInteger(100));
     }
 
-    @Test(expected = AgentIsDeadException.class)
-    public void testExceptionThrownWhenSettingEnergyOnDeadLifeAgent() throws AgentIsDeadException {
+    @Test(expected = AgentAlreadyDeadException.class)
+    public void testExceptionThrownWhenSettingEnergyOnDeadLifeAgent() throws AgentAlreadyDeadException {
         LifeAgent agent = null;
         try {
             // it's not okay to fail here
             agent = lifeAgentSubclass();
             agent.setEnergy(0);
-        } catch (AgentIsDeadException e) {
+        } catch (AgentAlreadyDeadException e) {
             fail();
         }
 
@@ -124,15 +123,15 @@ public class LifeAgentTest {
 
 
 
-    @Test(expected = AgentIsDeadException.class)
-    public void testExceptionIsThrownWhenKillingAnAlreadyDeadLifeAgent() throws AgentIsDeadException {
+    @Test(expected = AgentAlreadyDeadException.class)
+    public void testExceptionIsThrownWhenKillingAnAlreadyDeadLifeAgent() throws AgentAlreadyDeadException {
         LifeAgent agent = lifeAgentSubclass();
         agent.die();
         agent.die(); // exception thrown here
     }
 
     @Test
-    public void testEnegyChange() throws AgentIsDeadException {
+    public void testEnegyChange() throws AgentAlreadyDeadException {
         final int initialEnergy = 100;
         final int delta = Utils.randomPositiveInteger(initialEnergy*2 ) - initialEnergy;
         final int expectedFinalEnergy = initialEnergy + delta;

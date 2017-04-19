@@ -3,7 +3,7 @@
  */
 package core;
 
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.ConsumableOutOfEnergy;
 import core.interfaces.Consumable;
 import core.interfaces.Consumes;
@@ -53,26 +53,26 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     private boolean died = false;
 
     /**  default constructor */
-    public LifeAgent() throws AgentIsDeadException {
+    public LifeAgent() throws AgentAlreadyDeadException {
         this(null, LifeAgentOptions.DEFAULT_E0);
     }
 
-    public LifeAgent(Point2D p) throws AgentIsDeadException {
+    public LifeAgent(Point2D p) throws AgentAlreadyDeadException {
         this(p, LifeAgentOptions.DEFAULT_E0);
     }
 
     /**  constructor with initial energy - records the instance's initial energy */
-    public LifeAgent(int initialEnergy) throws AgentIsDeadException {
+    public LifeAgent(int initialEnergy) throws AgentAlreadyDeadException {
         super();
         if (initialEnergy <= 0)
-            throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
+            throw new AgentAlreadyDeadException("Creating a LifeAgent with invalid intitalEnergy");
         setEnergy(MY_INITIAL_ENERGY = initialEnergy);
     }
 
-    public LifeAgent(Point2D p, Integer energy) throws AgentIsDeadException {
+    public LifeAgent(Point2D p, Integer energy) throws AgentAlreadyDeadException {
         super(p);
         if (energy <= 0)
-            throw new AgentIsDeadException("Creating a LifeAgent with invalid intitalEnergy");
+            throw new AgentAlreadyDeadException("Creating a LifeAgent with invalid intitalEnergy");
         setEnergy(MY_INITIAL_ENERGY = energy);
     }
 
@@ -83,19 +83,19 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
     /**
      * @param e the amount to decrease the energy by
-     * @throws AgentIsDeadException
+     * @throws AgentAlreadyDeadException
      */
     @Override
-    final public void decreaseEnergy(int e) throws AgentIsDeadException { changeEnergyBy(-e); }
+    final public void decreaseEnergy(int e) throws AgentAlreadyDeadException { changeEnergyBy(-e); }
 
     /**
      *  sets the new energy on the LifeAgent
      * @param energy
-     * @throws AgentIsDeadException
+     * @throws AgentAlreadyDeadException
      */
-    final public void setEnergy(Integer energy) throws AgentIsDeadException {
+    final public void setEnergy(Integer energy) throws AgentAlreadyDeadException {
         if (!isAlive()) {
-            throw new AgentIsDeadException("Can't setEnergy on a dead LifeAgent");
+            throw new AgentAlreadyDeadException("Can't setEnergy on a dead LifeAgent");
         }
 
         this.energy = energy;
@@ -105,9 +105,9 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
     /**  kill the poor LifeAgent, there's no coming back after this. The energy is set to 0. */
     @Override
-    final public void die() throws AgentIsDeadException {
+    final public void die() throws AgentAlreadyDeadException {
         if (!isAlive()) {
-            throw new AgentIsDeadException("Can't kill a LifeAgent twice. You're mean.");
+            throw new AgentAlreadyDeadException("Can't kill a LifeAgent twice. You're mean.");
         }
         died = true;
         energy = 0;
@@ -119,7 +119,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
      *  is a convenience method to change the energy by @param val which can be positive (for energy gain) and negative
      * (for energy loss)
      * */
-    public void changeEnergyBy(int val) throws AgentIsDeadException { setEnergy(getEnergy() + val); }
+    public void changeEnergyBy(int val) throws AgentAlreadyDeadException { setEnergy(getEnergy() + val); }
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
     public boolean isAlive() { return !died; }
@@ -131,7 +131,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
      * @param e
      */
     @Override
-    public final void consumeBy(Consumable consumable, int e) throws ConsumableOutOfEnergy, AgentIsDeadException {
+    public final void consumeBy(Consumable consumable, int e) throws ConsumableOutOfEnergy, AgentAlreadyDeadException {
         if (consumable.getEnergy() < e) {
             throw new ConsumableOutOfEnergy();
         }
@@ -140,20 +140,20 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
     // TODO(sami): replace with a new exception
     @Override
-    public final boolean consume(Consumable consumable) throws AgentIsDeadException {
+    public final boolean consume(Consumable consumable) throws AgentAlreadyDeadException {
         if (consumable == this)
             throw new IllegalArgumentException("Cannot consume myself!");
         try {
             consumable.die();
             return true;
         }
-        catch(AgentIsDeadException exc) {
+        catch(AgentAlreadyDeadException exc) {
             return false;
         }
     }
 
     @Override
-    public final int consumeAll(List<Consumable> consumables) throws AgentIsDeadException {
+    public final int consumeAll(List<Consumable> consumables) throws AgentAlreadyDeadException {
         int count = 0;
         for (Consumable consumable : consumables) {
             // if consume succeeds increment count

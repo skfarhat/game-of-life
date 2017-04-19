@@ -1,6 +1,6 @@
 package core;
 
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.GridCreationException;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.SurfaceAlreadyPresent;
@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class LifeCellTest {
 
     @Test
-    public void testRemoveDeadAgentsFromCell() throws AgentIsDeadException, GridCreationException, InvalidPositionException, SurfaceAlreadyPresent {
+    public void testRemoveDeadAgentsFromCell() throws AgentAlreadyDeadException, GridCreationException, InvalidPositionException, SurfaceAlreadyPresent {
 
         final int nAgents = 10 + Utils.randomPositiveInteger(91); // number of agents to create
         final int nKill = 1 + Utils.randomPositiveInteger(nAgents-1); // number of agents to kill
@@ -31,7 +31,7 @@ public class LifeCellTest {
         for (int i = 0; i < nAgents; i++) {
             LifeAgent agent = new LifeAgent() {
                 @Override
-                public LifeAgent reproduce() throws AgentIsDeadException {
+                public LifeAgent reproduce() throws AgentAlreadyDeadException {
                     return null;
                 }
             };

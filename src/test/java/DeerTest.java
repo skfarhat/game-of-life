@@ -1,5 +1,5 @@
 import core.*;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.interfaces.Consumable;
 import org.junit.Test;
 
@@ -11,37 +11,37 @@ import static org.junit.Assert.*;
 public class DeerTest {
 
     @Test
-    public void tesDefaultDeer() throws AgentIsDeadException {
+    public void tesDefaultDeer() throws AgentAlreadyDeadException {
         new Deer();
     }
 
     @Test
-    public void testDeerWithInitialEnergy() throws AgentIsDeadException {
+    public void testDeerWithInitialEnergy() throws AgentAlreadyDeadException {
         new Deer(new Random().nextInt(Integer.MAX_VALUE));
     }
 
     @Test
-    public void testDeerIsAlive() throws AgentIsDeadException {
+    public void testDeerIsAlive() throws AgentAlreadyDeadException {
         Deer deer = new Deer();
         assertTrue(deer.isAlive());
     }
 
     @Test
-    public void testDeerReproductionCreatesNewDeer() throws AgentIsDeadException {
+    public void testDeerReproductionCreatesNewDeer() throws AgentAlreadyDeadException {
         Deer deer = new Deer();
         LifeAgent agent = deer.reproduce();
         assertTrue(agent instanceof Deer);
     }
 
     @Test
-    public void testDeerConstructorWithPoint() throws AgentIsDeadException {
+    public void testDeerConstructorWithPoint() throws AgentAlreadyDeadException {
         Point2D p = Utils.randomPoint(100, 100);
         Deer deer = new Deer(p);
         assertEquals(p, deer.getPos());
     }
 
     @Test
-    public void testToString() throws AgentIsDeadException {
+    public void testToString() throws AgentAlreadyDeadException {
         Deer deer = new Deer();
         String str = deer.toString();
         // make sure the to String contains the word deer
@@ -49,11 +49,11 @@ public class DeerTest {
     }
 
     @Test
-    public void testConsume() throws AgentIsDeadException {
+    public void testConsume() throws AgentAlreadyDeadException {
         Deer deer = new Deer();
         LifeAgent agent = new LifeAgent() {
             @Override
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -65,7 +65,7 @@ public class DeerTest {
     }
 
     @Test
-    public void testConsumeAll() throws AgentIsDeadException {
+    public void testConsumeAll() throws AgentAlreadyDeadException {
         Deer deer = new Deer();
 
         // setup
@@ -74,7 +74,7 @@ public class DeerTest {
         for (int i = 0; i < N; i++) {
             LifeAgent agent = new LifeAgent() {
                 @Override
-                public LifeAgent reproduce() throws AgentIsDeadException {
+                public LifeAgent reproduce() throws AgentAlreadyDeadException {
                     return null;
                 }
             };

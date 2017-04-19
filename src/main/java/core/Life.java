@@ -189,10 +189,10 @@ public class Life implements LifeGetter {
     /**
      *  choose an agent at random to act
      * @throws InvalidPositionException
-     * @throws AgentIsDeadException
+     * @throws AgentAlreadyDeadException
      * @return the stepCount index or -1 if there was nothing to do
      */
-    public List<Action> step() throws InvalidPositionException, SurfaceAlreadyPresent, AgentIsDeadException {
+    public List<Action> step() throws InvalidPositionException, SurfaceAlreadyPresent, AgentAlreadyDeadException {
 
         List<Action> actions = new ArrayList<>();
 
@@ -313,7 +313,7 @@ public class Life implements LifeGetter {
 
     /**
      * @return total number number of created agents
-     * @throws AgentIsDeadException if the initial energy given to any of the agents is negative
+     * @throws AgentAlreadyDeadException if the initial energy given to any of the agents is negative
      */
     private int createAndDistributeAgents() throws LifeException {
 
@@ -391,7 +391,7 @@ public class Life implements LifeGetter {
         return nCreated;
     }
 
-    private void processAgeAction(EnergyChange action) throws AgentIsDeadException {
+    private void processAgeAction(EnergyChange action) throws AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         action.getAgent().changeEnergyBy(action.getEnergyDelta());
     }
@@ -411,7 +411,7 @@ public class Life implements LifeGetter {
         }
     }
 
-    private void processConsume(Consume action) throws AgentIsDeadException {
+    private void processConsume(Consume action) throws AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         if (false == action.getConsumables().hasNext()) {
             // nothing to consume

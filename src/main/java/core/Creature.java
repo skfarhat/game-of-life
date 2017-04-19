@@ -1,29 +1,29 @@
 package core;
 
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.LifeImplementationException;
 import core.interfaces.Moveable;
 import java.lang.reflect.InvocationTargetException;
 
 public class Creature extends LifeAgent implements Moveable {
 
-    public Creature() throws AgentIsDeadException {
+    public Creature() throws AgentAlreadyDeadException {
     }
 
-    public Creature(Point2D p) throws AgentIsDeadException {
+    public Creature(Point2D p) throws AgentAlreadyDeadException {
         super(p);
     }
 
-    public Creature(int initialEnergy) throws AgentIsDeadException {
+    public Creature(int initialEnergy) throws AgentAlreadyDeadException {
         super(initialEnergy);
     }
 
-    public Creature(Point2D p, Integer energy) throws AgentIsDeadException {
+    public Creature(Point2D p, Integer energy) throws AgentAlreadyDeadException {
         super(p, energy);
     }
 
     @Override
-    public LifeAgent reproduce() throws AgentIsDeadException {
+    public LifeAgent reproduce() throws AgentAlreadyDeadException {
         try {
             return getClass().getConstructor(Point2D.class, Integer.class).newInstance(getPos(), MY_INITIAL_ENERGY);
         } catch (InstantiationException e) {
@@ -33,7 +33,7 @@ public class Creature extends LifeAgent implements Moveable {
             throw new LifeImplementationException(e.getMessage());
         } catch (InvocationTargetException e) {
             // method  threw an exception
-            throw new AgentIsDeadException();
+            throw new AgentAlreadyDeadException();
         } catch (NoSuchMethodException e) {
             throw new LifeImplementationException(e.getMessage());
         }

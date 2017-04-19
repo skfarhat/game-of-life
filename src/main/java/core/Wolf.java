@@ -1,5 +1,5 @@
 package core;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 
 /**
  *
@@ -28,23 +28,23 @@ public class Wolf extends Creature {
     /**
      * default constructor
      */
-    public Wolf() throws AgentIsDeadException {
+    public Wolf() throws AgentAlreadyDeadException {
         super();
     }
 
-    public Wolf(int initialEnergy) throws AgentIsDeadException {
+    public Wolf(int initialEnergy) throws AgentAlreadyDeadException {
         super(initialEnergy);
     }
 
-    public Wolf(Point2D p) throws AgentIsDeadException {
+    public Wolf(Point2D p) throws AgentAlreadyDeadException {
         super(p);
     }
 
-    public Wolf(Point2D p, Integer energy) throws AgentIsDeadException {
+    public Wolf(Point2D p, Integer energy) throws AgentAlreadyDeadException {
         super(p, energy);
     }
 
-//    public LifeAgent reproduce() throws AgentIsDeadException {
+//    public LifeAgent reproduce() throws AgentAlreadyDeadException {
 //        Wolf babyWolf = new Wolf(getPos(), MY_INITIAL_ENERGY);
 //        return babyWolf;
 //    }

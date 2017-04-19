@@ -4,7 +4,7 @@
 
 package core;
 
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 
 public class Deer extends Creature {
 
@@ -34,7 +34,7 @@ public class Deer extends Creature {
     }
 
     /**  default constructor, calls LifeAgent's constructor */
-    public Deer() throws AgentIsDeadException {
+    public Deer() throws AgentAlreadyDeadException {
         super();
     }
 
@@ -42,19 +42,19 @@ public class Deer extends Creature {
      *  constructor for Deer with @param initial energy
      * @param initialEnergy of the deer
      */
-    public Deer(int initialEnergy) throws AgentIsDeadException {
+    public Deer(int initialEnergy) throws AgentAlreadyDeadException {
         super(initialEnergy);
     }
 
-    public Deer(Point2D p) throws AgentIsDeadException {
+    public Deer(Point2D p) throws AgentAlreadyDeadException {
         super(p);
     }
 
-    public Deer(Point2D p, Integer energy) throws AgentIsDeadException {
+    public Deer(Point2D p, Integer energy) throws AgentAlreadyDeadException {
         super(p, energy);
     }
 
-//    public LifeAgent reproduce() throws AgentIsDeadException {
+//    public LifeAgent reproduce() throws AgentAlreadyDeadException {
 //        return new Deer(getPos(), this.MY_INITIAL_ENERGY);
 //    }
 }

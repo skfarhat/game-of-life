@@ -1,6 +1,6 @@
 package core;
 
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.LifeImplementationException;
 import org.junit.Test;
 
@@ -12,23 +12,23 @@ public class LifeAgentOptionsTest {
      * subclass of LifeAgent that doesn't implement getDefaults()
      */
     class Lion extends LifeAgent {
-        public Lion() throws AgentIsDeadException {
+        public Lion() throws AgentAlreadyDeadException {
         }
 
-        public Lion(Point2D p) throws AgentIsDeadException {
+        public Lion(Point2D p) throws AgentAlreadyDeadException {
             super(p);
         }
 
-        public Lion(int initialEnergy) throws AgentIsDeadException {
+        public Lion(int initialEnergy) throws AgentAlreadyDeadException {
             super(initialEnergy);
         }
 
-        public Lion(Point2D p, Integer energy) throws AgentIsDeadException {
+        public Lion(Point2D p, Integer energy) throws AgentAlreadyDeadException {
             super(p, energy);
         }
 
         @Override
-        public LifeAgent reproduce() throws AgentIsDeadException {
+        public LifeAgent reproduce() throws AgentAlreadyDeadException {
             return null;
         }
     }
@@ -74,7 +74,7 @@ public class LifeAgentOptionsTest {
     }
 
     @Test
-    public void testConstructorWithDefaultsChoosesLifeAgentOptionDefaultsWhenSubclassDoesNotHaveDefaults() throws LifeImplementationException, AgentIsDeadException {
+    public void testConstructorWithDefaultsChoosesLifeAgentOptionDefaultsWhenSubclassDoesNotHaveDefaults() throws LifeImplementationException, AgentAlreadyDeadException {
         LifeAgent agent = new Lion();
 
         Class<?extends LifeAgent> agentClass = agent.getClass();

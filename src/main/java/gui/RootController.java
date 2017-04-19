@@ -2,16 +2,14 @@ package gui;
 
 import core.*;
 import core.actions.Action;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.InvalidPositionException;
-import core.exceptions.LifeException;
 import core.exceptions.SurfaceAlreadyPresent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
@@ -245,7 +243,7 @@ public class RootController implements Initializable, LifeStarter {
                     e.printStackTrace();
                 } catch (SurfaceAlreadyPresent surfaceAlreadyPresent) {
                     surfaceAlreadyPresent.printStackTrace();
-                } catch (AgentIsDeadException e) {
+                } catch (AgentAlreadyDeadException e) {
                     e.printStackTrace();
                 }
             }

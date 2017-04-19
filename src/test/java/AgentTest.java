@@ -1,5 +1,5 @@
 import core.*;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,7 +12,7 @@ public class AgentTest {
     @Test
     public void testAgentHasId() {
         Agent agent = new Agent() {
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -22,7 +22,7 @@ public class AgentTest {
     @Test
     public void testDefaultAgentIsAt00() {
         Agent agent = new Agent() {
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };
@@ -33,7 +33,7 @@ public class AgentTest {
     @Test
     public void testAgentSetPos() {
         Agent agent = new Agent() {
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };

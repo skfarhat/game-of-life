@@ -1,5 +1,5 @@
 import core.*;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.GridCreationException;
 import core.exceptions.InvalidPositionException;
 import org.junit.Test;
@@ -126,7 +126,7 @@ public class GridTest {
 
 
     @Test
-    public void testMoveAgentToCell() throws GridCreationException, InvalidPositionException, AgentIsDeadException {
+    public void testMoveAgentToCell() throws GridCreationException, InvalidPositionException, AgentAlreadyDeadException {
         final int rows = Utils.randomIntegerInRange(5, 15);
         final int cols = Utils.randomIntegerInRange(5, 15);
         Grid<Cell> grid = new Grid<>(Cell.class, rows, cols);
@@ -134,7 +134,7 @@ public class GridTest {
         Cell dstCell = grid.get(grid.randomAdjacentPoint(srcCell.getPos()));
         Agent a = new LifeAgent(100) {
             @Override
-            public LifeAgent reproduce() throws AgentIsDeadException {
+            public LifeAgent reproduce() throws AgentAlreadyDeadException {
                 return null;
             }
         };

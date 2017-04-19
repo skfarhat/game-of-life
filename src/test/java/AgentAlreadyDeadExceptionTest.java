@@ -1,4 +1,4 @@
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import core.Utils;
 import org.junit.Test;
 
@@ -7,13 +7,13 @@ import static org.junit.Assert.*;
 /**
  * Created by Sami on 30/03/2017.
  */
-public class AgentIsDeadExceptionTest {
+public class AgentAlreadyDeadExceptionTest {
     @Test
     public void testDefaultException() {
         try {
-            throw new AgentIsDeadException();
+            throw new AgentAlreadyDeadException();
         }
-        catch (AgentIsDeadException exc) {
+        catch (AgentAlreadyDeadException exc) {
             assertTrue(true); // pass
         }
     }
@@ -22,9 +22,9 @@ public class AgentIsDeadExceptionTest {
     public void testExceptionWithMessage() {
         final String message = Utils.randomString();
         try {
-            throw new AgentIsDeadException(message);
+            throw new AgentAlreadyDeadException(message);
         }
-        catch (AgentIsDeadException exc) {
+        catch (AgentAlreadyDeadException exc) {
             assertEquals(message, exc.getMessage());
         }
     }

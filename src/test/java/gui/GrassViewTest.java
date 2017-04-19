@@ -1,7 +1,7 @@
 package gui;
 
 import core.Grass;
-import core.exceptions.AgentIsDeadException;
+import core.exceptions.AgentAlreadyDeadException;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class GrassViewTest {
 
     @Test
-    public void testGrassViewWithZeroEnergyHasColorNull() throws AgentIsDeadException {
+    public void testGrassViewWithZeroEnergyHasColorNull() throws AgentAlreadyDeadException {
         Grass grass = new Grass(1);
         grass.die(); // sets the energy to zero
 
@@ -25,7 +25,7 @@ public class GrassViewTest {
     }
 
     @Test
-    public void testGrassViewWithMinimumEnergyDrawsFirstShade() throws AgentIsDeadException {
+    public void testGrassViewWithMinimumEnergyDrawsFirstShade() throws AgentAlreadyDeadException {
         Grass grass = new Grass(GrassView.ENERGY_VALUE_LOWER);
         GrassView view = new GrassView(grass);
         Color colorDrawn = view.getColor();
@@ -34,7 +34,7 @@ public class GrassViewTest {
     }
 
     @Test
-    public void testGrassViewWithEnergyHigherThanMax() throws AgentIsDeadException {
+    public void testGrassViewWithEnergyHigherThanMax() throws AgentAlreadyDeadException {
         Grass grass = new Grass(GrassView.ENERGY_VALUE_UPPER + 100);
         GrassView view = new GrassView(grass);
         Color viewColor = view.getColor();
