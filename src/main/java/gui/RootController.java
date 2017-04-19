@@ -4,6 +4,8 @@ import core.*;
 import core.actions.Action;
 import core.exceptions.AgentIsDeadException;
 import core.exceptions.InvalidPositionException;
+import core.exceptions.LifeException;
+import core.exceptions.SurfaceAlreadyPresent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
@@ -241,6 +243,8 @@ public class RootController implements Initializable, LifeStarter {
 
                 } catch (InvalidPositionException e) {
                     e.printStackTrace();
+                } catch (SurfaceAlreadyPresent surfaceAlreadyPresent) {
+                    surfaceAlreadyPresent.printStackTrace();
                 } catch (AgentIsDeadException e) {
                     e.printStackTrace();
                 }

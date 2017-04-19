@@ -6,7 +6,7 @@ package core;
 
 import core.exceptions.AgentIsDeadException;
 
-public class Deer extends LifeAgent implements Consumes {
+public class Deer extends Creature {
 
     /**  default value by which a deer's energy decreases when they age */
     public static final Integer DEFAULT_AGE = 1;
@@ -54,7 +54,7 @@ public class Deer extends LifeAgent implements Consumes {
         super(p, energy);
     }
 
-    public LifeAgent reproduce() throws AgentIsDeadException {
-        return new Deer(getPos(), this.MY_INITIAL_ENERGY);
-    }
+//    public LifeAgent reproduce() throws AgentIsDeadException {
+//        return new Deer(getPos(), this.MY_INITIAL_ENERGY);
+//    }
 }

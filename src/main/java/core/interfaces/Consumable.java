@@ -1,7 +1,7 @@
 /**
  * Created by Sami on 03/04/2017.
  */
-package core;
+package core.interfaces;
 
 import core.exceptions.AgentIsDeadException;
 

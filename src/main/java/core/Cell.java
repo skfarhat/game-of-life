@@ -1,11 +1,12 @@
 package core;
 
+import core.exceptions.SurfaceAlreadyPresent;
+import core.interfaces.Positionable;
+
 import java.util.*;
 
-import static java.util.Collections.copy;
-
 /**
- *  Cell
+ * Cell
  *
  * Cell in a grid with a position (Point2D) containing Agents
  */
@@ -45,9 +46,9 @@ public class Cell<T extends Agent> implements Positionable {
     }
 
     /**
-     *  add agent to the agents list
+     * add agent to the agents list
      * @return true if an agent was added, false if not. If the Cell already contains a Grass Agent,
-     * not another will be added and false will be returned.
+     * no other will be added and false will be returned.
      * */
     public boolean addAgent(T t) {
         t.setPos(getPos());
@@ -55,7 +56,7 @@ public class Cell<T extends Agent> implements Positionable {
     }
 
     /**
-     *  remove agent from the agents lisst
+     * remove agent from the agents lisst
      * @param t agent to remove
      * @return true if remove succeeded
      */

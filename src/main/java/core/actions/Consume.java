@@ -1,6 +1,6 @@
 package core.actions;
 
-import core.Consumable;
+import core.interfaces.Consumable;
 import core.LifeAgent;
 
 import java.util.ArrayList;

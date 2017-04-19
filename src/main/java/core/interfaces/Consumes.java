@@ -2,7 +2,7 @@
  * Created by Sami on 30/03/2017.
  */
 
-package core;
+package core.interfaces;
 import core.exceptions.AgentIsDeadException;
 import core.exceptions.ConsumableOutOfEnergy;
 

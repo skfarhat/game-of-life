@@ -2,6 +2,7 @@ package core;
 
 import core.exceptions.GridCreationException;
 import core.exceptions.InvalidPositionException;
+import core.exceptions.SurfaceAlreadyPresent;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +17,7 @@ public class Grid<T extends Cell> {
     private int cols;
 
     /**
-     * * <pre>
+     * <pre>
      * {@code
      * Grid grid = new Grid<Cell>(Cell.class, 5, 6);
      * }

@@ -50,10 +50,4 @@ public class LifeViewController {
     public void draw(List<Action> actions) throws InvalidPositionException {
         gridView.draw(actions);
     }
-
-    // Uncomment and make GridView.countAgents public
-//    /**  counts the number of agents drawn on the grid - useful for debugging */
-//    private int countAgents() throws InvalidPositionException {
-//        return this.gridView.countAgents();
-//    }
 }

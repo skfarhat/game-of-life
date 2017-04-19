@@ -86,7 +86,7 @@ public class LifeAgentOptions {
     }
 
     /**  constructor with all values */
-    public LifeAgentOptions(Class<? extends LifeAgent> agentType) throws LifeImplementationException {
+    public LifeAgentOptions(Class<? extends LifeAgent> agentType) {
         try {
             // get the method to be used by reflection
             this.agentType = agentType;

@@ -4,7 +4,7 @@ import core.exceptions.AgentIsDeadException;
 /**
  *
  */
-public class Wolf extends LifeAgent {
+public class Wolf extends Creature {
 
     /**  default value by which a wolf's energy decreases when they age */
     public static final Integer DEFAULT_AGE = 1;
@@ -44,10 +44,10 @@ public class Wolf extends LifeAgent {
         super(p, energy);
     }
 
-    public LifeAgent reproduce() throws AgentIsDeadException {
-        Wolf babyWolf = new Wolf(getPos(), MY_INITIAL_ENERGY);
-        return babyWolf;
-    }
+//    public LifeAgent reproduce() throws AgentIsDeadException {
+//        Wolf babyWolf = new Wolf(getPos(), MY_INITIAL_ENERGY);
+//        return babyWolf;
+//    }
 
     public static LifeAgentOptions getDefaultParams() {
         return new LifeAgentOptions(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,

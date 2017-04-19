@@ -5,6 +5,9 @@ package core;
 
 import core.exceptions.AgentIsDeadException;
 import core.exceptions.ConsumableOutOfEnergy;
+import core.interfaces.Consumable;
+import core.interfaces.Consumes;
+import core.interfaces.Reproduces;
 
 import java.util.List;
 import java.util.logging.Level;

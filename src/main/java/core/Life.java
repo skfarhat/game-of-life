@@ -2,13 +2,15 @@ package core;
 
 import core.actions.*;
 import core.exceptions.*;
+import core.interfaces.Consumable;
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
- *  Life class created for each simulation to step. The class captures user input and configures the system parameters.
+ * Life class created for each simulation to step. The class captures user input and configures the system parameters.
  *
  * Initially Life was designed to be a singleton class, since intuitively only one life should exist.
  * But it was later noted that we may want to simulate multiple lives at the same time concurrently, which
@@ -76,47 +78,109 @@ public class Life implements LifeGetter {
         createAndDistributeAgents();
     }
 
-    /**
-     * @param a
-     * @return
-     */
-    public boolean addAgent(Agent a) {
-        if (false == grid.pointInBounds(a.getPos())) return false;
-        try {return grid.get(a.getPos()).addAgent(a) && agents.add(a);}
-        catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked }
+    public boolean addAgent(LifeAgent a) throws SurfaceAlreadyPresent {
+        if (a instanceof Creature)
+            return addCreature((Creature) a);
+        else if (a instanceof Surface)
+            return addSurface((Surface) a);
+        else {
+            LOGGER.log(Level.SEVERE, "Attempting to add LifeAgent of unknown type {0}", a.getClass().getName());
+            return false;
+        }
+    }
+
+    public boolean addCreature(Creature c) {
+        if (false == grid.pointInBounds(c.getPos()))
+            return false;
+        try {
+            LifeCell lc = (LifeCell) grid.get(c.getPos());
+            return (lc.addAgent(c) && agents.add(c));
+        }
+        catch (InvalidPositionException e) {
+            return false; // this shouldn't happen because we already checked
+        }
+    }
+
+    public boolean addSurface(Surface s) throws SurfaceAlreadyPresent {
+        if (false == grid.pointInBounds(s.getPos()))
+            return false;
+        try {
+            LifeCell lc = (LifeCell) grid.get(s.getPos());
+            return lc.addAgent(s) && agents.add(s);
+        }
+        catch (InvalidPositionException e) {
+            return false; // this shouldn't happen because we already checked
+        }
     }
 
     /**
-     *
+     * adds all LifeAgents in the list by checking the type of LifeAgent and calling the right
+     * method addSurface() or addCreature()
      * @param agents
      * @return
      */
-    public boolean addAgents(List<Agent> agents) {
+    public boolean addAgents(List<LifeAgent> agents) throws SurfaceAlreadyPresent {
         boolean success = true;
-        for (Agent a : agents) {
+        for (LifeAgent a : agents) {
             success &= addAgent(a);
         }
         return success;
     }
 
     /**
-     *  remove the passed Agent @param a from the local agents list and from the cell's agents list
+     * remove the passed Agent @param a from the local agents list and from the cell's agents list
      * @return true if the removal was successful from both lists, false otherwise
      */
-    public boolean removeAgent(Agent a)  {
-        if (false == grid.pointInBounds(a.getPos())) return false;
-        try { return grid.get(a.getPos()).removeAgent(a) && agents.remove(a);}
+    public boolean removeAgent(LifeAgent a)  {
+        if (false == grid.pointInBounds(a.getPos()))
+            return false;
+        try {
+            LifeCell cell = (LifeCell) grid.get(a.getPos());
+            return cell.removeAgent(a) && agents.remove(a);
+        }
         catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked
     }
 
+//    /**
+//     * remove the passed Agent @param a from the local agents list and from the cell's agents list
+//     * @return true if the removal was successful from both lists, false otherwise
+//     */
+//    public boolean removeCreature(Creature c)  {
+//        if (false == grid.pointInBounds(c.getPos()))
+//            return false;
+//        try {
+//            LifeCell cell = (LifeCell) grid.get(c.getPos());
+//            return cell.removeAgent(c) && agents.remove(c);
+//        }
+//        catch (InvalidPositionException e) {
+//            return false; // this shouldn't happen because we already checked
+//        }
+//    }
+//
+//    /**
+//     * remove the passed Surface @param s from the local agents list and from the cell's agents list
+//     * @return true if the removal was successful from both lists, false otherwise
+//     */
+//    public boolean removeSurface(Surface s)  {
+//        if (false == grid.pointInBounds(s.getPos()))
+//            return false;
+//        try {
+//            LifeCell cell = (LifeCell) grid.get(s.getPos());
+//            return cell.removeAgent(s) && agents.remove(s);
+//        }
+//        catch (InvalidPositionException e) {
+//            return false; // this shouldn't happen because we already checked
+//        }
+//    }
+
     /**
-     *  removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
+     * removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
      * @param agents list of agents to remove
      * @return false if any one of the agents in the list could not be removed
      */
-    public boolean removeAgents(List<Agent> agents) {
+    public boolean removeAgents(List<LifeAgent> agents) {
         boolean success = true;
-        for (Agent a : agents) {
+        for (LifeAgent a : agents) {
             success &= removeAgent(a);
         }
         return success;
@@ -128,7 +192,7 @@ public class Life implements LifeGetter {
      * @throws AgentIsDeadException
      * @return the stepCount index or -1 if there was nothing to do
      */
-    public List<Action> step() throws InvalidPositionException, AgentIsDeadException {
+    public List<Action> step() throws InvalidPositionException, SurfaceAlreadyPresent, AgentIsDeadException {
 
         List<Action> actions = new ArrayList<>();
 
@@ -199,7 +263,7 @@ public class Life implements LifeGetter {
 
             // find the cell's dead agents
             // double cast to change List<LifeAgent> to List<Agent>
-            List<Agent> deadAgents = (List<Agent>) (List) ((LifeCell)nextCell).findDeadAgents();
+            List<LifeAgent> deadAgents = ((LifeCell)nextCell).findDeadAgents();
 
             // removes dead agents from the local agents list and from the cells' respective agents lists
             if (false == removeAgents(deadAgents)) {
@@ -208,7 +272,9 @@ public class Life implements LifeGetter {
             // TODO(sami); consider sending events for all new dead agents,
         }
 
-        else if (chosen instanceof Grass) {
+        else if (chosen instanceof Surface) {
+            // NOTE: explicitly handling Grass ONLY at the moment
+
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
             LifeCell currCell = (LifeCell) grid.get(chosen.getPos());
 
@@ -219,7 +285,7 @@ public class Life implements LifeGetter {
             double rGrass = options.getOptionsForAgent(Grass.class).getReproductionRate();
             boolean willReproduce = Utils.getRand().nextDouble() < rGrass;
 
-            if (willReproduce && !((LifeCell)grid.get(nextPoint)).isContainsGrass()) {
+            if (willReproduce && !((LifeCell)grid.get(nextPoint)).containsSurface()) {
                 LifeAgent babyGrass = chosen.reproduce();
                 babyGrass.setPos(nextPoint);
                 Action reproduce = new Reproduce(chosen, babyGrass);
@@ -235,7 +301,7 @@ public class Life implements LifeGetter {
             actions.add(energyGain);
             processAgeAction((EnergyChange) energyGain);
 
-            List<Agent> deadAgents = (List<Agent>) (List) currCell.findDeadAgents();
+            List<LifeAgent> deadAgents = currCell.findDeadAgents();
             if (false == removeAgents(deadAgents)) {
                 LOGGER.log(Level.SEVERE, "Failed to remove some agents!");
             }
@@ -251,12 +317,58 @@ public class Life implements LifeGetter {
      */
     private int createAndDistributeAgents() throws LifeException {
 
-        int nCreated = 0;
-        for (Class<? extends LifeAgent> agentType : options.getSupportedAgents()) {
-            // get the initial energy
-            // get the initial number
+        int nCreated = 0; // number of agents created
+        int surfacelessCells = getGridCols() * getGridRows(); // remaining number of cells where we can put a Surface
 
-            LifeAgentOptions lifeAgentOptions = options.getOptionsForAgent(agentType); //(LifeAgentOptions) lifeAgentOpts().get(agentType);
+
+        // surfaces list and creatures list
+        List<Class<?extends LifeAgent>> surfaces = options.getSupportedAgents().stream()
+                .filter(a -> Surface.class.isAssignableFrom(a)).collect(Collectors.toList());
+        List<Class<?extends LifeAgent>> creatures = options.getSupportedAgents().stream()
+                .filter(a -> Creature.class.isAssignableFrom(a)).collect(Collectors.toList());
+
+        // Surfaces:
+        // ------------
+        for (Class<?extends LifeAgent> surfaceClass : surfaces) {
+            LifeAgentOptions lifeAgentOptions = options.getOptionsForAgent(surfaceClass);
+            int I0 = lifeAgentOptions.getInitialCount(); // number of instances
+            int E0 = lifeAgentOptions.getInitialEnergy(); // initial energy
+            if (surfacelessCells < I0) {
+                throw new LifeException("No more available cells to populate.");
+            }
+
+            // for each type of agent
+            try {
+                // create however many agents of this type are needed
+                for (int i = 0; i < I0; i++) {
+                    // find a random point in the grid to place this agent instance
+                    Point2D p = Utils.randomPoint(options.getGridCols(), options.getGridRows());
+                    Surface surface = (Surface) surfaceClass.getConstructor(Point2D.class, Integer.class).newInstance(p, E0);
+
+                    // keeps trying to find a position for the Grass
+                    // CAREFUL: if no check is done with surfacelessCells < I0 before getting to here, this will iterate forever..
+                    do {
+                        p = Utils.randomPoint(options.getGridCols(), options.getGridRows());
+                        surface.setPos(p);
+                        try { addSurface(surface); break; }
+                        catch(SurfaceAlreadyPresent e) {}
+                    } while(true);
+
+                    nCreated++;
+                }
+                surfacelessCells-=I0;
+            } catch (ReflectiveOperationException e) {
+                LOGGER.log(Level.SEVERE, e.toString(), e);
+                throw new LifeException("Implementation error: could not create instance of Agent " + surfaceClass.getName() +  "\n"
+                        + e.getMessage());
+            }
+        }
+
+        // Non-Surfaces:
+        // ------------
+        for (Class<? extends LifeAgent> agentType : creatures) {
+
+            LifeAgentOptions lifeAgentOptions = options.getOptionsForAgent(agentType);
             int I0 = lifeAgentOptions.getInitialCount(); // number of instances
             int E0 = lifeAgentOptions.getInitialEnergy(); // initial energy
 
@@ -266,8 +378,8 @@ public class Life implements LifeGetter {
                 for (int i = 0; i < I0; i++) {
                     // find a random point in the grid to place this agent instance
                     Point2D p = Utils.randomPoint(options.getGridCols(), options.getGridRows());
-                    Agent agent = agentType.getConstructor(Point2D.class, Integer.class).newInstance(p, E0);
-                    addAgent(agent);
+                    Creature creature = (Creature) agentType.getConstructor(Point2D.class, Integer.class).newInstance(p, E0);
+                    addAgent(creature);
                     nCreated++;
                 }
             } catch (ReflectiveOperationException e) {
@@ -284,13 +396,13 @@ public class Life implements LifeGetter {
         action.getAgent().changeEnergyBy(action.getEnergyDelta());
     }
 
-    private void processMoveAction(Move action) throws InvalidPositionException {
+    private void processMoveAction(Move action) throws InvalidPositionException, SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Cell nextCell = grid.get(action.getTo());
         grid.moveAgentToCell(action.getAgent(), nextCell);
     }
 
-    private void processReproduce(Reproduce action) throws InvalidPositionException {
+    private void processReproduce(Reproduce action) throws InvalidPositionException, SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Iterator<LifeAgent> babies = action.getBabies();
         while(babies.hasNext()) {

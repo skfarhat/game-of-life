@@ -1,5 +1,6 @@
 import core.*;
 import core.exceptions.AgentIsDeadException;
+import core.interfaces.Consumable;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -7,9 +8,6 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 30/03/2017.
- */
 public class DeerTest {
 
     @Test

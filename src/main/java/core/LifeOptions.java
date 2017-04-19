@@ -2,6 +2,7 @@ package core;
 
 import core.exceptions.LifeException;
 import core.exceptions.LifeImplementationException;
+import core.interfaces.Consumable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,22 +55,22 @@ public class LifeOptions {
         return options;
     }
 
-    public LifeOptions() throws LifeImplementationException { this((Class<? extends LifeAgent>[]) null); }
+    public LifeOptions() { this((Class<? extends LifeAgent>[]) null); }
 
     /**
      *  constructor called by all others
      * @param opts
      * @throws LifeImplementationException
      */
-    public LifeOptions(List<LifeAgentOptions> opts) throws LifeImplementationException {
+    public LifeOptions(List<LifeAgentOptions> opts) {
         init(opts);
     }
 
-    public LifeOptions(LifeAgentOptions... opts) throws LifeImplementationException {
+    public LifeOptions(LifeAgentOptions... opts) {
         init(Arrays.stream(opts).collect(Collectors.toList()));
     }
 
-    public LifeOptions(Class<?extends LifeAgent>... cls) throws LifeImplementationException {
+    public LifeOptions(Class<?extends LifeAgent>... cls) {
         if (null == cls)
             return;
         List<LifeAgentOptions> opts = new ArrayList<>();
@@ -121,20 +122,6 @@ public class LifeOptions {
 
     public LifeAgentOptions getOptionsForAgent(Class<?extends LifeAgent> type) {
         return lifeAgentParams.get(type);
-    }
-
-    /**
-     *  we cannot insert a new class, we can only
-     * @param type
-     * @param params
-     */
-    public boolean setOptionsForAgent(Class<?extends LifeAgent> type, LifeAgentOptions params) {
-        if (false == lifeAgentParams.containsKey(type) &&
-                null == lifeAgentParams.get(type))
-            return false;
-
-        lifeAgentParams.put(type, params);
-        return true;
     }
 
     /**

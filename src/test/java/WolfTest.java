@@ -1,5 +1,6 @@
 import core.*;
 import core.exceptions.AgentIsDeadException;
+import core.interfaces.Consumable;
 import org.junit.Test;
 
 import java.util.ArrayList;

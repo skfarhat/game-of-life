@@ -9,9 +9,6 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 31/03/2017.
- */
 public class GridTest {
 
     @Test

@@ -9,7 +9,7 @@ import core.exceptions.AgentIsDeadException;
 /**
  *  Grass is a LifeAgent, it reproduces
  */
-public class Grass extends LifeAgent {
+public class Grass extends Surface {
 
     /**  default value by which a deer's energy decreases when they age */
     public static final Integer DEFAULT_AGE = -5;

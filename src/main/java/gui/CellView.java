@@ -63,8 +63,8 @@ public class CellView extends Pane {
 
     public void draw() {
 
+        // TODO(sami): recheck mutex
         synchronized (this) {
-            // TODO(sami): recheck mutex
             getChildren().clear();
 
             // TODO:

@@ -4,6 +4,8 @@
 
 package core;
 
+import core.interfaces.Positionable;
+
 /**
  *  Agent
  *
