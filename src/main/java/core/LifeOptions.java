@@ -55,7 +55,9 @@ public class LifeOptions {
         return options;
     }
 
-    public LifeOptions() { this((Class<? extends LifeAgent>[]) null); }
+    public LifeOptions() {
+        this((Class<? extends LifeAgent>[]) null);
+    }
 
     /**
      *  constructor called by all others
@@ -70,7 +72,7 @@ public class LifeOptions {
         init(Arrays.stream(opts).collect(Collectors.toList()));
     }
 
-    public LifeOptions(Class<?extends LifeAgent>... cls) {
+    public LifeOptions(Class<?extends LifeAgent>... cls)  {
         if (null == cls)
             return;
         List<LifeAgentOptions> opts = new ArrayList<>();
@@ -81,7 +83,7 @@ public class LifeOptions {
     }
 
     /**
-     *  called by constructors for initialisation (more flexible than calling another constructor with 'this')
+     * called by constructors for initialisation (more flexible than calling another constructor with 'this')
      * because init can be called anywhere in the constructor (beginning, end) as opposed to calling this(..) which must
      * be the first thing.
      * @param opts
@@ -93,7 +95,6 @@ public class LifeOptions {
         for (LifeAgentOptions opt : opts) {
             Class<?extends LifeAgent> lifeAgentClass = opt.getAgentType();
             lifeAgentParams.put(lifeAgentClass, opt);
-
             consumeRules.put(lifeAgentClass, new ArrayList<>());
         }
     }

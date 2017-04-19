@@ -2,6 +2,7 @@ package core;
 
 import core.exceptions.LifeException;
 import core.exceptions.LifeImplementationException;
+import core.exceptions.TooManySurfacesException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -25,13 +26,13 @@ public class LifeOptionsTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testListOfSupportedAgentsIsImmutable() throws LifeImplementationException {
+    public void testListOfSupportedAgentsIsImmutable() throws LifeImplementationException, TooManySurfacesException {
         LifeOptions options = new LifeOptions(Deer.class);
         options.getSupportedAgents().remove(0);
     }
 
     @Test
-    public void testDefaultMaxIterations() throws LifeImplementationException {
+    public void testDefaultMaxIterations() throws LifeImplementationException, TooManySurfacesException {
         LifeOptions options = new LifeOptions();
         assertEquals(LifeOptions.DEFAULT_MAX_ITERATIONS,  options.getMaximumIterations());
     }

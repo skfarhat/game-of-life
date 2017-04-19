@@ -60,12 +60,17 @@ public class Life implements LifeGetter {
     /**  default constructor, calls other constructor and initialises fields to their defaults */
     public Life() throws LifeException, IllegalArgumentException { this(null); }
 
-    public Life(LifeOptions options) throws LifeException, IllegalArgumentException {
+    public Life(LifeOptions options) throws IllegalArgumentException, TooManySurfacesException, GridCreationException {
 
         if (null == options)
             options = new LifeOptions();
 
         this.options = options;
+
+        final int surfaceCount = surfaceCount(options);
+        final int cellCount = options.getGridRows() * options.getGridCols();
+        if (surfaceCount > cellCount)
+            throw new TooManySurfacesException(String.format("%d surface instances requested with only %d cells present", surfaceCount, cellCount));
 
         // Create Life in 7 days
         // ---------------------
@@ -315,10 +320,10 @@ public class Life implements LifeGetter {
      * @return total number number of created agents
      * @throws AgentAlreadyDeadException if the initial energy given to any of the agents is negative
      */
-    private int createAndDistributeAgents() throws LifeException {
+    private int createAndDistributeAgents() {
 
+        // TODO(sami); no need to separate the two creationns anymomre ?
         int nCreated = 0; // number of agents created
-        int surfacelessCells = getGridCols() * getGridRows(); // remaining number of cells where we can put a Surface
 
 
         // surfaces list and creatures list
@@ -333,9 +338,6 @@ public class Life implements LifeGetter {
             LifeAgentOptions lifeAgentOptions = options.getOptionsForAgent(surfaceClass);
             int I0 = lifeAgentOptions.getInitialCount(); // number of instances
             int E0 = lifeAgentOptions.getInitialEnergy(); // initial energy
-            if (surfacelessCells < I0) {
-                throw new LifeException("No more available cells to populate.");
-            }
 
             // for each type of agent
             try {
@@ -356,10 +358,9 @@ public class Life implements LifeGetter {
 
                     nCreated++;
                 }
-                surfacelessCells-=I0;
             } catch (ReflectiveOperationException e) {
                 LOGGER.log(Level.SEVERE, e.toString(), e);
-                throw new LifeException("Implementation error: could not create instance of Agent " + surfaceClass.getName() +  "\n"
+                throw new LifeImplementationException("Implementation error: could not create instance of Agent " + surfaceClass.getName() +  "\n"
                         + e.getMessage());
             }
         }
@@ -379,12 +380,12 @@ public class Life implements LifeGetter {
                     // find a random point in the grid to place this agent instance
                     Point2D p = Utils.randomPoint(options.getGridCols(), options.getGridRows());
                     Creature creature = (Creature) agentType.getConstructor(Point2D.class, Integer.class).newInstance(p, E0);
-                    addAgent(creature);
+                    addCreature(creature);
                     nCreated++;
                 }
             } catch (ReflectiveOperationException e) {
                 LOGGER.log(Level.SEVERE, e.toString(), e);
-                throw new LifeException("Implementation error: could not create instance of Agent " + agentType.getName() +  "\n"
+                throw new LifeImplementationException("Implementation error: could not create instance of Agent " + agentType.getName() +  "\n"
                         + e.getMessage());
             }
         }
@@ -467,6 +468,16 @@ public class Life implements LifeGetter {
 
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
         return grid.randomAdjacentPoint(p);
+    }
+
+    /** @return the number of surface instances in LifeOptions */
+    private int surfaceCount(LifeOptions opts) {
+        int count = 0;
+        for (Class<? extends LifeAgent> opt : opts.getSupportedAgents()) {
+            if (Surface.class.isAssignableFrom(opt))
+                count+=opts.getOptionsForAgent(opt).getInitialCount();
+        }
+        return count;
     }
 
     /**

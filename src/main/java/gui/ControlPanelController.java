@@ -2,6 +2,7 @@ package gui;
 
 import core.*;
 import core.exceptions.LifeException;
+import core.exceptions.TooManySurfacesException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -157,9 +158,18 @@ public class ControlPanelController implements Initializable {
         catch(IllegalArgumentException exc) {
             LOGGER.log(Level.WARNING, "Invalid user input");
             LOGGER.log(Level.FINER, exc.toString(), exc);
-        } catch (LifeException e) {
+        }
+        catch(TooManySurfacesException exc) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            // alert.setTitle("Error Dialog");
+            alert.setHeaderText("Too many surface instances");
+            alert.setContentText(exc.getMessage());
+            alert.showAndWait();
+        }
+        catch (LifeException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
+
     }
 
     /**
