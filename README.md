@@ -40,6 +40,12 @@ Interfaces:
 * Consumes 
 * Consumable 
 
+## Surface 
+A cell can have a **one** Surface type associated with it, or none. Surfaces examples: 
+
+* Grass
+* Water (*not implemented*)
+
 ### Configuration parameters 
 
 
@@ -83,3 +89,10 @@ Whichever class calls
 ## Development 
 
 
+|                       |                                  |
+|-----------------------|----------------------------------|
+| ./gradlew build       | compile all                      |
+| ./gradlew test        | run tests                        |
+| ./gradlew jacoco      | generate coverage                |
+| ./gradlew fatjar      | create Jar with all dependencies |
+| ./gradlew myJavadocs  | generate Java Docs for project   |
