@@ -1,7 +1,5 @@
 package core;
 
-import javafx.scene.paint.Color;
-
 import java.math.BigInteger;
 import java.util.Random;
 
@@ -90,7 +88,7 @@ public final class Utils {
      * @throws IllegalArgumentException if val is out of the range
      */
     public static void exceptionIfOutOfRange(double val) throws IllegalArgumentException {
-        if (false == doubleInRange(val))
+        if (false == doubleIsInRange(val))
             throw new IllegalArgumentException("Double values must be between 0 and 1: " + val + " given.");
     }
 
@@ -98,7 +96,7 @@ public final class Utils {
      * @param val double to evaluate
      * @return true if the value is in [0,1], false otherwise
      */
-    public static boolean doubleInRange(double val) throws IllegalArgumentException {
+    public static boolean doubleIsInRange(double val) throws IllegalArgumentException {
         if (val < 0 || val > 1)
             return false;
         return true;

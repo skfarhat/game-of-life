@@ -90,9 +90,6 @@ public class Point2DTest {
         Random rand = new Random(System.currentTimeMillis());
         final int x = rand.nextInt();
         final int y = rand.nextInt();
-        int diff = 1 + rand.nextInt(100);
-
-        // they are different
         Point2D p1 = new Point2D(x, y);
         assertFalse(p1.equals(null));
     }
@@ -102,9 +99,6 @@ public class Point2DTest {
         Random rand = new Random(System.currentTimeMillis());
         final int x = rand.nextInt();
         final int y = rand.nextInt();
-        int diff = 1 + rand.nextInt(100);
-
-        // they are different
         Point2D p1 = new Point2D(x, y);
         assertTrue(p1.equals(p1));
     }
@@ -118,5 +112,14 @@ public class Point2DTest {
         assertNotNull(str);
         assert(str.indexOf(Integer.toString(p.getX())) > -1); // make sure 'x' is in the String
         assert(str.indexOf(Integer.toString(p.getY())) > -1); // make sure 'y' is in the String
+    }
+
+    @Test
+    public void sameHashcodeForEqualPoints() {
+        final int x = Utils.randomPositiveInteger(100);
+        final int y = Utils.randomPositiveInteger(100);
+        Point2D p1 = new Point2D(x, y);
+        Point2D p2 = new Point2D(x, y);
+        assertEquals(p1.hashCode(), p2.hashCode());
     }
 }

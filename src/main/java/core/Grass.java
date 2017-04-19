@@ -43,6 +43,10 @@ public class Grass extends Surface {
         super(initialE);
     }
 
+    public Grass(Point2D p) throws AgentAlreadyDeadException {
+        super(p);
+    }
+
     public Grass(Point2D p, Integer initialE) throws AgentAlreadyDeadException {
         super(p, initialE);
     }

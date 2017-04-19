@@ -1,3 +1,5 @@
+import core.Point2D;
+import core.Utils;
 import core.exceptions.AgentAlreadyDeadException;
 import core.Grass;
 import core.LifeAgent;
@@ -19,6 +21,22 @@ public class GrassTest {
     public void testGrassWithInitialEnergy() throws AgentAlreadyDeadException {
         final int INITIAL_ENERGY = new Random().nextInt(Integer.MAX_VALUE);
         new Grass(INITIAL_ENERGY);
+    }
+
+    @Test
+    public void testConstructorWithPos() throws AgentAlreadyDeadException {
+        Point2D p = Utils.randomPoint(100, 100);
+        Grass g = new Grass(p);
+        assertEquals(p, g.getPos());
+    }
+
+    @Test
+    public void testConstructorWithPosAndEnergy() throws AgentAlreadyDeadException {
+        final Point2D p = Utils.randomPoint(100, 100);
+        final int e = new Random().nextInt(Integer.MAX_VALUE);
+        Grass g = new Grass(p, e);
+        assertEquals(p, g.getPos());
+        assertEquals(e, g.getEnergy().intValue());
     }
 
     @Test

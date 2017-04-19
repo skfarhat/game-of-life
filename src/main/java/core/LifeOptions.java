@@ -69,7 +69,8 @@ public class LifeOptions {
     }
 
     public LifeOptions(LifeAgentOptions... opts) {
-        init(Arrays.stream(opts).collect(Collectors.toList()));
+        if (opts != null)
+            init(Arrays.stream(opts).collect(Collectors.toList()));
     }
 
     public LifeOptions(Class<?extends LifeAgent>... cls)  {

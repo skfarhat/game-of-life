@@ -15,6 +15,21 @@ import static org.junit.Assert.*;
 public class LifeOptionsTest {
 
     @Test
+    public void testConstructorWithNullParamWorks() {
+        new LifeOptions((LifeAgentOptions[]) null);
+    }
+
+    @Test
+    public void testConstructorWithNullParamWorks1() {
+        new LifeOptions((Class<? extends LifeAgent>[]) null);
+    }
+
+    @Test
+    public void testConstructorWithNullParamWorks2() {
+        new LifeOptions((List<LifeAgentOptions>) null);
+    }
+
+    @Test
     public void testDefaultConstructor() throws Exception {
         new LifeOptions();
     }
@@ -67,6 +82,22 @@ public class LifeOptionsTest {
     public void testGetConsumeRulesIsUnmodifiable() throws LifeException {
         LifeOptions options = new LifeOptions(Wolf.class, Deer.class, Grass.class);
         options.addConsumeRules(Wolf.class, Deer.class, Grass.class);
+    }
+
+    @Test
+    public void testSetGridCols() {
+        LifeOptions options = new LifeOptions();
+        final int cols = Utils.randomPositiveInteger(100);
+        options.setGridCols(cols);
+        assertEquals(options.getGridCols(), cols);
+    }
+
+    @Test
+    public void testSetGridRows() {
+        LifeOptions options = new LifeOptions();
+        final int rows = Utils.randomPositiveInteger(100);
+        options.setGridRows(rows);
+        assertEquals(options.getGridRows(), rows);
     }
 
     /**
@@ -145,5 +176,25 @@ public class LifeOptionsTest {
     public void testExceptionThrownAddConsumeRuleOfUnsupportedAgent3() throws LifeException {
         LifeOptions options = new LifeOptions(Grass.class);
         options.addConsumeRule(Wolf.class, Deer.class);
+    }
+
+    /** make sure the default LifeOptions includes Consume Rules: Wolf consumes Deer and Deer consumes Grass */
+    @Test
+    public void testCreateDefaultLifeOptions() throws LifeException {
+        LifeOptions opts = LifeOptions.createDefaultLifeOptions();
+
+        // support Wolf, Grass and Deer
+        assertTrue(opts.getSupportedAgents().contains(Wolf.class));
+        assertTrue(opts.getSupportedAgents().contains(Deer.class));
+        assertTrue(opts.getSupportedAgents().contains(Grass.class));
+
+        // assert Wolf consumes Deer
+        assertTrue(opts.getConsumeRules().containsKey(Wolf.class));
+        assertTrue(opts.getConsumeRules().get(Wolf.class).contains(Deer.class));
+
+        // assert Deer consumes Grass
+        assertTrue(opts.getConsumeRules().containsKey(Deer.class));
+        assertTrue(opts.getConsumeRules().get(Deer.class).contains(Grass.class));
+
     }
 }

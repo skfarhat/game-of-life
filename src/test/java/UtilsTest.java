@@ -95,4 +95,22 @@ public class UtilsTest {
         constructor.setAccessible(true);
         constructor.newInstance();
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExceptionIfDoubleOutOfRange() {
+        double x = Utils.randomIntegerInRange(1, 1000);
+        Utils.exceptionIfOutOfRange(x);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExceptionIfDoubleIsNegative() {
+        double x = -Utils.randomIntegerInRange(0, 1000); // negative
+        Utils.exceptionIfOutOfRange(x);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExceptionIfDoubleIsNegative2() {
+        double x = -Utils.getRand().nextDouble(); // in range [-1;0]
+        Utils.exceptionIfOutOfRange(x);
+    }
 }

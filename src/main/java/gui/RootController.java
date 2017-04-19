@@ -159,7 +159,7 @@ public class RootController implements Initializable, LifeStarter {
      */
     @Override
     public void setFrequency(double freqPercent) {
-        if (false == core.Utils.doubleInRange(freqPercent))
+        if (false == core.Utils.doubleIsInRange(freqPercent))
             period = DEFAULT_PERIOD;
         else {
             double freq = MIN_FREQUENCY + freqPercent * (MAX_FREQUENCY - MIN_FREQUENCY);
