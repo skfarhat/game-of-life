@@ -76,24 +76,23 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         setEnergy(MY_INITIAL_ENERGY = energy);
     }
 
-
     /** @return the energy of the LifeAgent */
     @Override
-    final public Integer getEnergy() { return energy; }
+    public final Integer getEnergy() { return energy; }
 
     /**
      * @param e the amount to decrease the energy by
      * @throws AgentAlreadyDeadException
      */
     @Override
-    final public void decreaseEnergy(int e) throws AgentAlreadyDeadException { changeEnergyBy(-e); }
+    public final void decreaseEnergy(int e) throws AgentAlreadyDeadException { changeEnergyBy(-e); }
 
     /**
      *  sets the new energy on the LifeAgent
      * @param energy
      * @throws AgentAlreadyDeadException
      */
-    final public void setEnergy(Integer energy) throws AgentAlreadyDeadException {
+    public final void setEnergy(Integer energy) throws AgentAlreadyDeadException {
         if (!isAlive()) {
             throw new AgentAlreadyDeadException("Can't setEnergy on a dead LifeAgent");
         }
@@ -105,7 +104,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
     /**  kill the poor LifeAgent, there's no coming back after this. The energy is set to 0. */
     @Override
-    final public void die() throws AgentAlreadyDeadException {
+    public final void die() throws AgentAlreadyDeadException {
         if (!isAlive()) {
             throw new AgentAlreadyDeadException("Can't kill a LifeAgent twice. You're mean.");
         }
@@ -119,10 +118,10 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
      *  is a convenience method to change the energy by @param val which can be positive (for energy gain) and negative
      * (for energy loss)
      * */
-    public void changeEnergyBy(int val) throws AgentAlreadyDeadException { setEnergy(getEnergy() + val); }
+    public final void changeEnergyBy(int val) throws AgentAlreadyDeadException { setEnergy(getEnergy() + val); }
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
-    public boolean isAlive() { return !died; }
+    public final boolean isAlive() { return !died; }
 
 
     /**

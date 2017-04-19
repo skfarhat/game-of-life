@@ -24,6 +24,10 @@ public class Wolf extends Creature {
     /**  default amount by which a wolf's energy is decreased when the wolf is consumed */
     public static final Integer DEFAULT_E_LOSS = 10;
 
+    public static LifeAgentOptions getDefaultParams() {
+        return new LifeAgentOptions(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
+                DEFAULT_E_GAIN, DEFAULT_E_LOSS);
+    }
 
     /**
      * default constructor
@@ -42,16 +46,6 @@ public class Wolf extends Creature {
 
     public Wolf(Point2D p, Integer energy) throws AgentAlreadyDeadException {
         super(p, energy);
-    }
-
-//    public LifeAgent reproduce() throws AgentAlreadyDeadException {
-//        Wolf babyWolf = new Wolf(getPos(), MY_INITIAL_ENERGY);
-//        return babyWolf;
-//    }
-
-    public static LifeAgentOptions getDefaultParams() {
-        return new LifeAgentOptions(Wolf.class, DEFAULT_AGE, DEFAULT_E0, DEFAULT_R, DEFAULT_I0,
-                DEFAULT_E_GAIN, DEFAULT_E_LOSS);
     }
 }
 

@@ -34,10 +34,10 @@ public class StackedTitledPanes extends VBox {
             LifeAgentOptions agentOpts = options.getOptionsForAgent(cls);
 
             ParamField fields[] = {
-                    new ParamField("age", "Age", agentOpts.getAgeBy()),
-                    new ParamField("reproduction" ,"Reproduction", agentOpts.getReproductionRate()),
                     new ParamField("i0", "Initial #", agentOpts.getInitialCount()),
                     new ParamField("e0", "Initial Energy", agentOpts.getInitialEnergy()),
+                    new ParamField("age", "Age", agentOpts.getAgeBy()),
+                    new ParamField("reproduction" ,"Reproduction", agentOpts.getReproductionRate()),
             };
 
             fieldsMap.put(cls, fields);

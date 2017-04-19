@@ -54,7 +54,4 @@ public class Deer extends Creature {
         super(p, energy);
     }
 
-//    public LifeAgent reproduce() throws AgentAlreadyDeadException {
-//        return new Deer(getPos(), this.MY_INITIAL_ENERGY);
-//    }
 }

@@ -67,6 +67,7 @@ public class Life implements LifeGetter {
 
         this.options = options;
 
+        // TODO(sami); why doesn't options check this
         final int surfaceCount = surfaceCount(options);
         final int cellCount = options.getGridRows() * options.getGridCols();
         if (surfaceCount > cellCount)
@@ -146,38 +147,6 @@ public class Life implements LifeGetter {
         catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked
     }
 
-//    /**
-//     * remove the passed Agent @param a from the local agents list and from the cell's agents list
-//     * @return true if the removal was successful from both lists, false otherwise
-//     */
-//    public boolean removeCreature(Creature c)  {
-//        if (false == grid.pointInBounds(c.getPos()))
-//            return false;
-//        try {
-//            LifeCell cell = (LifeCell) grid.get(c.getPos());
-//            return cell.removeAgent(c) && agents.remove(c);
-//        }
-//        catch (InvalidPositionException e) {
-//            return false; // this shouldn't happen because we already checked
-//        }
-//    }
-//
-//    /**
-//     * remove the passed Surface @param s from the local agents list and from the cell's agents list
-//     * @return true if the removal was successful from both lists, false otherwise
-//     */
-//    public boolean removeSurface(Surface s)  {
-//        if (false == grid.pointInBounds(s.getPos()))
-//            return false;
-//        try {
-//            LifeCell cell = (LifeCell) grid.get(s.getPos());
-//            return cell.removeAgent(s) && agents.remove(s);
-//        }
-//        catch (InvalidPositionException e) {
-//            return false; // this shouldn't happen because we already checked
-//        }
-//    }
-
     /**
      * removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
      * @param agents list of agents to remove
@@ -192,7 +161,7 @@ public class Life implements LifeGetter {
     }
 
     /**
-     *  choose an agent at random to act
+     * choose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentAlreadyDeadException
      * @return the stepCount index or -1 if there was nothing to do
@@ -331,7 +300,6 @@ public class Life implements LifeGetter {
 
         // TODO(sami); no need to separate the two creationns anymomre ?
         int nCreated = 0; // number of agents created
-
 
         // surfaces list and creatures list
         List<Class<?extends LifeAgent>> surfaces = options.getSupportedAgents().stream()

@@ -7,9 +7,6 @@ import java.util.Iterator;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 01/04/2017.
- */
 public class CellTest {
 
     @Test
@@ -45,6 +42,11 @@ public class CellTest {
         }
 
         assertTrue(found);
+    }
+
+    @Test
+    public void testGetAgentsCopy() {
+
     }
 
     @Test
