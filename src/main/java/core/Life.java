@@ -229,7 +229,14 @@ public class Life implements LifeGetter {
             // Consume
             // -------
 
-            List<Consumable> consumableAgents = options.filterConsumablesForAgent(nextCell.getAgents(), chosen);
+            List<Consumable> consumableAgents = new ArrayList<>();
+            List<Class<?extends LifeAgent>> classes = options.filterConsumablesForAgent(chosen);
+            Iterator<LifeAgent> it = nextCell.getAgents();
+            while(it.hasNext()) {
+                LifeAgent la = it.next();
+                if (classes.contains(la.getClass()))
+                    consumableAgents.add(la);
+            }
 
             // choose one at random to consume
             if (consumableAgents.size() > 0) {

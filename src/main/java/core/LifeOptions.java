@@ -2,15 +2,23 @@ package core;
 
 import core.exceptions.LifeException;
 import core.exceptions.LifeImplementationException;
+import core.exceptions.UnsupportedAgentException;
 import core.interfaces.Consumable;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
  *
  */
 public class LifeOptions {
+
+    /**
+     * @brief logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     // =================================================================================================================
     // DEFAULTS
@@ -27,10 +35,12 @@ public class LifeOptions {
     // =================================================================================================================
 
     /**
-     *  map determining which typ of LifeAgent can consume which type,
-     * e.g.  Wolf.class --&gt; [Deer.class, Sheep.class...]
+     * Map of ConsumeRules that will govern who consumes whom.
+     * the Boolean map values are redundant effectively not used. Map was chosen over array for faster get() operations
      */
-    private final Map<Class<?extends LifeAgent>, List<Class<?extends LifeAgent>>> consumeRules = new HashMap<>();
+//    private final Map<ConsumeRule, Boolean> consumeRules = new HashMap<>();
+//    private final Map<Class<?extends LifeAgent>, List<ConsumeRule>> consumeRules = new HashMap<>();
+    private final ConsumeRules consumeRules = new ConsumeRules();
 
     private Map<Class<?extends LifeAgent>, LifeAgentOptions> lifeAgentParams = new HashMap<>();
 
@@ -50,8 +60,8 @@ public class LifeOptions {
      */
     public static LifeOptions createDefaultLifeOptions() throws LifeException {
         LifeOptions options = new LifeOptions(Wolf.class, Deer.class, Grass.class);
-        options.addConsumeRule(Wolf.class, Deer.class);
-        options.addConsumeRule(Deer.class, Grass.class);
+        options.addConsumeRule(new ConsumeRule(Wolf.class, Deer.class));
+        options.addConsumeRule(new ConsumeRule(Deer.class, Grass.class));
         return options;
     }
 
@@ -96,7 +106,6 @@ public class LifeOptions {
         for (LifeAgentOptions opt : opts) {
             Class<?extends LifeAgent> lifeAgentClass = opt.getAgentType();
             lifeAgentParams.put(lifeAgentClass, opt);
-            consumeRules.put(lifeAgentClass, new ArrayList<>());
         }
     }
 
@@ -126,117 +135,88 @@ public class LifeOptions {
         return lifeAgentParams.get(type);
     }
 
-    /**
-     * @return unmodifiable map of "Consumes Class" --&gt; "List of Consumables"
-     */
-    public Map<Class<?extends LifeAgent>, List<Class<?extends LifeAgent>>> getConsumeRules() {
-        return Collections.unmodifiableMap(consumeRules);
+    public ConsumeRules getConsumeRules() {
+        return consumeRules;
     }
 
     /**
      *
-     * @param cls consuming class
-     * @param consumableClass consumableclass
+     * @param cr
      * @return
      * @throws LifeException
      */
-    public boolean addConsumeRule(Class<?extends LifeAgent> cls, Class<?extends LifeAgent> consumableClass) throws LifeException {
-        if (false == agentTypeIsSupported(cls)
-                || false == agentTypeIsSupported(consumableClass)) {
-            // the consumes class is not supported..
-            Class unsupportedClass = (true == agentTypeIsSupported(cls)) ? consumableClass : cls;
-            throw new LifeException(String.format("Agent %s type not supported!", unsupportedClass.getName()));
-        }
-
-        // prevent consuming oneself
-        if (cls.equals(consumableClass)) {
-            throw new LifeException("Cannot add rule where LifeAgent can consume itself");
-        }
-        // don't re-add a consumable class if it is already there
-        else if (false == consumeRules.get(cls).contains(consumableClass)) {
-            return consumeRules.get(cls).add(consumableClass);
-        }
-        else
-            return false;
+    public boolean addConsumeRule(ConsumeRule cr) throws LifeException {
+        exceptionIfInvalidConsumeRule(cr);
+        return consumeRules.add(cr);
     }
 
     /**
      *
-     * @param cls consuming class
-     * @param list list of consumable classes
-     * @return true if the addition fo the list of consume rules was successful
+     * @param list of consume rules to add
+     * @return true if the addition of the list of consume rules was successful
      * @throws LifeException if any of the classes in @param list or @param cls are unsupported in LifeOptions. If they have
      * no LifeAgentOptions entry.
      */
-    public boolean addConsumeRules(Class<?extends LifeAgent> cls, List<Class<?extends LifeAgent>>  list) throws LifeException {
-        return addConsumeRules(cls, (Class<? extends LifeAgent>[]) list.toArray());
-    }
-
-    /**
-     *
-     * @param cls consuming class
-     * @param list list of consumable classes
-     * @return true if the addition fo the list of consume rules was successful
-     * @throws LifeException if any of the classes in @param list or @param cls are unsupported in LifeOptions. If they have
-     * no LifeAgentOptions entry.
-     */
-    public boolean addConsumeRules(Class<?extends LifeAgent> cls, Class<?extends LifeAgent>...list) throws LifeException {
+    public boolean addConsumeRules(ConsumeRule... list) throws LifeException {
         boolean success = true;
-        for (Class<?extends LifeAgent> c :  list) {
-            success &= addConsumeRule(cls, c);
+        for (ConsumeRule cr : list) {
+            success &= addConsumeRule(cr);
         }
         return success;
     }
 
-
     /**
-     * @param cls consuming class
-     * @param consumableClass
+     * @param cr consumeRule to remove
      * @return true if the removal of the consume rule was successful
      * @throws LifeException
      */
-    public boolean removeConsumeRule(Class<?extends LifeAgent> cls, Class<?extends LifeAgent> consumableClass) throws LifeException {
-        if (false == agentTypeIsSupported(cls)
-                || false == agentTypeIsSupported(consumableClass)) {
-            Class unsupportedClass = (true == agentTypeIsSupported(cls)) ? consumableClass : cls;
-            throw new LifeException(String.format("Agent %s type not supported!", unsupportedClass.getName()));
-        }
-
-        // if the rule to remove doesn't exist
-        if (true == consumeRules.get(cls).contains(consumableClass)) {
-            return consumeRules.get(cls).remove(consumableClass);
-        }
-        return false;
+    public boolean removeConsumeRule(ConsumeRule cr) {
+        exceptionIfInvalidConsumeRule(cr);
+        return consumeRules.remove(cr);
     }
 
     /**
      *
-     * @param cls consuming class
-     * @param list list of consumable classes
+     * @param list list of consumeRules to remove
      * @return true if the removal of the list of consume rules was successful
      * @throws LifeException
      */
-    public boolean removeConsumeRules(Class<?extends LifeAgent> cls, List<Class<?extends LifeAgent>> list) throws LifeException {
-        boolean success = true;
-        for (Class<?extends LifeAgent> c : list) {
-            success &= removeConsumeRule(cls, c);
-        }
-        return success;
+    public boolean removeConsumeRules(ConsumeRule... list) {
+        return consumeRules.removeAll(Arrays.asList(list));
+//        boolean success = true;
+//        for (ConsumeRule cr : list) {
+//            success &= removeConsumeRule(cr);
+//        }
+//        return success;
     }
 
     public boolean agentTypeIsSupported(Class c) {
         return lifeAgentParams.containsKey(c);
     }
 
-    public List<Consumable> filterConsumablesForAgent(Iterator<Consumable> it, LifeAgent agent) {
-        final List<Class<? extends LifeAgent>> consumableClasses = getConsumeRules().get(agent.getClass()); // list of classes consumable by agent
-        List<Consumable> consumables = new ArrayList<>();
-        while(it.hasNext()){
-            Consumable c = it.next();
-            if (consumableClasses.contains(c.getClass()))
-                consumables.add(c);
+    public List<Class<?extends LifeAgent>> filterConsumablesForAgent(LifeAgent agent) {
+        return consumeRules.consumableClassesForAgent(agent.getClass());
+    }
+
+    public boolean containsConsumeRule(ConsumeRule cr) {
+        exceptionIfInvalidConsumeRule(cr);
+
+        return consumeRules.contains(cr);
+//        return consumeRules.get(cr.getConsumer()).contains(cr);
+    }
+
+    /** returns true if the agents in the consume rule are supported */
+    private boolean validConsumeRule(ConsumeRule cr) {
+        return agentTypeIsSupported(cr.getConsumable())
+                && agentTypeIsSupported(cr.getConsumer()) ;
+    }
+
+    /** returns true if the agents in the consume rule are supported */
+    private void exceptionIfInvalidConsumeRule(ConsumeRule cr) {
+        if (false == validConsumeRule(cr)) {
+            Class unsupportedClass = (true == agentTypeIsSupported(cr.getConsumable())) ? cr.getConsumer(): cr.getConsumable();
+            throw new UnsupportedAgentException(unsupportedClass);
         }
-        return consumables;
     }
 
     public void setGridCols(int gridCols) {

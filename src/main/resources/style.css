@@ -1,0 +1,3 @@
+.combo-box-popup .list-cell:disabled  {
+    -fx-opacity: 0.4 ;
+}

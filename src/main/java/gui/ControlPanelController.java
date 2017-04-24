@@ -39,6 +39,7 @@ public class ControlPanelController implements Initializable {
     @FXML private Label iterationsLabel;
 
     private StackedTitledPanes agentsCtrlPane;
+    private RulesPane rulesPane;
     private LifeOptions lifeOptions;
 
     /**
@@ -69,6 +70,8 @@ public class ControlPanelController implements Initializable {
         agentsCtrlPane.setChangeListener( (a,b) -> update(a,b));
         tabPane.getTabs().get(1).setContent(agentsCtrlPane);
 
+        rulesPane = new RulesPane(lifeOptions.getConsumeRules(), lifeOptions.getSupportedAgents());
+        tabPane.getTabs().get(2).setContent(rulesPane);
         updateSpeedLabelText();
     }
 

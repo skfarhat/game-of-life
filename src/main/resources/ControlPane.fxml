@@ -79,6 +79,11 @@
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                       </content>
                   </Tab>
+            <Tab text="Rules">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
               </tabs>
           </TabPane>
           <Button fx:id="startButton" layoutX="2.0" layoutY="2.0" mnemonicParsing="false" onAction="#startButtonPressed" prefHeight="27.0" prefWidth="108.0" text="Start" />

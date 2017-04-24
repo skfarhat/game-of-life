@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
 /**
@@ -15,4 +16,12 @@ public class Utils {
                 (int)( color.getGreen() * 255 ),
                 (int)( color.getBlue() * 255 ) );
     }
+
+    public static void showErrorAlert(String headerText, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(headerText);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }

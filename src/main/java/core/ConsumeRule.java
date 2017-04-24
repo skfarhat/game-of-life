@@ -12,7 +12,7 @@ public class ConsumeRule {
         this.consumer = consumer;
         this.consumable = consumable;
         if (consumable.equals(consumer)) {
-            throw new LifeException("Cannot add rule where LifeAgent can consume itself");
+            throw new LifeException("Cannot create rule where LifeAgent consumes itself");
         }
     }
 
