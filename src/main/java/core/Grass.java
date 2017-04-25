@@ -50,9 +50,4 @@ public class Grass extends Surface {
     public Grass(Point2D p, Integer initialE) throws AgentAlreadyDeadException {
         super(p, initialE);
     }
-
-    public LifeAgent reproduce() throws AgentAlreadyDeadException {
-        return new Grass(this.MY_INITIAL_ENERGY);
-    }
-
 }

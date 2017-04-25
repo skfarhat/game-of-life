@@ -23,23 +23,6 @@ public class Creature extends LifeAgent implements Moveable {
     }
 
     @Override
-    public LifeAgent reproduce() throws AgentAlreadyDeadException {
-        try {
-            return getClass().getConstructor(Point2D.class, Integer.class).newInstance(getPos(), MY_INITIAL_ENERGY);
-        } catch (InstantiationException e) {
-            throw new LifeImplementationException(e.getMessage());
-        } catch (IllegalAccessException e) {
-            // prevented from (private) access
-            throw new LifeImplementationException(e.getMessage());
-        } catch (InvocationTargetException e) {
-            // method  threw an exception
-            throw new AgentAlreadyDeadException();
-        } catch (NoSuchMethodException e) {
-            throw new LifeImplementationException(e.getMessage());
-        }
-    }
-
-    @Override
     public void moveTo(Point2D p) {
         setPos(p);
     }

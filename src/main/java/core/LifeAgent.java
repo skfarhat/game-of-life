@@ -152,6 +152,25 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     }
 
     @Override
+    public LifeAgent reproduce() throws AgentAlreadyDeadException {
+        try {
+            LifeAgent baby = getClass().getConstructor(Point2D.class, Integer.class).newInstance(getPos(), MY_INITIAL_ENERGY);
+            getAgentStats().incNbReproduced();
+            return baby;
+        } catch (InstantiationException e) {
+            throw new LifeImplementationException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            // prevented from (private) access
+            throw new LifeImplementationException(e.getMessage());
+        } catch (InvocationTargetException e) {
+            // method  threw an exception
+            throw new AgentAlreadyDeadException();
+        } catch (NoSuchMethodException e) {
+            throw new LifeImplementationException(e.getMessage());
+        }
+    }
+
+    @Override
     public final int consumeAll(List<Consumable> consumables) throws AgentAlreadyDeadException {
         int count = 0;
         for (Consumable consumable : consumables) {
