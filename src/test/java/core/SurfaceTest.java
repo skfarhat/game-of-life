@@ -19,7 +19,7 @@ public class SurfaceTest {
 
     @Test
     public void testConstructorWithEnergy() throws AgentAlreadyDeadException {
-        int e = Utils.randomPositiveInteger(100);
+        int e = Utils.randomIntegerInRange(10, 100);
         Surface s = new Surface(e) {
             @Override
             public LifeAgent reproduce() throws AgentAlreadyDeadException {
