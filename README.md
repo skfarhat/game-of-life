@@ -96,3 +96,22 @@ Whichever class calls
 | ./gradlew jacoco      | generate coverage                |
 | ./gradlew fatjar      | create Jar with all dependencies |
 | ./gradlew myJavadocs  | generate Java Docs for project   |
+
+
+
+## OOP notes
+
+LifeAgentStats: example of class that doesn't expose more than it needs to. field setters
+are not allowed, only incrementors, because that's all that is needed. Of course, this can be hacked around,
+but still.
+
+Passing Unmodifiable Maps to classes that have no business changing out content.
+
+
+Immutability: Point2D
+
+Generic constructors (called by others, e.g. LifeAgent)
+
+Design Patterns: Observer- Observable (gui)
+
+Code Coverage:
