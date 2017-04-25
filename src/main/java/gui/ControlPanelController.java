@@ -70,8 +70,14 @@ public class ControlPanelController implements Initializable {
         agentsCtrlPane.setChangeListener( (a,b) -> update(a,b));
         tabPane.getTabs().get(1).setContent(agentsCtrlPane);
 
+        // Rules Tab
         rulesPane = new RulesPane(lifeOptions.getConsumeRules(), lifeOptions.getSupportedAgents());
         tabPane.getTabs().get(2).setContent(rulesPane);
+
+        // Stats Tab
+        StatsPane statsPane = new StatsPane(LifeAgent.getStatsCopy(), LifeAgent.getStatsObservable());
+        tabPane.getTabs().add(new Tab("Stats", statsPane));
+
         updateSpeedLabelText();
     }
 

@@ -5,11 +5,17 @@ package core;
 
 import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.ConsumableOutOfEnergy;
+import core.exceptions.LifeImplementationException;
 import core.interfaces.Consumable;
 import core.interfaces.Consumes;
 import core.interfaces.Reproduces;
+import gui.LifeStats;
+import gui.LifeStatsObservable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,8 +35,20 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
-    /**  this string must match the method name of getDefaultParams */
+    /** this string must match the method name of getDefaultParams */
     public static final String METHOD_NAME_GET_DEFAULT_PARAMS = "getDefaultParams";
+
+    /** statistics map saves statistics per LifeAgent class type */
+    private static final LifeStats stats = new LifeStats();
+
+    /** @return an unmodifiable version of stats map */
+    public static final Map<Class<?extends LifeAgent>, LifeAgentStats> getStatsCopy() {
+        return Collections.unmodifiableMap(stats);
+    }
+    /** @return observable instance to allow others to add Observers */
+    public static final LifeStatsObservable getStatsObservable() {
+        return stats;
+    }
 
     /**
      * it is not essential that subclasses to worry about implementing getDefaultParams
@@ -62,18 +80,30 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     }
 
     /**  constructor with initial energy - records the instance's initial energy */
-    public LifeAgent(int initialEnergy) throws AgentAlreadyDeadException {
-        super();
-        if (initialEnergy <= 0)
-            throw new AgentAlreadyDeadException("Creating a LifeAgent with invalid intitalEnergy");
-        setEnergy(MY_INITIAL_ENERGY = initialEnergy);
+    public LifeAgent(int e) throws AgentAlreadyDeadException {
+        this(null, e);
     }
 
+    /**
+     * most generic constructor, must be called by all others. Updates LifeAgent class stats.
+     * @param p
+     * @param energy
+     * @throws AgentAlreadyDeadException
+     */
     public LifeAgent(Point2D p, Integer energy) throws AgentAlreadyDeadException {
         super(p);
         if (energy <= 0)
             throw new AgentAlreadyDeadException("Creating a LifeAgent with invalid intitalEnergy");
         setEnergy(MY_INITIAL_ENERGY = energy);
+
+        // Statistics
+        // handle when first instance of a specific type of class
+        LifeAgentStats agentStats = getAgentStats();
+        if (null == agentStats) {
+            stats.put(this.getClass(), new LifeAgentStats(this.getClass()));
+            agentStats = getAgentStats();
+        }
+        agentStats.incNbCreated();
     }
 
     /** @return the energy of the LifeAgent */
@@ -96,7 +126,6 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         if (!isAlive()) {
             throw new AgentAlreadyDeadException("Can't setEnergy on a dead LifeAgent");
         }
-
         this.energy = energy;
         if (this.energy <= 0)
             die();
@@ -110,8 +139,8 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         }
         died = true;
         energy = 0;
-
         LOGGER.log(Level.FINE, toString() + "died. ");
+        getAgentStats().incNbDied();
     }
 
     /**
@@ -122,7 +151,6 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
 
     /** @return true if the LifeAgent instance is still alive, false otherwise */
     public final boolean isAlive() { return !died; }
-
 
     /**
      *  decrease the consumable's energy by @param e
@@ -181,8 +209,17 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         return count;
     }
 
+    /**
+     * @return this instance's class' relevant stats. Should only return null in the constructor before the LifeAgentStats
+     * instance is created.
+     */
+    private LifeAgentStats getAgentStats() {
+        return stats.get(this.getClass());
+    }
+
     @Override
     public String toString() {
         return String.format("%s[%s]%s(e=%d)", getClass().getSimpleName(), getId().substring(0, 5), getPos(), getEnergy());
     }
+
 }
