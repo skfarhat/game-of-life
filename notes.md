@@ -12,10 +12,8 @@ do not necessarily age, the implementer can choose to implement the interface **
 LifeCell was first subclassing Cell but then the issue of member hiding appeared as 
 one of the Unit Tests was failing. It appeared that the subclass had two 'agents' one for itself and one belonging to its parent class.
 
-
 // call many constructors from one constructor,
 // implementing the hashcode method in Point2D class
-
 
 // abstraction or information hiding is manifested in the  interfac between RootController and COntrolPaneController 
 
@@ -23,7 +21,6 @@ While ControlPaneController needs access to some methods in RootController, it d
 
 reference passed. This would have given ControlPaneController far too much control and power and made it less obvious to the programmer 
 what that classs is/ or could be doing. Instead, an interface LifeStarter whose methods are already known is passed. 
-
 
 ## Organisation of the report: 
 
@@ -72,15 +69,32 @@ Known limitations:
   * toString()
 
 * Constructors: 
-  * many of them with different possible input parameters. Generally the more specific constructors end up calling the most generic one. The benfit of this method is that if there was something that needed to be added or modified in the constructor, it would only need to happen on the one most generic constructor. The limitation is that calls to this() have to happen at the top of the constructor which can sometimes constitute a limitation. private init() functions are often the solution.
+  * Many of them with different possible input parameters. Generally the more specific constructors end up calling the most generic one. The benfit of this method is that if there was something that needed to be added or modified in the constructor, it would only need to happen on the one most generic constructor. The limitation is that calls to this() have to happen at the top of the constructor which can sometimes constitute a limitation. private init() functions are often the solution.
   * chaining is also very common in our code. Deer(Point2D p, Integer energy) -- mention the use of this() and super(), the differences
   * any downsides to this() and super() [TODO: check the internet]
-* Exceptions: the difference between Checked and Unchecked exceptions and how me made use of them. [TODO: draw UML diagram of the inheritance between our exception classes]
+* Exceptions: (Part 4 in the lectures) the difference between Checked and Unchecked exceptions and how me made use of them. [TODO: draw UML diagram of the inheritance between our exception classes]
+    * talk about how there are many ways of reporting errors. returning boolean (true,false) but this is only useful when all we care about is telling the user when a method has failed (false is used). Another way of reporting errors is through integers. For example in languages like C especially, returning a zero integer is indiciation that the function called succeeded. Other error numbers returned will signify different things.
+    * calls to throws() -- handleed exceptions and propagating them
+    * RuntimeExceptions which are unchecked. -- TODO: read more online and detail why and when they are useful. In our case, we use them mostly with LifeImplementationException, some PositionIsOuOfBoundsException and some others. 
+    * calls to finally? don't think we've used any 
+    * Generally speaking, the Java way is to use Exceptions. Exceptions are powerful and flexbile and can as well be used to report the type of the error that occured. 
+      * Pros of exceptions vs returning error codes: 
+        * exception constuctors can passed a string describing the type of error that occured.
+        * with inheritance in exceptions we make some errors be a general type of others. THis is more difficult (or hacky) to do with return codes.
+      * Cons of expcetions:
+        * they are slower ?  
+        * TODO: check the internet 
+* Where Hashmaps were used in our code: 
+  * TODO: where in our code are we using HashMaps, and why did we choose to use Map instead of another data structure
+  * What are the benefits of a map, its performance metrics O(1) insertion, find, remove as long as the hashing is effectiv. 
+  * Where have we overridden hashcode()
+  * The fact that Map is used s the declared type and Hashmap is the runtime implmetation. This allows us to easily switch from HashmAp to another type of map in the future without many modifications. IF we wanted to use a SortedMap?
+  * Nested Classes: RUlesPane and RulePane but then they were untangled? why ?
 * What kinds of static fatures and why ? 
 * Why is LifeAgent(Point2D p, Integer energy) and not LifeAgent(Point2D p, int energy). Because the latter allows us to properly use reflection to create instances of LifeAGent, check implementation of reproduce.
 * Arrays: most common implementation are ARrayLists at runtime, declared List for compile time. 
 * Grid employs multidimensional array
-* COncurrentQueue for bridge between gui engine and the core 
+* ConcurrentQueue for bridge between gui engine and the core 
 * Data structures used and why. 
 * Talk about Subtyping, Subclssing, the difference? We use this a lot, an example is in Life.java we define a List<Agent> of agents and then create subtypes of those agents. In making the code more object oriented and more flexible and configurable we found the need to differentiate between wolf and deer on one side, and grass on the other. The fundamental difference between them as far is the system is concerned is that there can only be one instance of  Grass type in a single cell in the system whereas we can have many wolf and deer instances. This led to the creation of the Creature and Surface classes. 
 * Note on super/sub classes is that most often we find that subtypes have to explicitly call the constructors of their parent (super) types. This is because constructors are not inherited in Java. 
@@ -97,5 +111,19 @@ Known limitations:
   * pivate methods are those that are only used in the class. and generally called by public methods. They cannot be tested - and they needn't be in general.
 * list the interfaces that were used and the need for each one
 * abstract classes: Agent and LifeAGent and why are they abstract? 
-
 * briefly discuss each class and interface created in the project and mention how it is used externally. 
+* are we using interface inheritance?
+* inner classs: TODO: where do we have inner classes and why did we use them ?
+* inner classes in methods: maybe mention the creation of a runnable with its implementation inside the method in RootController? This a inner class in a method.
+  * We can also mention how we needed to distinguish between the different thises 
+* TODO: check anonymous inner classes
+* Lambda expressions: 
+  * Next action: check if using streams and laambda expressions goes against object oriented programming.
+  * If lambdas are not oop ffriendly, remove a lot, keep some and then talk about the ones we kept
+* Iterators: 
+
+
+
+## Next actions 
+* reorganise this list and make sure eaach entry has a next action thing to do
+* group the notes that need to be grouped together
