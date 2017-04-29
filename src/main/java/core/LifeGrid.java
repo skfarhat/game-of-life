@@ -70,11 +70,11 @@ public class LifeGrid {
     }
 
     /**
-     *  moves an agent from its source cell to the @param dstCell
+     * moves an agent from its source cell to the @param dstCell
      * @param agent
      * @param dstCell
      */
-    public boolean moveAgentToCell(Agent agent, Cell dstCell) throws InvalidPositionException {
+    public boolean moveAgentToCell(Agent agent, Cell dstCell) {
         Cell srcCell = get(agent.getPos());
 
         // remove from src cell
@@ -86,6 +86,16 @@ public class LifeGrid {
 
         // add to dst cell and changes the position of the agent to that of the cell
         return dstCell.addAgent(agent);
+    }
+
+    /**
+     * find random adjacent cell to the given cell
+     * @param c
+     * @return
+     * @throws InvalidPositionException
+     */
+    public LifeCell randomAdjacentCell(Cell c) throws InvalidPositionException {
+        return get(randomAdjacentPoint(c.getPos()));
     }
 
     /**
@@ -141,7 +151,7 @@ public class LifeGrid {
     }
 
     /** @return true if the point @param p passed is in the bounds of the grid */
-    public boolean pointInBounds(Point2D p) {
+    public boolean isPointInBounds(Point2D p) {
         return xIsInBounds(p.getX()) && yIsInBounds(p.getY());
     }
 

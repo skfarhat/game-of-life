@@ -60,7 +60,7 @@ public class Life implements LifeGetter {
     /**  default constructor, calls other constructor and initialises fields to their defaults */
     public Life() throws LifeException, IllegalArgumentException { this(null); }
 
-    public Life(LifeOptions options) throws IllegalArgumentException, TooManySurfacesException, GridCreationException {
+    public Life(LifeOptions options) throws IllegalArgumentException, TooManySurfacesException {
 
         if (null == options)
             options = new LifeOptions();
@@ -96,14 +96,14 @@ public class Life implements LifeGetter {
     }
 
     public boolean addCreature(Creature c) {
-        if (false == grid.pointInBounds(c.getPos()))
+        if (false == grid.isPointInBounds(c.getPos()))
             return false;
         LifeCell lc = grid.get(c.getPos());
         return (lc.addAgent(c) && agents.add(c));
     }
 
     public boolean addSurface(Surface s) throws SurfaceAlreadyPresent {
-        if (false == grid.pointInBounds(s.getPos()))
+        if (false == grid.isPointInBounds(s.getPos()))
             return false;
         LifeCell lc = grid.get(s.getPos());
         return lc.addAgent(s) && agents.add(s);
@@ -128,7 +128,7 @@ public class Life implements LifeGetter {
      * @return true if the removal was successful from both lists, false otherwise
      */
     public boolean removeAgent(LifeAgent a)  {
-        if (false == grid.pointInBounds(a.getPos()))
+        if (false == grid.isPointInBounds(a.getPos()))
             return false;
         try {
             LifeCell cell = (LifeCell) grid.get(a.getPos());
