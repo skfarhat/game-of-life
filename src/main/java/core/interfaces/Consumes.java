@@ -13,7 +13,6 @@ import java.util.List;
  */
 public interface Consumes {
 
-
     /**
      *  consume the Consumable by the amount @param e of energy
      * @param consumable the consumable to consume

@@ -3,10 +3,8 @@ package core;
 import core.exceptions.LifeException;
 import core.exceptions.LifeImplementationException;
 import core.exceptions.UnsupportedAgentException;
-import core.interfaces.Consumable;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -195,7 +193,7 @@ public class LifeOptions {
     }
 
     public List<Class<?extends LifeAgent>> filterConsumablesForAgent(LifeAgent agent) {
-        return consumeRules.consumableClassesForAgent(agent.getClass());
+        return consumeRules.getConsumableClassesForAgent(agent.getClass());
     }
 
     public boolean containsConsumeRule(ConsumeRule cr) {

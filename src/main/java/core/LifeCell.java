@@ -89,8 +89,7 @@ public class LifeCell extends Cell<LifeAgent> {
         return check;
     }
 
-
-
     public boolean containsSurface() { return surface != null; }
 
+    public Surface getSurface() { return surface; }
 }

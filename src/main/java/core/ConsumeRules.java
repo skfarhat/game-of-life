@@ -146,7 +146,7 @@ public class ConsumeRules implements Set<ConsumeRule> {
         cacheIsValid = false;
     }
 
-    public List<Class<?extends LifeAgent>> consumableClassesForAgent(Class<? extends LifeAgent> agentClass) {
+    public List<Class<?extends LifeAgent>> getConsumableClassesForAgent(Class<? extends LifeAgent> agentClass) {
         ArrayList<Class<?extends LifeAgent>> ret = new ArrayList<>();
         Set<ConsumeRule> set = map.get(agentClass);
 

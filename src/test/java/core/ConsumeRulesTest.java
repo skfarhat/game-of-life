@@ -267,7 +267,7 @@ public class ConsumeRulesTest {
         ConsumeRules crs = new ConsumeRules();
         crs.add(new ConsumeRule(Wolf.class, Deer.class));
         crs.add(new ConsumeRule(Wolf.class, Grass.class));
-        List<Class<? extends LifeAgent>> list = crs.consumableClassesForAgent(Wolf.class);
+        List<Class<? extends LifeAgent>> list = crs.getConsumableClassesForAgent(Wolf.class);
         assertEquals(2, list.size());
         assertTrue(list.contains(Deer.class));
         assertTrue(list.contains(Grass.class));
