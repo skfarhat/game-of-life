@@ -105,7 +105,7 @@ public class ControlPanelController implements Initializable {
         }
         else if (pf.getName().equals("i0")) {
             try {
-                int i0 = validatePositiveInteger(pf.getTextField());
+                int i0 = validateNonNegative(pf.getTextField());
                 lap.setInitialCount(i0);
                 pf.setUpdated();
             }
@@ -115,7 +115,7 @@ public class ControlPanelController implements Initializable {
         }
         else if (pf.getName().equals("e0")) {
             try {
-                int e0 = validatePositiveInteger(pf.getTextField());
+                int e0 = validateNonNegative(pf.getTextField());
                 lap.setInitialEnergy(e0);
                 pf.setUpdated();
             }
@@ -136,8 +136,8 @@ public class ControlPanelController implements Initializable {
         try {
 
             Integer maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
-            Integer gridRows = validateInput(rowsTextField, Integer.class).intValue();
-            Integer gridCols = validateInput(colsTextField, Integer.class).intValue();
+            Integer gridRows = validatePositive(rowsTextField);
+            Integer gridCols = validatePositive(colsTextField);
 
             lifeOptions.setMaximumIterations(maxIterations);
             lifeOptions.setGridCols(gridCols);
@@ -175,10 +175,6 @@ public class ControlPanelController implements Initializable {
             alert.setContentText(exc.getMessage());
             alert.showAndWait();
         }
-        catch (LifeException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-        }
-
     }
 
     /**
@@ -256,7 +252,26 @@ public class ControlPanelController implements Initializable {
         }
     }
 
-    private Integer validatePositiveInteger(TextField t) throws IllegalArgumentException {
+    private Integer validatePositive(TextField t) throws IllegalArgumentException {
+        int val = validateInteger(t);
+        if (val <= 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            // alert.setTitle("Error Dialog");
+            alert.setHeaderText("Invalid input");
+
+            // extract the name of the textfield from the id
+            String fieldName = t.getId().toLowerCase().replaceAll("textfield", "");
+
+            alert.setContentText(String.format("%s: Input cannot be 0 or negative.\n", fieldName));
+
+            t.requestFocus();
+            alert.showAndWait();
+            throw new IllegalArgumentException();
+        }
+        return val;
+    }
+
+    private Integer validateNonNegative(TextField t) throws IllegalArgumentException {
         int val = validateInteger(t);
         if (val < 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

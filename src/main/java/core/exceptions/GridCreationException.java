@@ -7,7 +7,7 @@ package core.exceptions;
 /**
  *  Exception class thrown when the creation of Grid object fails
  */
-public class GridCreationException extends LifeException {
+public class GridCreationException extends LifeRuntimeException {
 
     /**  default constructor */
     public GridCreationException() { super(); }

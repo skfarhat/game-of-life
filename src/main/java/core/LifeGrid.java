@@ -1,6 +1,7 @@
 package core;
 
 
+import core.exceptions.GridCreationException;
 import core.exceptions.InvalidPositionException;
 
 import java.util.Iterator;
@@ -30,6 +31,9 @@ public class LifeGrid {
      * @param cols
      */
     public LifeGrid(int rows, int cols) {
+        if (rows == 0 || cols == 0)
+            throw new GridCreationException();
+
         this.rows = rows;
         this.cols = cols;
 
