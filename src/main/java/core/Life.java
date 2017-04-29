@@ -372,13 +372,13 @@ public class Life implements LifeGetter {
         action.getAgent().changeEnergyBy(action.getEnergyDelta());
     }
 
-    private void processMoveAction(Move action) throws InvalidPositionException, SurfaceAlreadyPresent {
+    private void processMoveAction(Move action) throws SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Cell nextCell = grid.get(action.getTo());
         grid.moveAgentToCell(action.getAgent(), nextCell);
     }
 
-    private void processReproduce(Reproduce action) throws InvalidPositionException, SurfaceAlreadyPresent {
+    private void processReproduce(Reproduce action) throws SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Iterator<LifeAgent> babies = action.getBabies();
         while(babies.hasNext()) {
@@ -441,6 +441,12 @@ public class Life implements LifeGetter {
         consumingAgent.changeEnergyBy(energyGain);
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     * @throws InvalidPositionException
+     */
     private Point2D findAdjacentPointInGrid(Point2D p) throws InvalidPositionException {
         return grid.randomAdjacentPoint(p);
     }

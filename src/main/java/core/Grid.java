@@ -140,7 +140,7 @@ public class Grid<T extends Cell> {
      * @param agent
      * @param dstCell
      */
-    public boolean moveAgentToCell(Agent agent, Cell dstCell) throws InvalidPositionException {
+    public boolean moveAgentToCell(Agent agent, Cell dstCell) {
         Cell srcCell = get(agent.getPos());
 
         // remove from src cell

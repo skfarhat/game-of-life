@@ -1,7 +1,7 @@
 package core.exceptions;
 
 // TODO:this should be unchecked (just like ArrayIndexOutOfBounds)
-public class InvalidPositionException extends LifeException {
+public class InvalidPositionException extends LifeRuntimeException {
 
     /**  default constructor */
     public InvalidPositionException() {super(); };
