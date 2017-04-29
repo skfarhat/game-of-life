@@ -5,6 +5,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 public class CellView extends Pane {
 
     /**
-     *  logger
+     * logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
@@ -22,19 +23,29 @@ public class CellView extends Pane {
     public final static int MINICELL_ROWS = 3;
     public final static int MINICELL_COLS = 3;
 
-    /**  the width of the cell sides' width */
+    /**
+     * the width of the cell sides' width
+     */
     public final static double LINE_WIDTH = 1;
 
-    /**  the default side value in px */
+    /**
+     * the default side value in px
+     */
     private final static double DEFAULT_SIDE_PX = 128;
 
-    /**  the minimum accpetable value for side */
+    /**
+     * the minimum accpetable value for side
+     */
     private final static double MIN_SIDE_PX = 16;
 
-    /**  the maximum accpetable value for side */
+    /**
+     * the maximum accpetable value for side
+     */
     private final static double MAX_SIDE_PX = 320;
 
-    /**  the value of this CellView's side */
+    /**
+     * the value of this CellView's side
+     */
     private final double side;
 
     private final Line topLine;
@@ -43,12 +54,14 @@ public class CellView extends Pane {
     private final Line rightLine;
     private final double miniCellSide;
 
-    private Cell cell;
+    private LifeCell cell;
 
-    public CellView(Cell cell) { this(cell, DEFAULT_SIDE_PX); }
+    public CellView(LifeCell cell) {
+        this(cell, DEFAULT_SIDE_PX);
+    }
 
 
-    public CellView(Cell cell, double side) {
+    public CellView(LifeCell cell, double side) {
         this.cell = cell;
         this.side = side;
         this.miniCellSide = this.side / 3.0f;
@@ -75,58 +88,94 @@ public class CellView extends Pane {
             getChildren().add(rightLine);
 
             // organise agents
-            int agentsCount = cell.agentsCount();
+//            int agentsCount = cell.agentsCount();
 
-            Iterator<Agent> it = cell.getAgentsCopy().iterator();
 
-            boolean grassThere = false;
-            int addedCount = 0;
-            for (int i = 0; i < agentsCount; i++) {
+//            Iterator<Agent> it = cell.getAgentsCopy().iterator();
 
-                // if we already encountered the grass agent AND drawn 9 (Wolves or Deers)
-                // then there is nothing more to draw, so we break
-                if (addedCount > 9 && grassThere) {
-                    break;
+            if (cell.agentsCount() == 0)
+                return;
+
+            if (cell.containsSurface()) {
+                Surface surface = cell.getSurface();
+                if (surface instanceof Grass) {
+                    Pane pane = new GrassView((Grass) surface);
+                    pane.setPrefSize(side, side);
+                    getChildren().add(0, pane); // we need to add it as the first so that it doesn't mask others
+                } else {
+                    LOGGER.log(Level.WARNING, "We don't yet handle other types of surfaces");
                 }
+            }
 
-                Agent agent = it.next();
+            List<LifeAgent> agents = cell.getRandomNFromAgens(Math.min(9, cell.agentsCount()));
 
-                // TODO(sami): probably doesn't work when ROWSS != COLS -- fix
-                int row = (addedCount % MINICELL_ROWS);
-                int col = (addedCount / MINICELL_COLS);
+            for (int i = 0; i < agents.size(); i++) {
+                Agent agent = agents.get(i);
+                int row = (i % MINICELL_ROWS);
+                int col = (i / MINICELL_COLS);
                 double x = miniCellSide * row;
                 double y = miniCellSide * col;
                 Pane pane = null;
-                if (agent instanceof Grass && grassThere == false) {
-                    pane = new GrassView((Grass) agent);
-                    pane.setPrefSize(side, side);
-                    grassThere = true;
-                    getChildren().add(0, pane); // we need to add it as the first so that it doesn't mask others
+                if (agent instanceof Wolf) {
+                    pane = new WolfView((Wolf) agent, miniCellSide, miniCellSide);
+                } else if (agent instanceof Deer) {
+                    pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
+                } else {
+                    LOGGER.log(Level.SEVERE, "unknown agent {0} in CellView.. ", agent.getClass().getName());
                 }
-                else {
-                    if (addedCount < 10) {
 
-                        if(agent instanceof Wolf) {
-                            pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
-                        }
-                        else if(agent instanceof Deer) {
-                            pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
-                        }
-                        else {
-                            LOGGER.log(Level.SEVERE, "unknown agent {0} in CellView.. ", agent.getClass().getName());
-                        }
-
-                        if (pane != null) {
-                            pane.setLayoutX(x);
-                            pane.setLayoutY(y);
-                            getChildren().add(pane);
-                            addedCount++;
-                        }
-                    }
+                if (pane != null) {
+                    pane.setLayoutX(x);
+                    pane.setLayoutY(y);
+                    getChildren().add(pane);
                 }
             }
-        }
+//            boolean grassThere = false;
+//            int addedCount = 0;
+//            for (int i = 0; i < agentsCount; i++) {
+//
+//                 if we already encountered the grass agent AND drawn 9 (Wolves or Deers)
+//                 then there is nothing more to draw, so we break
+//                if (addedCount > 9 && grassThere) {
+//                    break;
+//                }
 
+//                Agent agent = it.next();
+
+            // TODO(sami): probably doesn't work when ROWSS != COLS -- fix
+//                int row = (addedCount % MINICELL_ROWS);
+//                int col = (addedCount / MINICELL_COLS);
+//                double x = miniCellSide * row;
+//                double y = miniCellSide * col;
+//                Pane pane = null;
+//                if (agent instanceof Grass && grassThere == false) {
+//                    pane = new GrassView((Grass) agent);
+//                    pane.setPrefSize(side, side);
+//                    grassThere = true;
+//                    getChildren().add(0, pane); // we need to add it as the first so that it doesn't mask others
+//                }
+//                else {
+//                    if (addedCount < 10) {
+//
+//                        if(agent instanceof Wolf) {
+//                            pane= new WolfView((Wolf) agent, miniCellSide, miniCellSide);
+//                        }
+//                        else if(agent instanceof Deer) {
+//                            pane = new DeerView((Deer) agent, miniCellSide, miniCellSide);
+//                        }
+//                        else {
+//                            LOGGER.log(Level.SEVERE, "unknown agent {0} in CellView.. ", agent.getClass().getName());
+//                        }
+//
+//                        if (pane != null) {
+//                            pane.setLayoutX(x);
+//                            pane.setLayoutY(y);
+//                            getChildren().add(pane);
+//                            addedCount++;
+//                        }
+//                    }
+//                }
+        }
     }
 
 }

@@ -46,7 +46,7 @@ public class GridView extends Pane {
 
                 Point2D p = new Point2D(i, j);
 
-                CellView cellView = new CellView(grid.get(p), cellSide);
+                CellView cellView = new CellView((LifeCell)grid.get(p), cellSide);
 
                 double x = marginRightLeft + i * cellSide;
                 double y = marginTopBottom + j * cellSide;

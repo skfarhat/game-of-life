@@ -4,6 +4,7 @@
 
 package gui;
 
+import core.ConsumeRule;
 import core.Life;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -31,6 +33,9 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        // turn off console output
+        LOGGER.setUseParentHandlers(false);
 
         // configure logger
         System.setProperty("java.util.logging.SimpleFormatter.format",

@@ -35,7 +35,7 @@ public class RootController implements Initializable, LifeStarter {
     // ===========================================================================================
 
     /**  period between calls to step() in milli-seconds */
-    private final static int DEFAULT_PERIOD = 100;  // 100 milliseconds
+    private final static int DEFAULT_PERIOD = 10;  // 100 milliseconds
     private final static int MIN_PERIOD = 10;       // 10 milliseconds
     private final static int MAX_PERIOD = 200;      // 200 milliseconds
 
@@ -207,8 +207,12 @@ public class RootController implements Initializable, LifeStarter {
                         }
                         try {
                             Platform.runLater(() -> {
-                                try { lifeViewController.draw(actions);}
+
+                                long start = System.nanoTime();
+                                try { lifeViewController.draw(actions); }
                                 catch (InvalidPositionException e) {e.printStackTrace();}
+                                long end = System.nanoTime();
+                                System.out.println("draw: " + (end - start)/1000.0f +   " milli sec -- actions.size = " + actions.size());
                             });
                         }
                         catch(Exception exc) {
@@ -227,7 +231,10 @@ public class RootController implements Initializable, LifeStarter {
             @Override
             public void run() {
                 try {
+                    long start = System.nanoTime();
                     List<Action> actions = life.step();
+                    long end = System.nanoTime();
+                    System.out.println("step: " + (end - start)/1000.0f +   " milli sec");
                     iterations.setValue(life.getStepCount());
 
                     for (Action action : actions) {
