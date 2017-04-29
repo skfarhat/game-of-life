@@ -17,7 +17,7 @@ public class LifeViewController {
 
     private Life life;
 
-    private GridView gridView;
+    private LifeGridView gridView;
 
     public LifeViewController(){}
 
@@ -25,7 +25,7 @@ public class LifeViewController {
 
         // only update the Pane if the passed life is non-null and different from the previous s
         if (life != null && life != this.life) {
-            this.gridView = new GridView(life.getGrid(), rootPane.getPrefWidth(), rootPane.getPrefHeight());
+            this.gridView = new LifeGridView(life.getGrid(), rootPane.getPrefWidth(), rootPane.getPrefHeight());
 
             // clear the pane then add the gridview
             rootPane.getChildren().clear();

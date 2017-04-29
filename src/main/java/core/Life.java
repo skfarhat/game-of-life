@@ -29,7 +29,7 @@ public class Life implements LifeGetter {
     private int stepCount;
 
     /**  the grid containing all cells on which the agents will be placed */
-    private final Grid<LifeCell> grid;
+    private final LifeGrid grid;
 
     /**  list of all of the agents in Life */
     private final List<Agent> agents;
@@ -77,7 +77,7 @@ public class Life implements LifeGetter {
         // ---------------------
 
         // [4] create grid
-        grid = GridLifeCellFactory.createGridCell(getGridRows(), getGridCols()); // create a square Grid
+        grid = new LifeGrid(getGridRows(), getGridCols());
 
         // [5] create agents and distribute
         agents = new ArrayList<>();
@@ -98,25 +98,15 @@ public class Life implements LifeGetter {
     public boolean addCreature(Creature c) {
         if (false == grid.pointInBounds(c.getPos()))
             return false;
-        try {
-            LifeCell lc = (LifeCell) grid.get(c.getPos());
-            return (lc.addAgent(c) && agents.add(c));
-        }
-        catch (InvalidPositionException e) {
-            return false; // this shouldn't happen because we already checked
-        }
+        LifeCell lc = grid.get(c.getPos());
+        return (lc.addAgent(c) && agents.add(c));
     }
 
     public boolean addSurface(Surface s) throws SurfaceAlreadyPresent {
         if (false == grid.pointInBounds(s.getPos()))
             return false;
-        try {
-            LifeCell lc = (LifeCell) grid.get(s.getPos());
-            return lc.addAgent(s) && agents.add(s);
-        }
-        catch (InvalidPositionException e) {
-            return false; // this shouldn't happen because we already checked
-        }
+        LifeCell lc = grid.get(s.getPos());
+        return lc.addAgent(s) && agents.add(s);
     }
 
     /**
@@ -482,7 +472,7 @@ public class Life implements LifeGetter {
     }
 
     @Override
-    public Grid<LifeCell> getGrid() {
+    public LifeGrid getGrid() {
         return grid;
     }
 

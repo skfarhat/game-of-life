@@ -11,11 +11,11 @@ import javafx.scene.layout.Pane;
 
 import java.util.*;
 
-public class GridView extends Pane {
+public class LifeGridView extends Pane {
 
     private Map<Point2D, CellView> cells = new HashMap<>();
 
-    private Grid grid;
+    private LifeGrid grid;
 
     /**
      *  e.g. we are given 800x800px
@@ -25,9 +25,8 @@ public class GridView extends Pane {
      * @param grid
      * @param totalWidth
      * @param totalHeight
-     * @throws InvalidPositionException
      */
-    public GridView(Grid grid, double totalWidth, double totalHeight) throws InvalidPositionException {
+    public LifeGridView(LifeGrid grid, double totalWidth, double totalHeight) {
         this.grid = grid;
 
 
@@ -115,7 +114,7 @@ public class GridView extends Pane {
         }
     }
 
-    /**  counts the number of agents added to GridView - useful for debugging */
+    /**  counts the number of agents added to LifeGridView - useful for debugging */
     private int countAgents() throws InvalidPositionException {
         int total = 0;
         for (Node node: getChildren()) {

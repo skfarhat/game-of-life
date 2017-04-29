@@ -13,7 +13,7 @@ public interface LifeGetter {
 
     int getMaxIterations();
 
-    Grid<LifeCell> getGrid();
+    LifeGrid getGrid();
 
     int getGridRows();
 
