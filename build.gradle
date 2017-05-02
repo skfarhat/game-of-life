@@ -1,52 +1,59 @@
-group 'com.samifarhat.oop'
-version '0.1'
-
-apply plugin: 'java'
-apply plugin: 'jacoco'
-
-sourceCompatibility = 1.8
-
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
 
-repositories {
-    mavenCentral()
-}
+allprojects {
+    group 'com.samifarhat.oop'
+    version '0.3'
+//    sourceCompatibility = 1.8
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
 
-task myJavadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-}
-
-//create a single Jar with all dependencies
-task fatJar(type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'Welcome to the Jungle!',
-                'Implementation-Version': version,
-                'Main-Class': 'gui.Launcher'
+    repositories {
+        mavenCentral()
     }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+
+    jacoco {
+        toolVersion = "0.7.6.201602180812"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination "${buildDir}/jacocoHtml"
+        }
+    }
+
+    task myJavadocs(type: Javadoc) {
+        source = sourceSets.main.allJava
+    }
+
 }
 
-test {
-
+subprojects {
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
 }
 
-jacoco {
-    toolVersion = "0.7.6.201602180812"
-}
+project(":oop") {
 
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
+    dependencies {
+        compile project(":core")
+    }
+
+    //create a single Jar with all dependencies
+    task fatJar(type: Jar) {
+        manifest {
+            attributes 'Implementation-Title': 'Welcome to the Jungle!',
+                    'Implementation-Version': version,
+                    'Main-Class': 'gui.Launcher'
+        }
+        baseName = project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
     }
 }
 

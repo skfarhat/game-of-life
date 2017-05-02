@@ -11,8 +11,8 @@ hs_err_*
 
 .DS_Store
 /log
-/out
-/build
+out/
+build/
 /captures
 .externalNativeBuil
 

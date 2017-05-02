@@ -73,7 +73,7 @@ e.g. wolf eats any deer and gains +5, wolf drinks water gains +1
 We cannot trust the implementers of Consumer to follow proper logic and reasoning: Deer can be implemented such that the deer consumes ANY LifeAgent it is passed - including Wolves.
 
 Whichever class calls 
-```deer.consume(agents)``` has to ensure that the agents passed as param are consumable by the deer. Hence, the responsibility lies with the caller. 
+```deer.consume(core.agents)``` has to ensure that the agents passed as param are consumable by the deer. Hence, the responsibility lies with the caller.
 
 
 ## Grass

@@ -1,2 +1,5 @@
-rootProject.name = 'oop-1'
+//rootProject.name = 'oop-1'
+
+include "core", "oop"
+
 
