@@ -156,7 +156,7 @@ public class Life implements LifeGetter {
      * @throws AgentAlreadyDeadException
      * @return the stepCount index or -1 if there was nothing to do
      */
-    public List<Action> step() throws InvalidPositionException, SurfaceAlreadyPresent, AgentAlreadyDeadException {
+    public List<Action> step() throws SurfaceAlreadyPresent, AgentAlreadyDeadException {
 
         List<Action> actions = new ArrayList<>();
 
@@ -189,7 +189,7 @@ public class Life implements LifeGetter {
             // -------
 
             List<Consumable> consumableAgents = new ArrayList<>();
-            List<Class<?extends LifeAgent>> classes = options.filterConsumablesForAgent(chosen);
+            List<Class<?extends LifeAgent>> classes = options.getConsumableClassesForAgent(chosen);
             Iterator<LifeAgent> it = nextCell.getAgents();
             while(it.hasNext()) {
                 LifeAgent la = it.next();
@@ -247,7 +247,24 @@ public class Life implements LifeGetter {
             // NOTE: explicitly handling Grass ONLY at the moment
 
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
-            LifeCell currCell = (LifeCell) grid.get(chosen.getPos());
+            LifeCell currCell = grid.get(chosen.getPos());
+            LifeCell nextCell = grid.get(nextPoint);
+
+            // -------
+            // Consume
+            // -------
+
+            List<Class<?extends LifeAgent>> classes = options.getConsumableClassesForAgent(chosen);
+            Iterator<LifeAgent> it = nextCell.getAgents();
+            while(it.hasNext()) {
+                LifeAgent la = it.next();
+                if (classes.contains(la.getClass())){
+                    Consume consume = new Consume(chosen, la);
+                    actions.add(consume);
+                    processConsume(consume);
+                }
+            }
+
 
             // ---------
             // Reproduce
@@ -256,7 +273,7 @@ public class Life implements LifeGetter {
             double rGrass = options.getOptionsForAgent(Grass.class).getReproductionRate();
             boolean willReproduce = Utils.getRand().nextDouble() < rGrass;
 
-            if (willReproduce && !((LifeCell)grid.get(nextPoint)).containsSurface()) {
+            if (willReproduce && !(grid.get(nextPoint)).containsSurface()) {
                 LifeAgent babyGrass = chosen.reproduce();
                 babyGrass.setPos(nextPoint);
                 Action reproduce = new Reproduce(chosen, babyGrass);
@@ -273,6 +290,7 @@ public class Life implements LifeGetter {
             processAgeAction((EnergyChange) energyGain);
 
             List<LifeAgent> deadAgents = currCell.findDeadAgents();
+            deadAgents.addAll(nextCell.findDeadAgents());
             if (false == removeAgents(deadAgents)) {
                 LOGGER.log(Level.SEVERE, "Failed to remove some agents!");
             }
@@ -377,6 +395,11 @@ public class Life implements LifeGetter {
         }
     }
 
+    private void processConsume(Consume...actions) throws AgentAlreadyDeadException {
+        for(Consume a : actions)
+            processConsume(a);
+    }
+
     private void processConsume(Consume action) throws AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         if (false == action.getConsumables().hasNext()) {
@@ -385,7 +408,7 @@ public class Life implements LifeGetter {
             return;
         }
 
-        final int choiceOfImplementation = 3;
+        final int choiceOfImplementation = 1;
         final int GAIN_CAP = 10;
 
         Consumable consumable = action.getConsumables().next();
@@ -432,7 +455,6 @@ public class Life implements LifeGetter {
     }
 
     /**
-     *
      * @param p
      * @return
      * @throws InvalidPositionException

@@ -192,7 +192,7 @@ public class LifeOptions {
         return lifeAgentParams.containsKey(c);
     }
 
-    public List<Class<?extends LifeAgent>> filterConsumablesForAgent(LifeAgent agent) {
+    public List<Class<?extends LifeAgent>> getConsumableClassesForAgent(LifeAgent agent) {
         return consumeRules.getConsumableClassesForAgent(agent.getClass());
     }
 
