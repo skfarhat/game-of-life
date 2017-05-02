@@ -28,10 +28,10 @@ public class Life implements LifeGetter {
     /**  the number of times step has been called and returned a non-empty list of Actions */
     private int stepCount;
 
-    /**  the grid containing all cells on which the agents will be placed */
+    /** the grid containing all cells on which the agents will be placed */
     private final LifeGrid grid;
 
-    /**  list of all of the agents in Life */
+    /** list of all of the agents in Life */
     private final List<Agent> agents;
 
     /**  */
@@ -168,6 +168,7 @@ public class Life implements LifeGetter {
 
         // choose an agent at random
         int randI = Utils.randomPositiveInteger(agents.size());
+        // TODO(sami): remove the casting
         LifeAgent chosen = (LifeAgent) agents.get(randI);
         if (!chosen.isAlive())
             LOGGER.log(Level.SEVERE, "We chose a dead agent!");
@@ -264,7 +265,6 @@ public class Life implements LifeGetter {
                     processConsume(consume);
                 }
             }
-
 
             // ---------
             // Reproduce
@@ -395,11 +395,6 @@ public class Life implements LifeGetter {
         }
     }
 
-    private void processConsume(Consume...actions) throws AgentAlreadyDeadException {
-        for(Consume a : actions)
-            processConsume(a);
-    }
-
     private void processConsume(Consume action) throws AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         if (false == action.getConsumables().hasNext()) {
@@ -486,8 +481,10 @@ public class Life implements LifeGetter {
         return stepCount;
     }
 
-    /** @return the maximum number of iterations that this simulation should run - this is not enforced in this class
-    }     * but the member variable is set when parsing the options */
+    /**
+     * @return the maximum number of iterations that this simulation should run - this is not enforced in this class
+     * but the member variable is set when parsing the options
+     */
     @Override
     public int getMaxIterations() {
         return options.getMaximumIterations();
