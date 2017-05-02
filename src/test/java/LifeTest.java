@@ -10,9 +10,6 @@ import static org.junit.Assert.assertEquals;
 
 public class LifeTest {
 
-    /**  used in double comparisons - check IEEE Floating Point standard for details */
-    private static final double DELTA = 0.0000001;
-
     @Test
     public void testDefaultConstructor() throws LifeException {
         new Life();
@@ -47,8 +44,44 @@ public class LifeTest {
         Life life = new Life(options);
     }
 
+    private double randDoubleOutOfRange() {
+        Random rand = Utils.getRand();
+        final int RANGE = rand.nextInt();
+        double val;
+        do {
+            val = (-RANGE) + 2*RANGE*rand.nextDouble();
+        } while(val < 1 && val > 0);
+        return val;
+    }
+
+    @Test
+    public void testMoveToAdjacentCell() {
+        // TODO;
+    }
+
+    @Test
+    public void testRun() throws LifeException {
+        final int iterations = 30;
+        Life life = new Life();
+
+        for (int i = 0; i < iterations; i++) {
+            try {
+                life.step();
+            } catch (InvalidPositionException e) {
+                e.printStackTrace();
+            } catch (AgentAlreadyDeadException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    public void testAddAgent() {
+
+    }
 
     // Not a unit-test
+    // ===============
     @Test
     public void testNoMoreDeerWhenNoFoodAndNoReproduction() throws LifeException {
         final int nDeer = 1;
@@ -72,78 +105,5 @@ public class LifeTest {
             life.step();
         }
         assertEquals(0, life.getAgents().size());
-    }
-
-    private double randDoubleOutOfRange() {
-        Random rand = Utils.getRand();
-        final int RANGE = rand.nextInt();
-        double val;
-        do {
-            val = (-RANGE) + 2*RANGE*rand.nextDouble();
-        } while(val < 1 && val > 0);
-        return val;
-    }
-
-//    @Test(expected = IllegalArgumentException.class)
-//    public void testLifeWithInvalidRGrassValueThrowsException() throws LifeException {
-//        // choose a random double not between 0-1
-//        double val = randDoubleOutOfRange();
-//
-//        Map<String, Number> params = new HashMap<String, Number>();
-//        params.put(Life.KEY_R_DEER, val);
-//        new Life(params);
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void testLifeWithInvalidRDEERValueThrowsException() throws LifeException {
-//        // choose a random double not between 0-1
-//        double val = randDoubleOutOfRange();
-//
-//        Map<String, Number> params = new HashMap<String, Number>();
-//        params.put(Life.KEY_R_DEER, val);
-//        new Life(params);
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void testLifeWithInvalidRWolfValueThrowsException() throws LifeException {
-//        // choose a random double not between 0-1
-//        double val = randDoubleOutOfRange();
-//
-//        Map<String, Number> params = new HashMap<String, Number>();
-//        params.put(Life.KEY_R_WOLF, val);
-//        new Life(params);
-//    }
-//
-//    @Test
-//    public void testStepReturnsEmptyListWhenNoAgentsToAct() throws LifeException {
-//        Map<String, Number> opts = new HashMap<>();
-//
-//        opts.put(Life.KEY_I_DEER, 0);
-//        opts.put(Life.KEY_I_WOLF, 0);
-//        opts.put(Life.KEY_I_GRASS, 0);
-//
-//        Life life = new Life(opts);
-//        List<Action> actions = life.step();
-//        assertEquals(0, actions.size());
-//    }
-
-    @Test
-    public void testMoveToAdjacentCell() {
-        // TODO;
-    }
-
-    @Test
-    public void testRun() throws LifeException {
-        Life life = new Life();
-
-        for (int i = 0; i < 30; i++) {
-            try {
-                life.step();
-            } catch (InvalidPositionException e) {
-                e.printStackTrace();
-            } catch (AgentAlreadyDeadException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
