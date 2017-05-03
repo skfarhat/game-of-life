@@ -378,8 +378,7 @@ public class Life implements LifeGetter {
     private void processConsume(core.actions.Consume action) throws core.exceptions.AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         if (false == action.getConsumables().hasNext()) {
-            // nothing to consume
-            // TODO(sami): put some DEBUG info here
+            LOGGER.log(Level.WARNING, "processConsume called without any consumables");
             return;
         }
 
@@ -390,7 +389,7 @@ public class Life implements LifeGetter {
         LifeAgent consumingAgent = action.getAgent();
 
         // defines the energy gained by the consuming agent
-        int energyGain = 0;
+        int energyGain;
         int consumableEnergy = consumable.getEnergy();
         int energyLoss = consumableEnergy; // defaults to consumable's energy but isn't the case for everything (e.g. Grass)
 
@@ -412,7 +411,7 @@ public class Life implements LifeGetter {
                 energyGain = options.getOptionsForAgent(consumingAgent.getClass()).getEnergyGained();
         }
 
-
+        // energy lost field is only used for Surfaces -- ignored for Creatures in this implementation
         if (consumable instanceof Surface) {
             int eGrassLost = options.getOptionsForAgent(((LifeAgent)consumable).getClass()).getEnergyLost();
             energyLoss = Math.min(eGrassLost, consumableEnergy);

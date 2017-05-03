@@ -10,7 +10,7 @@ import core.exceptions.AgentAlreadyDeadException;
  */
 public class Grass extends Surface {
 
-    /**  default value by which a deer's energy decreases when they age */
+    /**  default value by which a grass's energy decreases when it ages */
     public static final Integer DEFAULT_AGE = -5;
 
     /**  default probability of reproducing - all the time */

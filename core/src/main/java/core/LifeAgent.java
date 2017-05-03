@@ -148,7 +148,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
     public final boolean isAlive() { return !died; }
 
     /**
-     *  decrease the consumable's energy by @param e
+     * decrease the consumable's energy by @param e
      * @param consumable the consumable to be consumed
      * @param e
      */
