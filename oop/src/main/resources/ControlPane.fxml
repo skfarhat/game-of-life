@@ -50,7 +50,7 @@
                                          <Font size="11.0" />
                                      </font>
                                  </Label>
-                                 <Label fx:id="iterationsLabel" layoutX="12.0" layoutY="699.0" prefHeight="17.0" prefWidth="164.0" text="Iterations: 0/1">
+                                 <Label fx:id="iterationsLabel" alignment="CENTER" layoutX="19.0" layoutY="639.0" prefHeight="17.0" prefWidth="164.0" text="Iterations: 0/1">
                                      <font>
                                          <Font size="11.0" />
                                      </font>
