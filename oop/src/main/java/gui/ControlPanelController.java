@@ -25,6 +25,12 @@ public class ControlPanelController implements Initializable {
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
+    public static final String PARAM_FILED_AGE = "age";
+    public static final String PARAM_FILED_I0 = "i0";
+    public static final String PARAM_FILED_E0 = "e0";
+    public static final String PARAM_FILED_REPRO = "reproduction";
+    public static final String PARAM_FILED_EGAIN = "egain";
+    public static final String PARAM_FILED_ELOSS = "eloss";
 
     public final String START_BUTTON_TEXT1 = "Start";
     public final String START_BUTTON_TEXT2 = "Pause";
@@ -100,7 +106,7 @@ public class ControlPanelController implements Initializable {
                 pf.setInvalid();
             }
         }
-        else if (pf.getName().equals("reproduction")) {
+        else if (pf.getName().equals(PARAM_FILED_REPRO)) {
             try {
                 double repro = validateDouble(pf.getTextField());
                 lap.setReproductionRate(repro);
@@ -110,7 +116,7 @@ public class ControlPanelController implements Initializable {
                 pf.setInvalid();
             }
         }
-        else if (pf.getName().equals("i0")) {
+        else if (pf.getName().equals(PARAM_FILED_I0)) {
             try {
                 int i0 = validateNonNegative(pf.getTextField());
                 lap.setInitialCount(i0);
@@ -120,10 +126,30 @@ public class ControlPanelController implements Initializable {
                 pf.setInvalid();
             }
         }
-        else if (pf.getName().equals("e0")) {
+        else if (pf.getName().equals(PARAM_FILED_E0)) {
             try {
                 int e0 = validateNonNegative(pf.getTextField());
                 lap.setInitialEnergy(e0);
+                pf.setUpdated();
+            }
+            catch(IllegalArgumentException e) {
+                pf.setInvalid();
+            }
+        }
+        else if (pf.getName().equals(PARAM_FILED_EGAIN)) {
+            try {
+                int egain = validateNonNegative(pf.getTextField());
+                lap.setEnergyGained(egain);
+                pf.setUpdated();
+            }
+            catch(IllegalArgumentException e) {
+                pf.setInvalid();
+            }
+        }
+        else if (pf.getName().equals(PARAM_FILED_ELOSS)) {
+            try {
+                int eloss = validateNonNegative(pf.getTextField());
+                lap.setEnergyLost(eloss);
                 pf.setUpdated();
             }
             catch(IllegalArgumentException e) {

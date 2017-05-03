@@ -1,9 +1,6 @@
 package gui;
 
-import core.Life;
-import core.LifeAgent;
-import core.LifeAgentOptions;
-import core.LifeOptions;
+import core.*;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 import java.util.Arrays;
@@ -18,6 +15,7 @@ public class StackedTitledPanes extends VBox {
      *  logger
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
+
     private LifeOptions options;
 
     private Map<Class<? extends LifeAgent>, ParamField[]> fieldsMap = new HashMap<>();
@@ -34,11 +32,18 @@ public class StackedTitledPanes extends VBox {
             LifeAgentOptions agentOpts = options.getOptionsForAgent(cls);
 
             ParamField fields[] = {
-                    new ParamField("i0", "Initial #", agentOpts.getInitialCount()),
-                    new ParamField("e0", "Initial Energy", agentOpts.getInitialEnergy()),
-                    new ParamField("age", "Age", agentOpts.getAgeBy()),
-                    new ParamField("reproduction" ,"Reproduction", agentOpts.getReproductionRate()),
+                    new ParamField(ControlPanelController.PARAM_FILED_I0, "Initial #", agentOpts.getInitialCount()),
+                    new ParamField(ControlPanelController.PARAM_FILED_E0, "Initial Energy", agentOpts.getInitialEnergy()),
+                    new ParamField(ControlPanelController.PARAM_FILED_AGE, "Age", agentOpts.getAgeBy()),
+                    new ParamField(ControlPanelController.PARAM_FILED_REPRO ,"Reproduction", agentOpts.getReproductionRate()),
+                    new ParamField(ControlPanelController.PARAM_FILED_EGAIN ,"Energy Gain", agentOpts.getEnergyGained()),
+                    new ParamField(ControlPanelController.PARAM_FILED_ELOSS ,"Energy Loss", agentOpts.getEnergyLost()),
             };
+
+            // disable the EnergyLoss (assumed to be the last field) for Creatures
+            if (Creature.class.isAssignableFrom(cls)) {
+                fields[fields.length-1].setDisable(true);
+            }
 
             fieldsMap.put(cls, fields);
 
