@@ -1,5 +1,10 @@
 package core;
 
+import core.actions.Action;
+import core.actions.Consume;
+import core.actions.EnergyChange;
+import core.actions.Move;
+import core.actions.Reproduce;
 import core.exceptions.*;
 import core.interfaces.Consumable;
 
@@ -26,10 +31,10 @@ public class Life implements LifeGetter {
     /**  the number of times step has been called and returned a non-empty list of Actions */
     private int stepCount;
 
-    /** the grid containing all cells on which the core.agents will be placed */
+    /** the grid containing all cells on which the agents will be placed */
     private final LifeGrid grid;
 
-    /** list of all of the core.agents in Life */
+    /** list of all of the agents in Life */
     private final List<Agent> agents;
 
     /**  */
@@ -55,7 +60,7 @@ public class Life implements LifeGetter {
         // create grid
         grid = new LifeGrid(getGridRows(), getGridCols());
 
-        // create core.agents and distribute
+        // create agents and distribute
         agents = new ArrayList<>();
         createAndDistributeAgents();
     }
@@ -88,7 +93,7 @@ public class Life implements LifeGetter {
     }
 
     /**
-     * remove the passed Agent @param a from the local core.agents list and from the cell's core.agents list
+     * remove the passed Agent @param a from the local agents list and from the cell's agents list
      * @return true if the removal was successful from both lists, false otherwise
      */
     public boolean removeAgent(LifeAgent a)  {
@@ -102,9 +107,9 @@ public class Life implements LifeGetter {
     }
 
     /**
-     * removes all core.agents from the provided list. Failure to remove an agent in the list will make the method return false.
-     * @param agents list of core.agents to remove
-     * @return false if any one of the core.agents in the list could not be removed
+     * removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
+     * @param agents list of agents to remove
+     * @return false if any one of the agents in the list could not be removed
      */
     public boolean removeAgents(List<LifeAgent> agents) {
         boolean success = true;
@@ -120,9 +125,9 @@ public class Life implements LifeGetter {
      * @throws AgentAlreadyDeadException
      * @return the stepCount index or -1 if there was nothing to do
      */
-    public List<core.actions.Action> step() throws SurfaceAlreadyPresent, AgentAlreadyDeadException {
+    public List<Action> step() throws AgentAlreadyDeadException {
 
-        List<core.actions.Action> actions = new ArrayList<>();
+        List<Action> actions = new ArrayList<>();
 
         // guard - nothing to do
         if (agents.size() < 1) {
@@ -148,9 +153,9 @@ public class Life implements LifeGetter {
             Point2D srcPoint = new Point2D(chosen.getPos()); // make a new copy of the src point
             Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
             Cell nextCell = grid.get(nextPoint);
-            core.actions.Action move = new core.actions.Move(chosen, srcPoint, nextPoint);
+            Action move = new Move(chosen, srcPoint, nextPoint);
             actions.add(move);
-            processMoveAction((core.actions.Move) move);
+            processMoveAction((Move) move);
 
             // -------
             // Consume
@@ -169,9 +174,9 @@ public class Life implements LifeGetter {
             if (consumableAgents.size() > 0) {
                 int index = Utils.randomPositiveInteger(consumableAgents.size());
                 Consumable agentToConsume = consumableAgents.get(index);
-                core.actions.Action consume = new core.actions.Consume(chosen, agentToConsume);
+                Action consume = new Consume(chosen, agentToConsume);
                 actions.add(consume);
-                processConsume((core.actions.Consume) consume);
+                processConsume((Consume) consume);
             }
 
             // ---------
@@ -182,9 +187,9 @@ public class Life implements LifeGetter {
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
                 LifeAgent baby = chosen.reproduce();
-                core.actions.Action reproduce = new core.actions.Reproduce(chosen, baby);
+                Action reproduce = new Reproduce(chosen, baby);
                 actions.add(reproduce);
-                processReproduce((core.actions.Reproduce) reproduce);
+                processReproduce((Reproduce) reproduce);
             }
 
             // ------------
@@ -192,19 +197,18 @@ public class Life implements LifeGetter {
             // ------------
 
             int ageBy = agentOpts.getAgeBy();
-            core.actions.Action age = new core.actions.EnergyChange(chosen, -ageBy);
+            Action age = new EnergyChange(chosen, -ageBy);
             actions.add(age);
-            processAgeAction((core.actions.EnergyChange) age);
+            processAgeAction((EnergyChange) age);
 
-            // find the cell's dead core.agents
+            // find the cell's dead agents
             // double cast to change List<LifeAgent> to List<Agent>
             List<LifeAgent> deadAgents = ((LifeCell)nextCell).findDeadAgents();
 
-            // removes dead core.agents from the local core.agents list and from the cells' respective core.agents lists
+            // removes dead agents from the local agents list and from the cells' respective agents lists
             if (false == removeAgents(deadAgents)) {
-                LOGGER.log(Level.SEVERE, "Failed to remove some core.agents!");
+                LOGGER.log(Level.SEVERE, "Failed to remove some agents!");
             }
-            // TODO(sami); consider sending events for all new dead core.agents,
         }
 
         else if (chosen instanceof Surface) {
@@ -223,7 +227,7 @@ public class Life implements LifeGetter {
             while(it.hasNext()) {
                 LifeAgent la = it.next();
                 if (classes.contains(la.getClass())){
-                    core.actions.Consume consume = new core.actions.Consume(chosen, la);
+                    Consume consume = new Consume(chosen, la);
                     actions.add(consume);
                     processConsume(consume);
                 }
@@ -239,23 +243,23 @@ public class Life implements LifeGetter {
             if (willReproduce && !(grid.get(nextPoint)).containsSurface()) {
                 LifeAgent babyGrass = chosen.reproduce();
                 babyGrass.setPos(nextPoint);
-                core.actions.Action reproduce = new core.actions.Reproduce(chosen, babyGrass);
+                Action reproduce = new Reproduce(chosen, babyGrass);
                 actions.add(reproduce);
-                processReproduce((core.actions.Reproduce) reproduce);
+                processReproduce((Reproduce) reproduce);
             }
 
             // ---
             // Age
             // ---
             int ageGrass = agentOpts.getAgeBy();
-            core.actions.Action energyGain = new core.actions.EnergyChange(chosen, -ageGrass);
+            Action energyGain = new EnergyChange(chosen, -ageGrass);
             actions.add(energyGain);
-            processAgeAction((core.actions.EnergyChange) energyGain);
+            processAgeAction((EnergyChange) energyGain);
 
             List<LifeAgent> deadAgents = currCell.findDeadAgents();
             deadAgents.addAll(nextCell.findDeadAgents());
             if (false == removeAgents(deadAgents)) {
-                LOGGER.log(Level.SEVERE, "Failed to remove some core.agents!");
+                LOGGER.log(Level.SEVERE, "Failed to remove some agents!");
             }
         }
 
@@ -263,7 +267,7 @@ public class Life implements LifeGetter {
         return actions;
     }
 
-    /** @return total number number of created core.agents */
+    /** @return total number number of created agents */
     private int createAndDistributeAgents() {
 
         // This is an important check necessary to prevent infinite loops in the code bit adding the agents below
@@ -276,8 +280,7 @@ public class Life implements LifeGetter {
             throw new TooManySurfacesException(String.format("%d surface instances requested with only %d cells present", surfaceCount, cellCount));
 
 
-        // TODO(sami); no need to separate the two creationns anymomre ?
-        int nCreated = 0; // number of core.agents created
+        int nCreated = 0; // number of agents created
 
         for (Class<?extends LifeAgent> cls : options.getSupportedAgents()) {
             LifeAgentOptions lifeAgentOptions = options.getOptionsForAgent(cls);
@@ -286,7 +289,7 @@ public class Life implements LifeGetter {
 
             // for each type of agent
             try {
-                // create however many core.agents of this type are needed
+                // create however many agents of this type are needed
                 for (int i = 0; i < I0; i++) {
                     // find a random point in the grid to place this agent instance
                     Point2D p = Utils.randomPoint(options.getGridCols(), options.getGridRows());
@@ -321,18 +324,18 @@ public class Life implements LifeGetter {
         return nCreated;
     }
 
-    private void processAgeAction(core.actions.EnergyChange action) throws AgentAlreadyDeadException {
+    private void processAgeAction(EnergyChange action) throws AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         action.getAgent().changeEnergyBy(action.getEnergyDelta());
     }
 
-    private void processMoveAction(core.actions.Move action) throws SurfaceAlreadyPresent {
+    private void processMoveAction(Move action) throws SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Cell nextCell = grid.get(action.getTo());
         grid.moveAgentToCell(action.getAgent(), nextCell);
     }
 
-    private void processReproduce(core.actions.Reproduce action) throws SurfaceAlreadyPresent {
+    private void processReproduce(Reproduce action) throws SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Iterator<LifeAgent> babies = action.getBabies();
         while(babies.hasNext()) {
@@ -341,7 +344,7 @@ public class Life implements LifeGetter {
         }
     }
 
-    private void processConsume(core.actions.Consume action) throws AgentAlreadyDeadException {
+    private void processConsume(Consume action) throws AgentAlreadyDeadException {
         LOGGER.log(Level.INFO, action.toString());
         if (false == action.getConsumables().hasNext()) {
             LOGGER.log(Level.WARNING, "processConsume called without any consumables");
@@ -367,7 +370,7 @@ public class Life implements LifeGetter {
                 break;
             case 3:
                 // Implementation 3:
-                // the consuming core.agents gains energy of its consumable with a cap on the energy gained
+                // the consuming agents gains energy of its consumable with a cap on the energy gained
                 energyGain = (consumableEnergy < GAIN_CAP)? consumableEnergy : GAIN_CAP;
                 break;
             case 1:

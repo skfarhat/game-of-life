@@ -186,7 +186,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
             // prevented from (private) access
             throw new LifeImplementationException(e.getMessage());
         } catch (InvocationTargetException e) {
-            // method  threw an exception
+            // method threw an exception
             throw new AgentAlreadyDeadException();
         } catch (NoSuchMethodException e) {
             throw new LifeImplementationException(e.getMessage());
