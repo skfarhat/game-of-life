@@ -41,6 +41,22 @@ public class LifeCell extends Cell<LifeAgent> {
         return agents.stream().filter(a -> !a.isAlive()).collect(Collectors.toList());
     }
 
+    /**
+     * adds LifeAgent instance
+     * @param a
+     * @return
+     * @throws SurfaceAlreadyPresent
+     */
+    public boolean addAgent(LifeAgent a) throws SurfaceAlreadyPresent {
+        if (a instanceof Creature)
+            return addAgent((Creature) a);
+        else if (a instanceof Surface)
+            return addAgent((Surface) a);
+        else{
+            LOGGER.log(Level.SEVERE, "Attempting to add LifeAgent of unknown type {0}", a.getClass().getName());
+            return false;
+        }
+    }
 
     /**
      * add creature to the core.agents list
