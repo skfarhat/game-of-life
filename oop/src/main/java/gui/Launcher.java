@@ -31,7 +31,7 @@ public class Launcher extends Application {
         // configure logger
         System.setProperty("java.util.logging.SimpleFormatter.format",
                 "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
-        Handler fh = new FileHandler("log/wombat.log");
+        Handler fh = new FileHandler("oop.log");
         Logger.getLogger("").addHandler(fh);
         Logger.getLogger("com.wombat").setLevel(Level.FINEST);
 

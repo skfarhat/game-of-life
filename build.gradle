@@ -2,7 +2,6 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
 
-
 allprojects {
     group 'com.samifarhat.oop'
     version '0.3'
@@ -21,12 +20,9 @@ allprojects {
         toolVersion = "0.7.9"
     }
 
-
-
     task myJavadocs(type: Javadoc) {
         source = sourceSets.main.allJava
     }
-
 }
 
 
@@ -43,23 +39,18 @@ subprojects {
         sourceDirectories = files(sourceSets.main.allSource.srcDirs)
 
         reports {
-
             csv.enabled false
-
+            xml.enabled false
             html{
                 enabled true
                 destination "${buildDir}/reports/jacoco"
             }
-
-            xml.enabled false
         }
     }
-
 }
 
 
 project(":") {
-
     task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
         dependsOn = subprojects.test
         additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
@@ -83,7 +74,6 @@ project(":") {
 }
 
 project(":oop") {
-
     dependencies {
         compile project(":core")
     }
