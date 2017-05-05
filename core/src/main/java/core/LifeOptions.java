@@ -2,6 +2,7 @@ package core;
 
 import core.exceptions.LifeException;
 import core.exceptions.LifeImplementationException;
+import core.exceptions.LifeRuntimeException;
 import core.exceptions.UnsupportedAgentException;
 
 import java.util.*;
@@ -9,13 +10,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- *
+ * class encapsulating all configurable parameters to a Life simulation
  */
 public class LifeOptions {
 
-    /**
-     * @brief logger
-     */
+    /** logger */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
     // =================================================================================================================
@@ -38,12 +37,18 @@ public class LifeOptions {
      */
     private final ConsumeRules consumeRules = new ConsumeRules();
 
+    /**
+     * map mapping each LifeAgent class type to its LifeAgentOptions
+     */
     private Map<Class<?extends LifeAgent>, LifeAgentOptions> lifeAgentParams = new HashMap<>();
 
+    /** maximum number of iterations to run the system for (0 and -1 mean indefinitely) */
     private int maximumIterations = DEFAULT_MAX_ITERATIONS;
 
+    /** number of rows in the grid used by Life */
     private int gridRows = DEFAULT_GRID_N;
 
+    /** number of columns in the grid used by Life */
     private int gridCols = DEFAULT_GRID_N;
 
     // =================================================================================================================
@@ -63,19 +68,27 @@ public class LifeOptions {
         init(opts);
     }
 
+    /**
+     * constructor with LifeAgentOptions passed
+     * @param opts
+     */
     public LifeOptions(LifeAgentOptions... opts) {
         if (opts != null)
             init(Arrays.stream(opts).collect(Collectors.toList()));
     }
 
+    /**
+     * constructor with LifeAgent class types passed
+     * @param cls
+     */
     public LifeOptions(Class<?extends LifeAgent>... cls)  {
-        if (null == cls)
-            return;
-        List<LifeAgentOptions> opts = new ArrayList<>();
-        for (Class<?extends LifeAgent> c : cls) {
-            opts.add(new LifeAgentOptions(c));
+        if (null != cls) {
+            List<LifeAgentOptions> opts = new ArrayList<>();
+            for (Class<?extends LifeAgent> c : cls) {
+                opts.add(new LifeAgentOptions(c));
+            }
+            init(opts);
         }
-        init(opts);
     }
 
     /**
@@ -104,26 +117,46 @@ public class LifeOptions {
         return Collections.unmodifiableList(list);
     }
 
+    /** get the maximum number of iterations the system will run. values 0 and -1 mean run indefinitely */
     public int getMaximumIterations() {
         return maximumIterations;
     }
 
+    /** set the maximum number of iterations the system will run. values 0 and -1 mean run indefinitely */
     public void setMaximumIterations(int maximumIterations) {
         this.maximumIterations = maximumIterations;
     }
 
+    /** get the number of rows in the grid used in Life */
     public int getGridRows() {
         return gridRows;
     }
 
+    /** get the number of columns in the grid used in Life */
     public int getGridCols() {
         return gridCols;
     }
 
+    /** set the number of rows in the grid used in Life */
+    public void setGridRows(int gridRows) {
+        this.gridRows = gridRows;
+    }
+
+    /** set the number of columns in the grid used in Life */
+    public void setGridCols(int gridCols) {
+        this.gridCols = gridCols;
+    }
+
+    /**
+     * get the LifeAgentOptions class for the passed agent
+     * @param type the agent type
+     * @return LifeAgentOptions instance associated with the given agent type
+     */
     public LifeAgentOptions getOptionsForAgent(Class<?extends LifeAgent> type) {
         return lifeAgentParams.get(type);
     }
 
+    /** @return consumeRules member */
     public ConsumeRules getConsumeRules() {
         return consumeRules;
     }
@@ -140,7 +173,6 @@ public class LifeOptions {
     }
 
     /**
-     *
      * @param list of consume rules to add
      * @return true if the addition of the list of consume rules was successful
      * @throws LifeException if any of the classes in @param list or @param cls are unsupported in LifeOptions. If they have
@@ -165,7 +197,6 @@ public class LifeOptions {
     }
 
     /**
-     *
      * @param list list of consumeRules to remove
      * @return true if the removal of the list of consume rules was successful
      * @throws LifeException
@@ -174,7 +205,11 @@ public class LifeOptions {
         return consumeRules.removeAll(Arrays.asList(list));
     }
 
-    public boolean agentTypeIsSupported(Class c) {
+    /**
+     * @return true if the given LifeAgent class type is supported. This is only true if that class type was passed
+     * to this object in the constructor or in an appropriate LifeAgentOptions object
+     */
+    public boolean agentTypeIsSupported(Class<?extends LifeAgent> c) {
         return lifeAgentParams.containsKey(c);
     }
 
@@ -187,25 +222,17 @@ public class LifeOptions {
         return consumeRules.contains(cr);
     }
 
-    /** returns true if the core.agents in the consume rule are supported */
+    /** @return true if the core.agents in the consume rule are supported */
     private boolean validConsumeRule(ConsumeRule cr) {
         return agentTypeIsSupported(cr.getConsumable())
                 && agentTypeIsSupported(cr.getConsumer()) ;
     }
 
-    /** returns true if the core.agents in the consume rule are supported */
+    /** @return true if the core.agents in the consume rule are supported */
     private void exceptionIfInvalidConsumeRule(ConsumeRule cr) {
         if (false == validConsumeRule(cr)) {
             Class unsupportedClass = (true == agentTypeIsSupported(cr.getConsumable())) ? cr.getConsumer(): cr.getConsumable();
             throw new UnsupportedAgentException(unsupportedClass);
         }
-    }
-
-    public void setGridCols(int gridCols) {
-        this.gridCols = gridCols;
-    }
-
-    public void setGridRows(int gridRows) {
-        this.gridRows = gridRows;
     }
 }
