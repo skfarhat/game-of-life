@@ -1,6 +1,7 @@
 package core;
 
 import core.exceptions.LifeImplementationException;
+import core.exceptions.LifeRuntimeException;
 import core.exceptions.TooManySurfacesException;
 import org.junit.Test;
 
@@ -88,5 +89,17 @@ public class LifeOptionsTest {
         final int rows = Utils.randomPositiveInteger(100);
         options.setGridRows(rows);
         assertEquals(options.getGridRows(), rows);
+    }
+
+    @Test(expected = LifeRuntimeException.class)
+    public void testLifeOptionsWithSameClassTwice() {
+        new LifeOptions(Wolf.class, Wolf.class);
+    }
+
+    @Test(expected = LifeRuntimeException.class)
+    public void testLifeOptionsWithLifeAgentOptionsWithSameClass() {
+        LifeAgentOptions o1 = new LifeAgentOptions(Wolf.class);
+        LifeAgentOptions o2 = new LifeAgentOptions(Wolf.class);
+        new LifeOptions(o1, o2);
     }
 }

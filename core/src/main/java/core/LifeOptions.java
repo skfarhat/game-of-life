@@ -90,6 +90,10 @@ public class LifeOptions {
 
         for (LifeAgentOptions opt : opts) {
             Class<?extends LifeAgent> lifeAgentClass = opt.getAgentType();
+            // if the class is already in the lifeAgentParams map then the user must have mistakenly (or purposefully)
+            // passed the same class type s
+            if (lifeAgentParams.containsKey(lifeAgentClass))
+                throw new LifeRuntimeException(String.format("Cannot pass the same LifeAgent class (%s) multiple times to LifeOptions.", lifeAgentClass.getName()));
             lifeAgentParams.put(lifeAgentClass, opt);
         }
     }
