@@ -66,60 +66,6 @@ public class Life implements LifeGetter {
     }
 
     /**
-     *
-     * @param a
-     * @return
-     * @throws SurfaceAlreadyPresent
-     */
-    public boolean addAgent(LifeAgent a) throws SurfaceAlreadyPresent {
-        if (false == grid.isPointInBounds(a.getPos()))
-            return false;
-        LifeCell lc = grid.get(a.getPos());
-        return (lc.addAgent(a) && agents.add(a));
-    }
-
-    /**
-     * adds all LifeAgents in the list by checking the type of LifeAgent and calling the right
-     * method addSurface() or addCreature()
-     * @param agents
-     * @return
-     */
-    public boolean addAgents(List<LifeAgent> agents) throws SurfaceAlreadyPresent {
-        boolean success = true;
-        for (LifeAgent a : agents) {
-            success &= addAgent(a);
-        }
-        return success;
-    }
-
-    /**
-     * remove the passed Agent @param a from the local agents list and from the cell's agents list
-     * @return true if the removal was successful from both lists, false otherwise
-     */
-    public boolean removeAgent(LifeAgent a)  {
-        if (false == grid.isPointInBounds(a.getPos()))
-            return false;
-        try {
-            LifeCell cell = grid.get(a.getPos());
-            return cell.removeAgent(a) && agents.remove(a);
-        }
-        catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked
-    }
-
-    /**
-     * removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
-     * @param agents list of agents to remove
-     * @return false if any one of the agents in the list could not be removed
-     */
-    public boolean removeAgents(List<LifeAgent> agents) {
-        boolean success = true;
-        for (LifeAgent a : agents) {
-            success &= removeAgent(a);
-        }
-        return success;
-    }
-
-    /**
      * choose an agent at random to act
      * @throws InvalidPositionException
      * @throws AgentAlreadyDeadException
@@ -267,6 +213,61 @@ public class Life implements LifeGetter {
         return actions;
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     * @throws SurfaceAlreadyPresent
+     */
+    private boolean addAgent(LifeAgent a) throws SurfaceAlreadyPresent {
+        if (false == grid.isPointInBounds(a.getPos()))
+            return false;
+        LifeCell lc = grid.get(a.getPos());
+        return (lc.addAgent(a) && agents.add(a));
+    }
+
+    /**
+     * adds all LifeAgents in the list by checking the type of LifeAgent and calling the right
+     * method addSurface() or addCreature()
+     * @param agents
+     * @return
+     */
+    private boolean addAgents(List<LifeAgent> agents) throws SurfaceAlreadyPresent {
+        boolean success = true;
+        for (LifeAgent a : agents) {
+            success &= addAgent(a);
+        }
+        return success;
+    }
+
+    /**
+     * remove the passed Agent @param a from the local agents list and from the cell's agents list
+     * @return true if the removal was successful from both lists, false otherwise
+     */
+    private boolean removeAgent(LifeAgent a)  {
+        if (false == grid.isPointInBounds(a.getPos()))
+            return false;
+        try {
+            LifeCell cell = grid.get(a.getPos());
+            return cell.removeAgent(a) && agents.remove(a);
+        }
+        catch (InvalidPositionException e) { return false; } // this shouldn't happen because we already checked
+    }
+
+    /**
+     * removes all agents from the provided list. Failure to remove an agent in the list will make the method return false.
+     * @param agents list of agents to remove
+     * @return false if any one of the agents in the list could not be removed
+     */
+    private boolean removeAgents(List<LifeAgent> agents) {
+        boolean success = true;
+        for (LifeAgent a : agents) {
+            success &= removeAgent(a);
+        }
+        return success;
+    }
+
+
     /** @return total number number of created agents */
     private int createAndDistributeAgents() {
 
@@ -278,7 +279,6 @@ public class Life implements LifeGetter {
         final int cellCount = options.getGridRows() * options.getGridCols();
         if (surfaceCount > cellCount)
             throw new TooManySurfacesException(String.format("%d surface instances requested with only %d cells present", surfaceCount, cellCount));
-
 
         int nCreated = 0; // number of agents created
 
