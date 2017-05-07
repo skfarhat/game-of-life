@@ -102,4 +102,22 @@ public class LifeOptionsTest {
         LifeAgentOptions o2 = new LifeAgentOptions(Wolf.class);
         new LifeOptions(o1, o2);
     }
+
+    @Test
+    public void testGetSetConsumableImplementation() {
+        LifeOptions opts = new LifeOptions();
+        opts.setConsumeImplementation(LifeOptions.ConsumeImplementation.CAPPED_CONSUMABLE_ENERGY);
+        assertEquals(LifeOptions.ConsumeImplementation.CAPPED_CONSUMABLE_ENERGY, opts.getConsumeImplementation());
+        opts.setConsumeImplementation(LifeOptions.ConsumeImplementation.FIXED_ENERGY);
+        assertEquals(LifeOptions.ConsumeImplementation.FIXED_ENERGY, opts.getConsumeImplementation());
+    }
+
+    @Test
+    public void testGetSetConsumableImplementationCap() {
+        LifeOptions opts = new LifeOptions();
+        final int val = Utils.randomPositiveInteger(1000);
+        opts.setConsumableEnergyCap(val);
+        assertEquals(val, opts.getConsumeImplementation());
+    }
+
 }

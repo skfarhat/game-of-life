@@ -1,4 +1,4 @@
-package gui;
+package gui.views;
 
 import agents.Deer;
 import javafx.scene.control.Label;

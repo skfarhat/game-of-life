@@ -1,16 +1,23 @@
-package gui;
+package gui.controllers;
 
 import agents.Deer;
 import agents.Grass;
 import agents.Wolf;
 import core.*;
+import core.LifeOptions.ConsumeImplementation;
 import core.exceptions.LifeException;
 import core.exceptions.TooManySurfacesException;
+import gui.*;
+import gui.views.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.*;
@@ -32,21 +39,24 @@ public class ControlPanelController implements Initializable {
     public static final String PARAM_FILED_EGAIN = "egain";
     public static final String PARAM_FILED_ELOSS = "eloss";
 
-    public final String START_BUTTON_TEXT1 = "Start";
-    public final String START_BUTTON_TEXT2 = "Pause";
-    public Label speedLabel;
+    public static final String START_BUTTON_TEXT1 = "Start";
+    public static final String START_BUTTON_TEXT2 = "Pause";
 
-    private LifeStarter lifeStarter;
+    @FXML private TextField consumableCapTextField;
+    @FXML private Label speedLabel;
+    @FXML private ChoiceBox<ConsumeImplementation> consumeImplementationChoiceBox;
     @FXML private TabPane tabPane;
-
     @FXML private Button startButton;
     @FXML private Button stopButton;
-    @FXML private TextField maxIterationsTextField;
-    @FXML private TextField colsTextField;
-    @FXML private TextField rowsTextField;
+
+    private TextField maxIterationsTextField;
+    private TextField colsTextField;
+    private TextField rowsTextField;
+
     @FXML private Slider frequencySlider;
     @FXML private Label iterationsLabel;
 
+    private LifeStarter lifeStarter;
     private StackedTitledPanes agentsCtrlPane;
     private RulesPane rulesPane;
     private LifeOptions lifeOptions;
@@ -67,6 +77,36 @@ public class ControlPanelController implements Initializable {
             frequencySliderDone();
         });
 
+        consumeImplementationChoiceBox.setItems(
+                FXCollections.observableArrayList(
+                        ConsumeImplementation.FIXED_ENERGY,
+                        ConsumeImplementation.CONSUMABLE_ENERGY,
+                        ConsumeImplementation.CAPPED_CONSUMABLE_ENERGY )
+        );
+        consumeImplementationChoiceBox.setConverter(new StringConverter<ConsumeImplementation>() {
+            @Override
+            public String toString(ConsumeImplementation object) {
+                switch(object) {
+                    case FIXED_ENERGY:
+                        return "Fixed Energy";
+                    case CONSUMABLE_ENERGY:
+                        return "Consumable Energy";
+                    case CAPPED_CONSUMABLE_ENERGY:
+                        return "Capped Consumable Energy";
+                }
+                return "";
+            }
+
+            @Override
+            public ConsumeImplementation fromString(String string) {
+                return null;
+            }
+        });
+        if (0 != consumeImplementationChoiceBox.getItems().size())
+            consumeImplementationChoiceBox.getSelectionModel().select(0);
+
+        consumableCapTextField.setText(String.format("%d", 10));
+
         try {
             lifeOptions = new LifeOptions(Wolf.class, Deer.class, Grass.class);
             lifeOptions.addConsumeRule(new ConsumeRule(Wolf.class, Deer.class));
@@ -75,7 +115,19 @@ public class ControlPanelController implements Initializable {
         catch (LifeException e) {e.printStackTrace();}
 
         // General Tab
-        tabPane.getTabs().get(0).setText("General");
+        Tab tab = tabPane.getTabs().get(0);
+        VBox generalsVBox = new VBox(10);
+        ParamField rowsParamField = new ParamField("rows", "Rows", lifeOptions.getGridRows());
+        ParamField colsParamField = new ParamField("cols", "Columns", lifeOptions.getGridCols());
+        ParamField iterationsField = new ParamField("iterations", "Iterations", lifeOptions.getMaximumIterations());
+        generalsVBox.getChildren().addAll(
+                rowsParamField, colsParamField, iterationsField
+        );
+        rowsTextField = rowsParamField.getInputTextField();
+        colsTextField = colsParamField.getInputTextField();
+        maxIterationsTextField = iterationsField.getInputTextField();
+        tab.setText("General");
+        ((Pane)tab.getContent()).getChildren().add(0, generalsVBox);
 
         // Agents Tab
         tabPane.getTabs().get(1).setText("Agents");
@@ -94,8 +146,7 @@ public class ControlPanelController implements Initializable {
         updateSpeedLabelText();
     }
 
-    private void update(ParamField pf, LifeAgentOptions lap) {
-        System.out.println("update called with " + pf + " " + lap);
+    private void update(SmartParamField pf, LifeAgentOptions lap) {
         if (pf.getName().equals("age")) {
             try {
                 int age = validateInteger(pf.getTextField());
@@ -171,28 +222,32 @@ public class ControlPanelController implements Initializable {
             Integer maxIterations = validateInput(maxIterationsTextField, Integer.class).intValue();
             Integer gridRows = validatePositive(rowsTextField);
             Integer gridCols = validatePositive(colsTextField);
+            Integer consumableCap = validatePositive(consumableCapTextField);
+            LifeOptions.ConsumeImplementation impl = consumeImplementationChoiceBox.getValue();
 
             lifeOptions.setMaximumIterations(maxIterations);
             lifeOptions.setGridCols(gridCols);
             lifeOptions.setGridRows(gridRows);
+            lifeOptions.setConsumeImplementation(impl);
+            lifeOptions.setConsumableEnergyCap(consumableCap);
 
             // reset all the status images next to the textfields
             agentsCtrlPane.resetStatusImages();
 
             // user wants to start a new simulation
-            if (State.STOPPED == lifeStarter.getState()) {
+            if (LifeState.STOPPED == lifeStarter.getState()) {
                 Life life = new Life(lifeOptions);
 
                 if (lifeStarter.start(life))
                     setStartedState();
             }
             // user wants to continue the paused simulation
-            else if (State.PAUSED == lifeStarter.getState()) {
+            else if (LifeState.PAUSED == lifeStarter.getState()) {
                 lifeStarter.unpause();
                 setStartedState();
             }
             // user wants to pause the current simulation
-            else if (State.STARTED == lifeStarter.getState()) {
+            else if (LifeState.STARTED == lifeStarter.getState()) {
                 if (lifeStarter.pause())
                     setPausedState();
             }
@@ -240,7 +295,7 @@ public class ControlPanelController implements Initializable {
     }
 
     /**  change the name (and other properties?) appearing on the start button */
-    private void changeButtonsState(State state) {
+    private void changeButtonsState(LifeState state) {
         switch(state) {
             case STOPPED:
                 stopButton.setDisable(true);
@@ -263,6 +318,13 @@ public class ControlPanelController implements Initializable {
         speedLabel.setText(String.format("%.1f%%", val*100));
     }
 
+
+    /**
+     * displays a UI alert if the value in the TextField is not an integer
+     * @param t the textfield that is checked
+     * @return the value parsed in the textfield
+     * @throws IllegalArgumentException if the value in the textfield is not an integer
+     */
     private Integer validateInteger(TextField t) throws IllegalArgumentException {
         int val;
         try {
@@ -285,6 +347,12 @@ public class ControlPanelController implements Initializable {
         }
     }
 
+    /**
+     * displays a UI alert if the value in the TextField is not a positive integer (zero is NOT a positive integer)
+     * @param t the textfield that is checked
+     * @return the value parsed in the textfield
+     * @throws IllegalArgumentException if the value in the textfield is not a positive integer
+     */
     private Integer validatePositive(TextField t) throws IllegalArgumentException {
         int val = validateInteger(t);
         if (val <= 0) {
@@ -304,6 +372,12 @@ public class ControlPanelController implements Initializable {
         return val;
     }
 
+    /**
+     * displays a UI alert if the value in the TextField is negative (0 is acceptable)
+     * @param t the textfield that is checked
+     * @return the value parsed in the textfield
+     * throws IllegalArgumentException if the value in the textfield is negative (0 is NOT NEGATIVE)
+     */
     private Integer validateNonNegative(TextField t) throws IllegalArgumentException {
         int val = validateInteger(t);
         if (val < 0) {
@@ -358,8 +432,6 @@ public class ControlPanelController implements Initializable {
             int val = Integer.MIN_VALUE;
             try {
                 val = Integer.parseInt(t.getText());
-                if (val < 0)
-                    throw new NumberFormatException();
                 return val;
             }
             catch(NumberFormatException exc) {
@@ -406,13 +478,35 @@ public class ControlPanelController implements Initializable {
         }
     }
 
+    /** enable the textfields that should not be changed when a Life simulation starts */
+    private void enableTextFields() {
+        boolean disable = false;
+        consumableCapTextField.setDisable(disable);
+        colsTextField.setDisable(disable);
+        rowsTextField.setDisable(disable);
+        maxIterationsTextField.setDisable(disable);
+    }
+
+    /** disable the textfields that should not be changed when a Life simulation starts */
+    private void disableTextFields() {
+        boolean disable = true;
+        consumableCapTextField.setDisable(disable);
+        colsTextField.setDisable(disable);
+        rowsTextField.setDisable(disable);
+        maxIterationsTextField.setDisable(disable);
+    }
+
     private double getSpeedVal() {
         return frequencySlider.getValue() / 100.0f;
     }
     private void setPausedState() { changeButtonsState(lifeStarter.getState()); }
     private void setStartedState() {
+        disableTextFields();
         changeButtonsState(lifeStarter.getState());
     }
-    private void setStoppedState() { changeButtonsState(lifeStarter.getState()); }
+    private void setStoppedState() {
+        enableTextFields();
+        changeButtonsState(lifeStarter.getState());
+    }
 
 }

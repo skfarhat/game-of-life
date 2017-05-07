@@ -1,4 +1,4 @@
-package gui;
+package gui.views;
 
 import core.ConsumeRule;
 import core.ConsumeRules;
@@ -6,6 +6,7 @@ import core.Life;
 import core.LifeAgent;
 import core.exceptions.InvalidOptionsException;
 import core.exceptions.LifeImplementationException;
+import gui.RulesModifier;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;

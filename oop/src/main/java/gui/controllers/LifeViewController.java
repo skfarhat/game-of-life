@@ -1,8 +1,9 @@
-package gui;
+package gui.controllers;
 
 import core.Life;
 import core.actions.Action;
 import core.exceptions.InvalidPositionException;
+import gui.views.LifeGridView;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 

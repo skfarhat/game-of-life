@@ -362,7 +362,6 @@ public class Life implements LifeGetter {
             return;
         }
 
-        final int choiceOfImplementation = 1;
         final int GAIN_CAP = 10;
 
         Consumable consumable = action.getConsumables().next();
@@ -373,18 +372,18 @@ public class Life implements LifeGetter {
         int consumableEnergy = consumable.getEnergy();
         int energyLoss = consumableEnergy; // defaults to consumable's energy but isn't the case for everything (e.g. Grass)
 
-        switch(choiceOfImplementation) {
-            case 2:
+        switch(options.getConsumeImplementation()) {
+            case CONSUMABLE_ENERGY:
                 // Implementation 2:
                 // the consuming agent gains the energy of the consumable
                 energyGain = energyLoss;
                 break;
-            case 3:
+            case CAPPED_CONSUMABLE_ENERGY:
                 // Implementation 3:
                 // the consuming agents gains energy of its consumable with a cap on the energy gained
                 energyGain = (consumableEnergy < GAIN_CAP)? consumableEnergy : GAIN_CAP;
                 break;
-            case 1:
+            case FIXED_ENERGY:
             default:
                 // Implementation 1 and the default :
                 // the consuming agent gains a fixed energy defined by E_{X}_GAIN

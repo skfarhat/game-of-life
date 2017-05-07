@@ -1,4 +1,4 @@
-package gui;
+package gui.views;
 
 import core.LifeAgentStats;
 import javafx.application.Platform;

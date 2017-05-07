@@ -1,10 +1,11 @@
-package gui;
+package gui.views;
 
 import core.LifeAgent;
 import core.LifeGrid;
 import core.Point2D;
 import core.actions.*;
 import core.exceptions.InvalidPositionException;
+import gui.views.CellView;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

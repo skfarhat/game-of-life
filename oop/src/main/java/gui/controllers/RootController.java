@@ -1,4 +1,4 @@
-package gui;
+package gui.controllers;
 
 import core.Life;
 import core.LifeGetter;
@@ -6,6 +6,8 @@ import core.actions.Action;
 import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.InvalidPositionException;
 import core.exceptions.SurfaceAlreadyPresent;
+import gui.LifeStarter;
+import gui.LifeState;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
@@ -18,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  *  RootController
@@ -50,7 +53,7 @@ public class RootController implements Initializable, LifeStarter {
 
     private int period = DEFAULT_PERIOD; // milliseconds
     private Timer timer;
-    private State currentState = State.STOPPED;
+    private LifeState currentState = LifeState.STOPPED;
     private Life life;
     private ConcurrentLinkedQueue<Action> queue = new ConcurrentLinkedQueue<>();
     private SimpleIntegerProperty iterations = new SimpleIntegerProperty();
@@ -95,7 +98,7 @@ public class RootController implements Initializable, LifeStarter {
     public boolean start(Life life) {
 
         // guard
-        if (getState() == State.STARTED) {
+        if (getState() == LifeState.STARTED) {
             return false;
         }
 
@@ -107,7 +110,7 @@ public class RootController implements Initializable, LifeStarter {
 
         // run the timers and change state
         runTimers();
-        currentState = State.STARTED;
+        currentState = LifeState.STARTED;
 
         return true;
     }
@@ -118,7 +121,7 @@ public class RootController implements Initializable, LifeStarter {
     public boolean stop() {
 
         // guard
-        if (getState() == State.STOPPED) {
+        if (getState() == LifeState.STOPPED) {
             return false;
         }
 
@@ -126,7 +129,7 @@ public class RootController implements Initializable, LifeStarter {
 
         // cancel timers and change state
         cancelTimers();
-        currentState = State.STOPPED;
+        currentState = LifeState.STOPPED;
 
         // unset life in the controller
         try { lifeViewController.setLife(null); } // let's unset life}
@@ -141,14 +144,14 @@ public class RootController implements Initializable, LifeStarter {
     @Override
     public boolean pause() {
         cancelTimers();
-        currentState = State.PAUSED;
+        currentState = LifeState.PAUSED;
         return true;
     }
 
     @Override
     public boolean unpause() {
         boolean x = runTimers();
-        currentState = State.STARTED;
+        currentState = LifeState.STARTED;
         return x;
     }
 
@@ -168,7 +171,7 @@ public class RootController implements Initializable, LifeStarter {
 
             // after setting the frequency we need to adjust re-adjust the timers,
             // the easiest way is to pause then start
-            if (getState() == State.STARTED) {
+            if (getState() == LifeState.STARTED) {
                 pause();
                 unpause();
             }
@@ -186,14 +189,14 @@ public class RootController implements Initializable, LifeStarter {
      * @return
      */
     private boolean runTimers() {
-        if (this.life == null || getState() == State.STARTED)
+        if (this.life == null || getState() == LifeState.STARTED)
             return false;
 
         // Consumer
         Thread t = new Thread(new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                while(RootController.this.getState() == gui.State.STARTED) {
+                while(RootController.this.getState() == LifeState.STARTED) {
                     Action action = queue.poll();
 
                     // if we find an action, then there are likely more actions coming
@@ -260,7 +263,7 @@ public class RootController implements Initializable, LifeStarter {
      * @return the current state of the system (e.g. Started, Stopped, Paused)
      */
     @Override
-    public State getState() {
+    public LifeState getState() {
         return currentState;
     }
 
@@ -273,7 +276,7 @@ public class RootController implements Initializable, LifeStarter {
 
     /**  cancel all timers effectively stopping the drawing and logic in life */
     private void cancelTimers()  {
-        if (getState() != State.STOPPED) {
+        if (getState() != LifeState.STOPPED) {
             timer.cancel();
         }
     }

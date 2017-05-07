@@ -1,6 +1,7 @@
-package gui;
+package gui.views;
 
 import agents.Grass;
+import gui.Utils;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import java.util.ArrayList;

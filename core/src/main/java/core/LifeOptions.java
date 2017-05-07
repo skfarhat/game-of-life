@@ -14,6 +14,21 @@ import java.util.stream.Collectors;
  */
 public class LifeOptions {
 
+    /**
+     * when an agent consumes another there are many way to define what energy the consumer gains. This enum allows users
+     * to configure through the API which energy-gain behaviour is adopted.
+     */
+    public enum ConsumeImplementation {
+        /** the consumer agent gains a fixed energy defined in LifeAgentOptions */
+        FIXED_ENERGY,
+
+        /** the consumer agent gains the consumable's energy */
+        CONSUMABLE_ENERGY,
+
+        /** the consumer agent gains the consumable's energy with a configurable cap (upper limit value) */
+        CAPPED_CONSUMABLE_ENERGY
+    }
+
     /** logger */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
@@ -27,19 +42,23 @@ public class LifeOptions {
     /**  default energy gained by wolf and deer when they consume other core.agents */
     public static final int DEFAULT_GRID_N = 5;
 
+    /** default consume implementation */
+    public static final ConsumeImplementation DEFAULT_CONSUME_IMPLEMENTATION = ConsumeImplementation.FIXED_ENERGY;
+
+    /** default cap (upper limit) used when ConsumeImplementation = CAPPED_CONSUMABLE_ENERGY */
+    public static final int DEFAULT_CONSUME_ENERGY_CAP = 10;
+
     // =================================================================================================================
     // FIELDS
     // =================================================================================================================
 
     /**
-     * Map of ConsumeRules that will govern who consumes whom.
+     * map of ConsumeRules that will govern who consumes whom.
      * the Boolean map values are redundant effectively not used. Map was chosen over array for faster get() operations
      */
     private final ConsumeRules consumeRules = new ConsumeRules();
 
-    /**
-     * map mapping each LifeAgent class type to its LifeAgentOptions
-     */
+    /** map mapping each LifeAgent class type to its LifeAgentOptions */
     private Map<Class<?extends LifeAgent>, LifeAgentOptions> lifeAgentParams = new HashMap<>();
 
     /** maximum number of iterations to run the system for (0 and -1 mean indefinitely) */
@@ -51,10 +70,17 @@ public class LifeOptions {
     /** number of columns in the grid used by Life */
     private int gridCols = DEFAULT_GRID_N;
 
+    /** the consume implementation adopted by Life - defaults to fixed energy */
+    private ConsumeImplementation consumeImplementation = DEFAULT_CONSUME_IMPLEMENTATION;
+
+    /** the cap (upper limit) used when consumeImplementation is set to CAPPED_CONSUMABLE_ENERGY */
+    private int consumableEnergyCap = DEFAULT_CONSUME_ENERGY_CAP;
+
     // =================================================================================================================
     // METHODS
     // =================================================================================================================
 
+    /** default constructor */
     public LifeOptions() {
         this((Class<? extends LifeAgent>[]) null);
     }
@@ -194,6 +220,31 @@ public class LifeOptions {
     public boolean removeConsumeRule(ConsumeRule cr) {
         exceptionIfInvalidConsumeRule(cr);
         return consumeRules.remove(cr);
+    }
+
+    /**
+     * set the consume implementation adopted
+     * @param consumeImplementation enum value to set the consume implementation to
+     */
+    public void setConsumeImplementation(ConsumeImplementation consumeImplementation) {
+        this.consumeImplementation = consumeImplementation;
+    }
+
+    /** set the consumableEnergyCap */
+    public void setConsumableEnergyCap(int consumableEnergyCap) {
+        this.consumableEnergyCap = consumableEnergyCap;
+    }
+
+    /** get the consumableEnergyCap */
+    public int getConsumableEnergyCap() {
+        return consumableEnergyCap;
+    }
+
+    /**
+     * @return the adopted consume implementation
+     */
+    public ConsumeImplementation getConsumeImplementation() {
+        return consumeImplementation;
     }
 
     /**

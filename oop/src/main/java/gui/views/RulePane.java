@@ -1,10 +1,12 @@
-package gui;
+package gui.views;
 
 import core.ConsumeRule;
 import core.Life;
 import core.LifeAgent;
 import core.exceptions.InvalidOptionsException;
 import core.exceptions.LifeException;
+import gui.RulesModifier;
+import gui.Utils;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -85,7 +87,7 @@ public class RulePane extends HBox {
         removeButton.setOnAction(e -> delegateRemove());
 
         saveButton= new Button("", new ImageView(
-                new Image(RulesPane.class.getResource("/images/check.png").toString(),
+                new Image(RulesPane.class.getResource("/images/check@50x50.png").toString(),
                         buttonImgWidth, buttonImgHeight, true, true)));
         saveButton.setOnAction(e -> delegateSave());
 

@@ -2,6 +2,7 @@ package gui;
 
 import agents.Grass;
 import core.exceptions.AgentAlreadyDeadException;
+import gui.views.GrassView;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 

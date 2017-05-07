@@ -1,5 +1,6 @@
 package gui;
 
+import gui.controllers.RootController;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

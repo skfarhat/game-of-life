@@ -9,7 +9,6 @@
 
 <fx:root prefHeight="27.0" prefWidth="200.0" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="imageView" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="paramLabel" minWidth="100.0" prefHeight="27.0" prefWidth="125.0" text="Label" HBox.hgrow="ALWAYS">
          <font>
             <Font size="11.0" />

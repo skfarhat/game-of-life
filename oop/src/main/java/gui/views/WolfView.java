@@ -1,4 +1,4 @@
-package gui;
+package gui.views;
 
 import agents.Wolf;
 import core.LifeAgent;

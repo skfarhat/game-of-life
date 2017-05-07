@@ -4,13 +4,6 @@ import core.Life;
 import core.LifeGetter;
 import javafx.beans.property.SimpleIntegerProperty;
 
-
-enum State {
-    STOPPED,
-    STARTED,
-    PAUSED
-};
-
 public interface LifeStarter {
 
     boolean start(Life life);
@@ -21,7 +14,7 @@ public interface LifeStarter {
 
     boolean unpause();
 
-    State getState();
+    LifeState getState();
 
     void setFrequency(double hz);
 

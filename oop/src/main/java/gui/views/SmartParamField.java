@@ -1,19 +1,21 @@
-package gui;
+package gui.views;
 
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 
-import java.io.IOException;
+/**
+ *
+ */
+public class SmartParamField extends ParamField {
 
-public class ParamField extends HBox {
+    private enum State {
+        CHANGING,
+        UPDATED,
+        INVALID
+    }
 
     private static final String fxmlFilename = "/ParamField.fxml";
 
@@ -21,73 +23,37 @@ public class ParamField extends HBox {
 
     private static final String updateSign = "/images/update.png";
 
-    private static final String checkPath= "/images/check.png";
+    private static final String checkPath= "/images/check@50x50.png";
 
     private final Image invalidImage = new Image(xSign);
     private final Image changingImage = new Image(updateSign);
     private final Image checkImage = new Image(checkPath);
 
-
-    enum State {
-        CHANGING,
-        UPDATED,
-        INVALID
-    };
-
     private State state;
 
-    @FXML
-    private TextField inputTextField;
-    @FXML
-    private Label paramLabel;
-    @FXML
-    private ImageView imageView;
+    private ImageView imageView = new ImageView();
 
-    private final StringProperty textProperty;
-    private String name;
 
-    public ParamField(String name, String paramName, Number nb) {
-        this.name = name;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFilename));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
+    public SmartParamField(String name, String paramName, Number nb) {
+        super(name, paramName, nb);
 
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        imageView.setImage(null);
-        paramLabel.setText(paramName);
-        inputTextField.setText(nb.toString());
-        textProperty = inputTextField.textProperty();
+        imageView.setFitHeight(25.0f);
+        imageView.setFitWidth(25.0f);
 
         inputTextField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (false == newVal.equals(oldVal)) {
                 setChanging();
             }
         });
+        getChildren().add(0, imageView);
     }
 
     public void setInvalid() {
         imageView.setImage(invalidImage);
     }
 
-    public void setValid() {
-        imageView.setVisible(false);
-    }
-
-    public boolean isValid() {
-        return !imageView.isVisible();
-    }
-
     public TextField getTextField() {
         return inputTextField;
-    }
-
-    public String getText() {
-        return textProperty.get();
     }
 
     public void setChanging() {
@@ -113,7 +79,12 @@ public class ParamField extends HBox {
         imageView.setImage(null);
     }
 
-    public String getName() {
-        return name;
+    public void setValid() {
+        imageView.setVisible(false);
     }
+
+    public boolean isValid() {
+        return !imageView.isVisible();
+    }
+
 }

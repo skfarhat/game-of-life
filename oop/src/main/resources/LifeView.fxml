@@ -5,5 +5,5 @@
 
 <Pane maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="768.0"
       xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="gui.LifeViewController">
+      fx:controller="gui.controllers.LifeViewController">
 </Pane>
