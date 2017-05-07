@@ -11,9 +11,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 05/04/2017.
- */
 public class LifeCellTest {
 
     @Test
@@ -27,14 +24,9 @@ public class LifeCellTest {
 
         LifeCell cell = new LifeCell(new Point2D(0, 0));
 
-        // create core.agents
+        // create creatures
         for (int i = 0; i < nAgents; i++) {
-            LifeAgent agent = new LifeAgent() {
-                @Override
-                public LifeAgent reproduce() throws AgentAlreadyDeadException {
-                    return null;
-                }
-            };
+            LifeAgent agent = new Creature();
             allAgents.add(agent);
             agentsAlive.add(agent);
             cell.addAgent(agent);

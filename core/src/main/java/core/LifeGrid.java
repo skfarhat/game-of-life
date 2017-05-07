@@ -70,21 +70,21 @@ public class LifeGrid {
 
     /**
      * moves an agent from its source cell to the @param dstCell
-     * @param agent
+     * @param c
      * @param dstCell
      */
-    public boolean moveAgentToCell(Agent agent, Cell dstCell) {
-        Cell srcCell = get(agent.getPos());
+    public boolean moveCeature(Creature c, Cell dstCell) {
+        Cell srcCell = get(c.getPos());
 
         // remove from src cell
         Iterator<Agent> it = srcCell.getAgents();
 
         while(it.hasNext())
-            if (agent == it.next())
+            if (c == it.next())
                 it.remove();
 
         // add to dst cell and changes the position of the agent to that of the cell
-        return dstCell.addAgent(agent);
+        return dstCell.addAgent(c);
     }
 
     /**

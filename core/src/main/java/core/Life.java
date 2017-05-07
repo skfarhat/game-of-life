@@ -7,6 +7,8 @@ import core.actions.Move;
 import core.actions.Reproduce;
 import core.exceptions.*;
 import core.interfaces.Consumable;
+import core.schedulers.ProbabilisticScheduler;
+import core.schedulers.Scheduler;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -40,18 +42,28 @@ public class Life implements LifeGetter {
     /**  */
     private final LifeOptions options;
 
+    private final Scheduler<LifeAgent> scheduler;
+
+
     // ===========================================================================================
     // METHODS
     // ===========================================================================================
 
     /**  default constructor, calls other constructor and initialises fields to their defaults */
-    public Life() throws LifeException, IllegalArgumentException { this(null); }
+    public Life() { this(null); }
 
-    public Life(LifeOptions options) throws IllegalArgumentException, TooManySurfacesException {
+    public Life(LifeOptions options) { this(options, null); }
 
+    public Life(LifeOptions options, Scheduler<LifeAgent> scheduler ) {
+
+        this.agents = new ArrayList<>();
+
+        if (null == scheduler)
+            scheduler = new ProbabilisticScheduler<>(agents);
         if (null == options)
             options = new LifeOptions();
 
+        this.scheduler = scheduler;
         this.options = options;
 
         // Create Life in 7 days
@@ -61,7 +73,6 @@ public class Life implements LifeGetter {
         grid = new LifeGrid(getGridRows(), getGridCols());
 
         // create agents and distribute
-        agents = new ArrayList<>();
         createAndDistributeAgents();
     }
 
@@ -81,25 +92,23 @@ public class Life implements LifeGetter {
             return actions;
         }
 
-        // choose an agent at random
-        int randI = Utils.randomPositiveInteger(agents.size());
-        // TODO(sami): remove the casting
-        LifeAgent chosen = (LifeAgent) agents.get(randI);
+        // scheduler returns the next agent
+        LifeAgent chosen = scheduler.next();
         if (!chosen.isAlive())
             LOGGER.log(Level.SEVERE, "We chose a dead agent!");
 
         LifeAgentOptions agentOpts = options.getOptionsForAgent(chosen.getClass());
 
         if (chosen instanceof Creature) {
-
+            Creature creature = (Creature) chosen; // it is safe to cast
             // -------
             // Move
             // -------
 
-            Point2D srcPoint = new Point2D(chosen.getPos()); // make a new copy of the src point
-            Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
+            Point2D srcPoint = new Point2D(creature.getPos()); // make a new copy of the src point
+            Point2D nextPoint = findAdjacentPointInGrid(creature.getPos());
             Cell nextCell = grid.get(nextPoint);
-            Action move = new Move(chosen, srcPoint, nextPoint);
+            Action move = new Move(creature, srcPoint, nextPoint);
             actions.add(move);
             processMoveAction((Move) move);
 
@@ -108,7 +117,7 @@ public class Life implements LifeGetter {
             // -------
 
             List<Consumable> consumableAgents = new ArrayList<>();
-            List<Class<?extends LifeAgent>> classes = options.getConsumableClassesForAgent(chosen);
+            List<Class<?extends LifeAgent>> classes = options.getConsumableClassesForAgent(creature);
             Iterator<LifeAgent> it = nextCell.getAgents();
             while(it.hasNext()) {
                 LifeAgent la = it.next();
@@ -120,7 +129,7 @@ public class Life implements LifeGetter {
             if (consumableAgents.size() > 0) {
                 int index = Utils.randomPositiveInteger(consumableAgents.size());
                 Consumable agentToConsume = consumableAgents.get(index);
-                Action consume = new Consume(chosen, agentToConsume);
+                Action consume = new Consume(creature, agentToConsume);
                 actions.add(consume);
                 processConsume((Consume) consume);
             }
@@ -132,8 +141,8 @@ public class Life implements LifeGetter {
             double rAgent = agentOpts.getReproductionRate();
             boolean willReproduce = Utils.getRand().nextDouble() < rAgent;
             if (willReproduce) {
-                LifeAgent baby = chosen.reproduce();
-                Action reproduce = new Reproduce(chosen, baby);
+                LifeAgent baby = creature.reproduce();
+                Action reproduce = new Reproduce(creature, baby);
                 actions.add(reproduce);
                 processReproduce((Reproduce) reproduce);
             }
@@ -143,7 +152,7 @@ public class Life implements LifeGetter {
             // ------------
 
             int ageBy = agentOpts.getAgeBy();
-            Action age = new EnergyChange(chosen, -ageBy);
+            Action age = new EnergyChange(creature, -ageBy);
             actions.add(age);
             processAgeAction((EnergyChange) age);
 
@@ -158,22 +167,24 @@ public class Life implements LifeGetter {
         }
 
         else if (chosen instanceof Surface) {
+            Surface surface = (Surface) chosen;
+
             // NOTE: explicitly handling Grass ONLY at the moment
 
-            Point2D nextPoint = findAdjacentPointInGrid(chosen.getPos());
-            LifeCell currCell = grid.get(chosen.getPos());
+            Point2D nextPoint = findAdjacentPointInGrid(surface.getPos());
+            LifeCell currCell = grid.get(surface.getPos());
             LifeCell nextCell = grid.get(nextPoint);
 
             // -------
             // Consume
             // -------
 
-            List<Class<?extends LifeAgent>> classes = options.getConsumableClassesForAgent(chosen);
+            List<Class<?extends LifeAgent>> classes = options.getConsumableClassesForAgent(surface);
             Iterator<LifeAgent> it = nextCell.getAgents();
             while(it.hasNext()) {
                 LifeAgent la = it.next();
                 if (classes.contains(la.getClass())){
-                    Consume consume = new Consume(chosen, la);
+                    Consume consume = new Consume(surface, la);
                     actions.add(consume);
                     processConsume(consume);
                 }
@@ -187,9 +198,9 @@ public class Life implements LifeGetter {
             boolean willReproduce = Utils.getRand().nextDouble() < rSurface;
 
             if (willReproduce && !(grid.get(nextPoint)).containsSurface()) {
-                LifeAgent babyGrass = chosen.reproduce();
+                LifeAgent babyGrass = surface.reproduce();
                 babyGrass.setPos(nextPoint);
-                Action reproduce = new Reproduce(chosen, babyGrass);
+                Action reproduce = new Reproduce(surface, babyGrass);
                 actions.add(reproduce);
                 processReproduce((Reproduce) reproduce);
             }
@@ -198,7 +209,7 @@ public class Life implements LifeGetter {
             // Age
             // ---
             int ageGrass = agentOpts.getAgeBy();
-            Action energyGain = new EnergyChange(chosen, -ageGrass);
+            Action energyGain = new EnergyChange(surface, -ageGrass);
             actions.add(energyGain);
             processAgeAction((EnergyChange) energyGain);
 
@@ -332,7 +343,7 @@ public class Life implements LifeGetter {
     private void processMoveAction(Move action) throws SurfaceAlreadyPresent {
         LOGGER.log(Level.INFO, action.toString());
         Cell nextCell = grid.get(action.getTo());
-        grid.moveAgentToCell(action.getAgent(), nextCell);
+        grid.moveCeature(action.getAgent(), nextCell);
     }
 
     private void processReproduce(Reproduce action) throws SurfaceAlreadyPresent {

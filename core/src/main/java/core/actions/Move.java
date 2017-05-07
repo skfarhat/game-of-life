@@ -1,9 +1,10 @@
 package core.actions;
 
+import core.Creature;
 import core.LifeAgent;
 import core.Point2D;
 
-public class Move extends Action<LifeAgent> {
+public class Move extends Action<Creature> {
 
     private Point2D from;
     private Point2D to;
@@ -12,7 +13,7 @@ public class Move extends Action<LifeAgent> {
      * @param from the source point
      * @param to the destination point
      */
-    public Move(LifeAgent agent, Point2D from, Point2D to){
+    public Move(Creature agent, Point2D from, Point2D to){
         super(agent);
 
         this.from = from;

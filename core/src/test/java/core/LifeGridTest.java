@@ -212,23 +212,17 @@ public class LifeGridTest {
 
 
     @Test
-    public void testMoveAgentToCell() throws GridCreationException, InvalidPositionException, AgentAlreadyDeadException {
+    public void testMoveCreatureToCell() throws GridCreationException, InvalidPositionException, AgentAlreadyDeadException {
         final int rows = Utils.randomIntegerInRange(5, 15);
         final int cols = Utils.randomIntegerInRange(5, 15);
         LifeGrid grid = new LifeGrid(rows, cols);
         Cell srcCell = grid.get(Utils.randomPoint(cols, rows));
         Cell dstCell = grid.get(grid.randomAdjacentPoint(srcCell.getPos()));
-        Agent a = new LifeAgent(100) {
-            @Override
-            public LifeAgent reproduce() throws AgentAlreadyDeadException {
-                return null;
-            }
-        };
+        Creature a = new Creature(); //
 
         srcCell.addAgent(a);
         assertEquals(1, srcCell.agentsCount());
-
-        assertTrue(grid.moveAgentToCell(a, dstCell));
+        assertTrue(grid.moveCeature(a, dstCell));
 
         // we should find the agent in the dstCell's core.agents list
         {
