@@ -7,10 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class Launcher extends Application {
 
@@ -32,6 +29,8 @@ public class Launcher extends Application {
         System.setProperty("java.util.logging.SimpleFormatter.format",
                 "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
         Handler fh = new FileHandler("oop.log");
+        SimpleFormatter formatter = new SimpleFormatter();
+        fh.setFormatter(formatter);
         Logger.getLogger("").addHandler(fh);
         Logger.getLogger("com.wombat").setLevel(Level.FINEST);
 
