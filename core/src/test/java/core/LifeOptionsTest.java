@@ -117,7 +117,7 @@ public class LifeOptionsTest {
         LifeOptions opts = new LifeOptions();
         final int val = Utils.randomPositiveInteger(1000);
         opts.setConsumableEnergyCap(val);
-        assertEquals(val, opts.getConsumeImplementation());
+        assertEquals(val, opts.getConsumableEnergyCap());
     }
 
 }
