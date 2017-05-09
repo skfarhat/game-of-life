@@ -173,7 +173,7 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         consumable.decreaseEnergy(e);
     }
 
-    // TODO(sami): replace with a new exception
+    // TODO: replace with a new exception
     @Override
     public final boolean consume(Consumable consumable) throws AgentAlreadyDeadException {
         if (consumable == this)

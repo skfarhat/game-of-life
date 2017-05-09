@@ -23,7 +23,7 @@ public class CellView extends Pane {
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
-    // TODO(sami): clean
+    // TODO: clean
     public final static int MINICELL_ROWS = 3;
     public final static int MINICELL_COLS = 3;
 
@@ -68,7 +68,7 @@ public class CellView extends Pane {
 
     public void draw() {
 
-        // TODO(sami): recheck mutex
+        // TODO: recheck mutex
         synchronized (this) {
             getChildren().clear();
 
@@ -96,7 +96,7 @@ public class CellView extends Pane {
 
                 Agent agent = it.next();
 
-                // TODO(sami): probably doesn't work when ROWSS != COLS -- fix
+                // TODO: probably doesn't work when ROWSS != COLS -- fix
                 int row = (addedCount % MINICELL_ROWS);
                 int col = (addedCount / MINICELL_COLS);
                 double x = miniCellSide * row;

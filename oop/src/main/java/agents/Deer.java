@@ -22,7 +22,7 @@ public class Deer extends Creature {
     /**  default gain value when deers consume consumables */
     public static final Integer DEFAULT_E_GAIN = 2;
 
-    //TODO(sami);
+    //TODO;
     /**  default amount by which a deer's energy is decreased when the deer is consumed */
     public static final Integer DEFAULT_E_LOSS = 10;
 

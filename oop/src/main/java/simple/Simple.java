@@ -27,7 +27,7 @@ public class Simple {
         Life life = new Life(opts);
         for (int i = 0; i < nIterations; i++) {
             List<Action> actions = life.step();
-            // TODO(sami): stop the logger from automatically logging?
+            // TODO: stop the logger from automatically logging?
             // we don't print the actions out because the logger already does that now
 
 //            for (Action action : actions)

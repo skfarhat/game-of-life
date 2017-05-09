@@ -36,7 +36,7 @@ public abstract class Agent implements Positionable, Identifiable {
      */
     public Agent(Point2D pos) {
         id = IdPool.getInstance().newId();
-        // TODO(sami): check on the position - throw exception
+        // TODO: check on the position - throw exception
         if (pos == null)
             this.pos = new Point2D(0, 0);
         else

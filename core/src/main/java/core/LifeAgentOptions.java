@@ -62,8 +62,8 @@ public class LifeAgentOptions {
 
         /* note: ageBy can be negative, as in the case with Grass where the energy increasess at each step */
 
-        Utils.exceptionIfNegative(initialEnergy); // TODO(sami): provide message
-        Utils.exceptionIfNegative(initialCount); // TODO(sami): provide message
+        Utils.exceptionIfNegative(initialEnergy); // TODO: provide message
+        Utils.exceptionIfNegative(initialCount); // TODO: provide message
         Utils.exceptionIfNegative(energyGained);
         Utils.exceptionIfNegative(energyLost);
         Utils.exceptionIfOutOfRange(reproductionRate);

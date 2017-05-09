@@ -156,7 +156,7 @@ public class RulesPane extends VBox implements RulesModifier {
             setNewRulePane(null);
         }
 
-        // TODO(sami): remove debug info
+        // TODO: remove debug info
         System.out.println("save: ConsumeRules: ");
         for (ConsumeRule c : consumeRules)
             System.out.println(c);
@@ -187,7 +187,7 @@ public class RulesPane extends VBox implements RulesModifier {
             assert null != oldRule :  "newRulePane should not have a ConsumeRule in childMap";
         }
 
-        // TODO(sami): remove debug info
+        // TODO: remove debug info
         System.out.println("remove: ConsumeRules: ");
         for (ConsumeRule c : consumeRules)
             System.out.println(c);

@@ -94,7 +94,7 @@ public class RootController implements Initializable, LifeStarter {
         lifeViewController.setRootPane(lifeView);
     }
 
-    // TODO(sami): throw appropriate exception here
+    // TODO: throw appropriate exception here
     public boolean start(Life life) {
 
         // guard
@@ -115,8 +115,8 @@ public class RootController implements Initializable, LifeStarter {
         return true;
     }
 
-    // TODO(sami): create an excpetion for this
-    // TODO(sami): how to safely deschedule timers
+    // TODO: create an excpetion for this
+    // TODO: how to safely deschedule timers
     @Override
     public boolean stop() {
 
@@ -200,7 +200,7 @@ public class RootController implements Initializable, LifeStarter {
                     Action action = queue.poll();
 
                     // if we find an action, then there are likely more actions coming
-                    // we wait for 1msec (TODO(sami): should be configurable) and then try to get more actions
+                    // we wait for 1msec (TODO: should be configurable) and then try to get more actions
                     // to send in batch to the draw function
                     if (action != null) {
                         Thread.sleep(1);
