@@ -5,9 +5,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 06/04/2017.
- */
 public class RootControllerTest {
     @Test
     public void calculateFrequencyFromPeriod() throws Exception {

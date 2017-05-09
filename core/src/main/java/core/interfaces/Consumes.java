@@ -1,7 +1,3 @@
-/**
- * Created by Sami on 30/03/2017.
- */
-
 package core.interfaces;
 import core.exceptions.AgentAlreadyDeadException;
 import core.exceptions.ConsumableOutOfEnergy;

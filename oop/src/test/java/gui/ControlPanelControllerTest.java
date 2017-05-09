@@ -4,9 +4,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 04/04/2017.
- */
 public class ControlPanelControllerTest {
 
     @Test

@@ -9,9 +9,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Sami on 23/04/2017.
- */
 public class ConsumeRulesTest {
     @Test
     public void size() throws Exception {

@@ -1,6 +1,3 @@
-/**
- * Created by Sami on 03/04/2017.
- */
 package core.interfaces;
 
 import core.exceptions.AgentAlreadyDeadException;
