@@ -1,8 +1,11 @@
 package core.exceptions;
 
-public class InvalidOptionsException extends Exception {
-    public InvalidOptionsException() {
-    }
+/**
+ * convenience exception class that can be used by other
+ */
+public class InvalidOptionsException extends LifeException {
+
+    public InvalidOptionsException() {}
 
     public InvalidOptionsException(String message) {
         super(message);

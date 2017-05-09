@@ -2,7 +2,7 @@ package core.exceptions;
 
 import core.Agent;
 
-public class UnsupportedAgentException extends RuntimeException {
+public class UnsupportedAgentException extends LifeRuntimeException {
 
     public UnsupportedAgentException() {}
 

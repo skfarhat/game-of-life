@@ -142,12 +142,13 @@ public class RulePane extends HBox {
 
             saveButton.setDisable(true);
 
-        } catch (LifeException e) {
-            LOGGER.log(Level.SEVERE, "Failed to build ConsumeRule: same consumer-consumable?");
-            Utils.showErrorAlert("Failed to save rule", e.getMessage());
         } catch (InvalidOptionsException e) {
             saveButton.setDisable(false);
             // show alert ?
+            Utils.showErrorAlert("Failed to save rule", e.getMessage());
+        }
+        catch (LifeException e) {
+            LOGGER.log(Level.SEVERE, "Failed to build ConsumeRule: same consumer-consumable?");
             Utils.showErrorAlert("Failed to save rule", e.getMessage());
         }
     }
