@@ -1,5 +1,6 @@
 .gradle
 *.iml
+*.ucls
 hs_err_*
 /local.properties
 
