@@ -25,6 +25,10 @@ import java.util.logging.Logger;
  */
 public abstract class LifeAgent extends Agent implements Reproduces, Consumable, Consumes {
 
+    // =================================================================================================================
+    // STATIC
+    // =================================================================================================================
+
     /**
      *  logger
      */
@@ -54,16 +58,25 @@ public abstract class LifeAgent extends Agent implements Reproduces, Consumable,
         return null;
     }
 
-    /**  the energy with which this instance was created. This same value is used later when reproducing. */
+    // =================================================================================================================
+    // MEMBERS
+    // =================================================================================================================
+
+    /** the energy with which this instance was created. This same value is used later when reproducing. */
     protected final Integer MY_INITIAL_ENERGY;
 
-    /**  the energy of the LifeAgent */
+    /** the energy of the LifeAgent */
     private Integer energy = 0;
 
-    /**  is set to true when the Agent dies and prevents further changes to the energy after it death,
+    /**
+     * is set to true when the Agent dies and prevents further changes to the energy after it death,
      * zombies are not allowed :)
      */
     private boolean died = false;
+
+    // =================================================================================================================
+    // METHODS
+    // =================================================================================================================
 
     /**  default constructor */
     public LifeAgent() throws AgentAlreadyDeadException {

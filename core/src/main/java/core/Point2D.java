@@ -1,9 +1,7 @@
 package core;
 
 /**
- *  Point2D class
- *
- * Point having x and y coordinates
+ * Immutable Point2D class representing a 2D point with x-y coordinates
  */
 public class Point2D {
     private int x;

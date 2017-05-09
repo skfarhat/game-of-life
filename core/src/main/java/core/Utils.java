@@ -10,7 +10,7 @@ import java.util.Random;
 public final class Utils {
 
     /**
-     *  subclass of Random
+     * subclass of Random
      * motivation behind using this is to expose the next() method and allow for easy random positive integer generation
      */
     public static class LifeRandom extends Random {
