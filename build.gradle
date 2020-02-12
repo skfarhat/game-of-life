@@ -1,14 +1,10 @@
-group 'com.samifarhat.oop'
+group 'com.samifarhat.game-of-life'
 version '0.1'
 
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
-}
 
 repositories {
     mavenCentral()
@@ -25,7 +21,7 @@ task myJavadocs(type: Javadoc) {
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'Welcome to the Jungle!',
+        attributes 'Implementation-Title': 'Game of Life!',
                 'Implementation-Version': version,
                 'Main-Class': 'gui.Launcher'
     }
@@ -39,14 +35,14 @@ test {
 }
 
 jacoco {
-    toolVersion = "0.7.6.201602180812"
+    toolVersion = "0.8.5"
 }
 
 jacocoTestReport {
     reports {
         xml.enabled false
         csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
+        html.destination file("${buildDir}/jacocoHtml")
     }
 }
 

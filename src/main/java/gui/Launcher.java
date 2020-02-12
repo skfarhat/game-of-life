@@ -23,7 +23,7 @@ public class Launcher extends Application {
      */
     private static final Logger LOGGER = Logger.getLogger(Life.class.getName());
 
-    public final static String TITLE = "Welcome to the Jungle";
+    public final static String TITLE = "Game of Life";
 
     public static void main(String[] args) {
         launch(args);

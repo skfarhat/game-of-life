@@ -1,6 +1,6 @@
 node {
   stage('Preparation'){
-    git 'https://github.com/skfarhat/oop-assign'
+    git 'https://github.com/skfarhat/game-of-life'
   }
   stage('Build'){
     sh './gradlew build -x test'
