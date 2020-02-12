@@ -11,12 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.util.*;
 import java.util.logging.Level;
